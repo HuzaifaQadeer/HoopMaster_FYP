@@ -230,3 +230,56 @@ exports.addAchievement = async (req, res) => {
     res.status(500).json({ message: 'Error adding achievement', error: error.message });
   }
 };
+
+exports.sendVerificationEmail = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const verificationToken = crypto.randomBytes(20).toString('hex');
+    user.emailVerificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+    user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+    await user.save();
+
+    const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email/${verificationToken}`;
+    
+    await sendEmail({
+      email: user.email,
+      subject: 'Email Verification',
+      message: `Please click on the following link to verify your email: ${verificationUrl}`
+    });
+
+    res.json({ message: 'Verification email sent' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error sending verification email', error: error.message });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      emailVerificationToken: hashedToken,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+
+    await user.save();
+
+    res.json({ message: 'Email verified successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error verifying email', error: error.message });
+  }
+};

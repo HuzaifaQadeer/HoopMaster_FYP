@@ -18,5 +18,7 @@ router.put('/highlight-video', authMiddleware, userController.updateHighlightVid
 router.post('/courses', authMiddleware, userController.addCourse);
 router.put('/courses/:courseId/progress', authMiddleware, userController.updateCourseProgress);
 router.post('/achievements', authMiddleware, userController.addAchievement);
+router.post('/send-verification-email', authMiddleware, userController.sendVerificationEmail);
+router.get('/verify-email/:token', userController.verifyEmail);
 
 module.exports = router;

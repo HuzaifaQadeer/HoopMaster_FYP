@@ -36,7 +36,10 @@ const userSchema = new mongoose.Schema({
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
   achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }],
   resetPasswordToken: String,
-  resetPasswordExpires: Date
+  resetPasswordExpires: Date,
+  isEmailVerified: { type: Boolean, default: false },
+  emailVerificationToken: String,
+  emailVerificationExpires: Date
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
