@@ -65,14 +65,14 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+    // Send reset token to frontend instead of a URL
     await sendEmail({
       email: user.email,
       subject: 'Password Reset',
-      message: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.`
+      message: `Your password reset code is: ${resetToken}\n\nThis code will expire in 10 minutes.`
     });
 
-    res.json({ message: 'Password reset email sent' });
+    res.json({ message: 'Password reset code sent to email' });
   } catch (error) {
     res.status(500).json({ message: 'Error sending password reset email', error: error.message });
   }
@@ -91,6 +91,12 @@ exports.resetPassword = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // Password validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Password does not meet requirements' });
     }
 
     user.password = await bcrypt.hash(password, 12);
@@ -120,6 +126,21 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const updates = req.body;
+    
+    // Convert measurements if necessary
+    if (updates.height) {
+      updates.height = convertMeasurement(updates.height, ['cm', 'ft'], 'cm');
+    }
+    if (updates.weight) {
+      updates.weight = convertMeasurement(updates.weight, ['kg', 'lbs'], 'kg');
+    }
+    if (updates.wingspan) {
+      updates.wingspan = convertMeasurement(updates.wingspan, ['cm', 'in'], 'cm');
+    }
+    if (updates.verticalJump) {
+      updates.verticalJump = convertMeasurement(updates.verticalJump, ['cm', 'in'], 'cm');
+    }
+
     const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true, runValidators: true }).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -129,6 +150,27 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Error updating profile', error: error.message });
   }
 };
+
+// Helper function to convert measurements
+function convertMeasurement(measurement, allowedUnits, defaultUnit) {
+  if (!measurement.unit || !allowedUnits.includes(measurement.unit)) {
+    measurement.unit = defaultUnit;
+  }
+  
+  if (measurement.unit !== defaultUnit) {
+    // Perform conversion
+    if (defaultUnit === 'cm' && measurement.unit === 'ft') {
+      measurement.value = measurement.value * 30.48;
+    } else if (defaultUnit === 'cm' && measurement.unit === 'in') {
+      measurement.value = measurement.value * 2.54;
+    } else if (defaultUnit === 'kg' && measurement.unit === 'lbs') {
+      measurement.value = measurement.value * 0.453592;
+    }
+    measurement.unit = defaultUnit;
+  }
+  
+  return measurement;
+}
 
 exports.togglePrivacy = async (req, res) => {
   try {

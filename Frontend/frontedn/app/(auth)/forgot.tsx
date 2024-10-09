@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState<string>('');
-  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [resetToken, setResetToken] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
@@ -13,24 +13,37 @@ const ForgotPassword: React.FC = () => {
   const router = useRouter();
   const { colors } = useTheme();
 
-  const handleSendEmail = () => {
-    // TODO: Implement email sending logic here
-    setIsEmailSent(true);
-    Alert.alert('Email Sent', `A verification code has been sent to ${email}`);
+  const handleSendEmail = async () => {
+    try {
+      const response = await fetch('/api/users/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send reset email');
+      }
+
+      setIsEmailSent(true);
+      Alert.alert('Email Sent', `A reset code has been sent to ${email}`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send reset email. Please try again.');
+    }
   };
 
   const handleVerifyCode = () => {
-    // TODO: Implement verification code checking logic here
     setIsModalVisible(true);
   };
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
   
-    // Check password requirements
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]).{8,}$/;
     
     if (!passwordRegex.test(newPassword)) {
@@ -38,9 +51,25 @@ const ForgotPassword: React.FC = () => {
       return;
     }
   
-    // TODO: Implement password reset logic here
-    setIsModalVisible(false);
-    router.replace('/login');
+    try {
+      const response = await fetch('/api/users/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: resetToken, password: newPassword }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reset password');
+      }
+
+      Alert.alert('Success', 'Password reset successfully');
+      setIsModalVisible(false);
+      router.replace('/login');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to reset password. Please try again.');
+    }
   };
 
   return (
@@ -70,8 +99,8 @@ const ForgotPassword: React.FC = () => {
             style={[styles.input, { borderColor: colors.border, color: colors.text }]}
             placeholder="Verification Code"
             placeholderTextColor={colors.text}
-            value={verificationCode}
-            onChangeText={setVerificationCode}
+            value={resetToken}
+            onChangeText={setResetToken}
             keyboardType="number-pad"
           />
           <TouchableOpacity 

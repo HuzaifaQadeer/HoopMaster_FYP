@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext'; // Adjust the import path as needed
 import { useTheme } from '@react-navigation/native';
 
 export default function SignupScreen() {
@@ -12,6 +12,7 @@ export default function SignupScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { colors } = useTheme();
+  const { login } = useAuth();
 
   const validateEmail = (email : string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -59,9 +60,28 @@ export default function SignupScreen() {
       setError('');
       setIsLoading(true);
       try {
+        const response = await fetch('/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            displayName: email.split('@')[0] // Using email username as initial display name
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Signup failed');
+        }
+
+        const { token, user } = await response.json();
+        await login(token, user); // Assuming login function is provided by AuthContext
         router.replace('/setup');
       } catch (err) {
-        setError('Signup failed. Please try again.');
+        setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
       } finally {
         setIsLoading(false);
       }

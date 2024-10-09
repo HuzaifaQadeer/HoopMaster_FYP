@@ -48,19 +48,33 @@ export default function LoginScreen() {
       errorMessage += "Password must contain a number, a capital letter, a small letter, a special character, and must be at least 8 characters long. ";
     }
 
-    if (!isValid) {
-      setError(errorMessage.trim());
-    } else {
+    if (isValid) {
       setError('');
       setIsLoading(true);
       try {
-        await login();
+        const response = await fetch('/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Login failed');
+        }
+
+        const { token, user } = await response.json();
+        await login(token, user); // Assuming login function is provided by AuthContext
         router.replace('/(tabs)/home');
       } catch (err) {
-        setError('Login failed. Please check your credentials and try again.');
+        setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
       } finally {
         setIsLoading(false);
       }
+    } else {
+      setError(errorMessage.trim());
     }
   };
 

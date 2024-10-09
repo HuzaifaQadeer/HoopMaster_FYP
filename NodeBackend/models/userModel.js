@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  displayName: { type: String, required: true, unique: true },
-  userName: { type: String},
+  displayName: { type: String, required: true },
+  userName: { type: String, unique: true, sparse: true },
   profilePicture: String,
   socialMedia: {
     instagram: String,
@@ -14,20 +14,20 @@ const userSchema = new mongoose.Schema({
   },
   height: {
     value: Number,
-    unit: { type: String, enum: ['cm', 'ft'] }
+    unit: { type: String, enum: ['cm', 'ft'], default: 'cm' }
   },
   weight: {
     value: Number,
-    unit: { type: String, enum: ['kg', 'lbs'] }
+    unit: { type: String, enum: ['kg', 'lbs'], default: 'kg' }
   },
   wingspan: {
     value: Number,
-    unit: { type: String, enum: ['cm', 'in'] }
+    unit: { type: String, enum: ['cm', 'in'], default: 'cm' }
   },
   position: String,
   verticalJump: {
     value: Number,
-    unit: { type: String, enum: ['cm', 'in'] }
+    unit: { type: String, enum: ['cm', 'in'], default: 'cm' }
   },
   aboutMe: String,
   isPremium: { type: Boolean, default: false },

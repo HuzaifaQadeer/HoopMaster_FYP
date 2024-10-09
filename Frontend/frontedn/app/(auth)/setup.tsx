@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '@react-navigation/native';
@@ -43,7 +43,7 @@ export default function ProfileSetupScreen() {
 
   const [error, setError] = useState<string>('');
 
-  const { login } = useAuth();
+  const { login, getToken } = useAuth();
   const router = useRouter();
   const { colors } = useTheme();
 
@@ -62,7 +62,31 @@ export default function ProfileSetupScreen() {
     });
 
     if (!pickerResult.canceled) {
-      setProfileData((prev) => ({ ...prev, profilePicture: pickerResult.assets[0].uri }));
+      try {
+        const token = await getToken();
+        const formData = new FormData();
+        const imageResponse = await fetch(pickerResult.assets[0].uri);
+        const blob = await imageResponse.blob();
+        formData.append('profilePicture', blob, 'profile.jpg');
+        
+        const response = await fetch('/api/users/profile-picture', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload profile picture');
+        }
+
+        setProfileData((prev) => ({ ...prev, profilePicture: pickerResult.assets[0].uri }));
+      } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        Alert.alert('Error', 'Failed to upload profile picture');
+      }
     }
   };
 
@@ -102,19 +126,65 @@ export default function ProfileSetupScreen() {
     }
 
     try {
-      await login(); // Assuming this sets up the user session
-      router.replace('/(tabs)/home');
+      const token = await getToken();
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save profile');
+      }
+
+      const updatedUser = await response.json();
+      if (token) {
+        await login(token, updatedUser); // Update the user in AuthContext
+        router.replace('/(tabs)/home');
+      } else {
+        // Handle the case where token is null
+        console.error('Token is null');
+      }
     } catch (err) {
       setError('Failed to save profile. Please try again.');
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     if (!profileData.displayName) {
       setError('Please fill the necessary credentials (Display Name)');
       return;
     }
-    handleSubmit();
+    
+    try {
+      const token = await getToken();
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ displayName: profileData.displayName }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save display name');
+      }
+
+      const updatedUser = await response.json();
+      if (token) {
+        await login(token, updatedUser); // Update the user in AuthContext
+        router.replace('/(tabs)/home');
+      } else {
+        // Handle the case where token is null
+        console.error('Token is null');
+      }
+    } catch (err) {
+      setError('Failed to save display name. Please try again.');
+    }
   };
 
   return (

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LightTheme, CustomDarkTheme } from '@/constants/Colors';
 import { useAuth } from '../../context/AuthContext';
 import Course from '@/components/custom/course';
-import Achivement from '@/components/custom/achivement';
+import Achievement from '@/components/custom/achivement';
 import SocialIcons from '@/components/custom/renderSocialIcons';
 import { useRouter, Link } from 'expo-router';
 
@@ -31,10 +31,67 @@ interface UserProfile {
 }
 
 const UserProfileScreen: React.FC = () => {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [showOptions, setShowOptions] = useState(false);
+  const { logout, getToken } = useAuth();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? CustomDarkTheme : LightTheme;
-  const { logout } = useAuth();
-  
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = await getToken();
+      const response = await fetch('/api/users/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      const data = await response.json();
+      setUserProfile(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
+  const togglePrivacy = async () => {
+    try {
+      const token = await getToken();
+      const response = await fetch('/api/users/toggle-privacy', {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to toggle privacy');
+      }
+      const data = await response.json();
+      setUserProfile(prev => prev ? { ...prev, isPrivate: data.isPrivate } : null);
+    } catch (error) {
+      console.error('Error toggling privacy:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const token = await getToken();
+      await fetch('/api/users/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      await logout();
+      router.replace('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   const courses = [
     { id: '2', name: 'Handles mastery', completion: 25, isPremium: false, imageUrl: 'https://example.com/course1.jpg' },
     { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://example.com/course1.jpg' }
@@ -47,56 +104,16 @@ const achievementData = [
   { id: 2, title: "Community challange#1", rank: 7 },
 ];
 
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    profilePicture: undefined,
-    displayName: 'Peter Griffin',
-    username: 'John Doe',
-    height: '6\'2" / 188cm',
-    weight: '185lbs / 84kg',
-    wingspan: '6\'4" / 193cm',
-    verticalJump: '30in / 76cm',
-    position: 'Point Guard',
-    aboutMe: 'Basketball enthusiast looking to improve my game!',
-    isPremium: false,
-    isPrivate: false,
-    socials: {
-      instagram: 'hoopmaster123',
-      facebook: 'johndoe',
-      youtube: 'hoopmaster',
-      twitter: 'hoopmaster123',
-    },
-    highlightVideo: 'https://example.com/highlight-video.mp4',
-  });
-
-  const [showOptions, setShowOptions] = useState(false);
-
-  const togglePrivacy = () => {
-    setUserProfile(prev => ({ ...prev, isPrivate: !prev.isPrivate }));
-  };
-
-  const handleLogout = () => {
-    // Implement logout logic
-    logout();
-  };
-  
-  const router = useRouter();
-  const handleEdit = () => {
-    router.push('/editprofile');
-  };
-
-// When you want to navigate
-
-
   const renderOptionsMenu = () => (
     <View style={[styles.optionsMenu, { backgroundColor: theme.colors.card }]}>
       <TouchableOpacity style={styles.optionItem}>
         <Text style={[styles.optionText, { color: theme.colors.text }]}>
-          {userProfile.isPremium ? "Premium Account" : "Upgrade to Premium"}
+          {userProfile?.isPremium ? "Premium Account" : "Upgrade to Premium"}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionItem} onPress={togglePrivacy}>
         <Text style={[styles.optionText, { color: theme.colors.text }]}>
-          {userProfile.isPrivate ? "Set Account to Public" : "Set Account to Private"}
+          {userProfile?.isPrivate ? "Set Account to Public" : "Set Account to Private"}
         </Text>
       </TouchableOpacity>
       <Link href="/editprofile">
@@ -115,7 +132,7 @@ const achievementData = [
     <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
       <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Highlights</Text>
       <View style={styles.videoContainer}>
-        {userProfile.highlightVideo ? (
+        {userProfile?.highlightVideo ? (
           <Text style={[styles.videoPlaceholder, { color: theme.colors.text }]}>Video Player Placeholder</Text>
         ) : (
           <Text style={[styles.noVideoText, { color: theme.colors.text }]}>No highlight video available</Text>
@@ -135,7 +152,7 @@ const achievementData = [
       {showOptions && renderOptionsMenu()}
       
       <View style={styles.profilePictureContainer}>
-        {userProfile.profilePicture ? (
+        {userProfile?.profilePicture ? (
           <Image source={{ uri: userProfile.profilePicture }} style={styles.profilePicture} />
         ) : (
           <View style={[styles.profilePicture, { backgroundColor: '#FFA500' }]}>
@@ -145,42 +162,42 @@ const achievementData = [
       </View>
 
       <View style={styles.centerAlign}>
-        <Text style={[styles.displayName, { color: theme.colors.text }]}>{userProfile.displayName}</Text>
-        <Text style={[styles.username, { color: theme.colors.text }]}>{userProfile.username}</Text>
+        <Text style={[styles.displayName, { color: theme.colors.text }]}>{userProfile?.displayName}</Text>
+        <Text style={[styles.username, { color: theme.colors.text }]}>{userProfile?.username}</Text>
       </View>
       
-      <SocialIcons socials={userProfile.socials} />
+
 
       {renderHighlights()}
 
       <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
         <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Stats</Text>
         <View style={styles.statsContainer}>
-          {userProfile.height && (
+          {userProfile?.height && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Height</Text>
               <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.height}</Text>
             </View>
           )}
-          {userProfile.weight && (
+          {userProfile?.weight && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Weight</Text>
               <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.weight}</Text>
             </View>
           )}
-          {userProfile.wingspan && (
+          {userProfile?.wingspan && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Wingspan</Text>
               <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.wingspan}</Text>
             </View>
           )}
-          {userProfile.verticalJump && (
+          {userProfile?.verticalJump && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Vertical Jump</Text>
               <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.verticalJump}</Text>
             </View>
           )}
-          {userProfile.position && (
+          {userProfile?.position && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Position</Text>
               <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.position}</Text>
@@ -189,7 +206,7 @@ const achievementData = [
         </View>
       </View>
       
-      {userProfile.aboutMe && (
+      {userProfile?.aboutMe && (
         <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>About Me</Text>
           <Text style={[styles.aboutMeText, { color: theme.colors.text }]}>{userProfile.aboutMe}</Text>
@@ -210,7 +227,7 @@ const achievementData = [
         <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Achievements</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {achievementData.map((data) => (
-            <Achivement key={data.id} {...data} />
+            <Achievement key={data.id} {...data} />
           ))}
         </ScrollView>
       </View>

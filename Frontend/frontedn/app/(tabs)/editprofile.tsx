@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import SocialMediaSelector from '@/components/custom/socialMediaSelector';
 import MeasurementField from '@/components/custom/measurmentFields';
 import Achievement from '@/components/custom/achivement';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth } from '../../context/AuthContext';
+import { useRouter } from 'expo-router';
 
 interface MeasurementValue {
   value: string;
@@ -53,22 +55,33 @@ const dummyAchievements: AchievementData[] = [
 
 export default function EditProfileScreen() {
   const { colors } = useTheme();
-  const [profileData, setProfileData] = useState<ProfileData>({
-    displayName: 'John Doe',
-    userName: 'johndoe',
-    profilePicture: 'https://example.com/profile.jpg',
-    socialMedia: { instagram: '@johndoe', twitter: '@johndoe' },
-    height: { value: '185', unit: 'cm', feet: '6', inches: '1' },
-    weight: { value: '80', unit: 'kg' },
-    wingspan: { value: '190', unit: 'cm' },
-    position: 'Point Guard',
-    verticalJump: { value: '75', unit: 'cm' },
-    aboutMe: 'Basketball enthusiast and aspiring pro player.',
-    highlightsVideo: null,
-  });
+  const { getToken } = useAuth();
+  const router = useRouter();
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = await getToken();
+      const response = await fetch('/api/users/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      const data = await response.json();
+      setProfileData(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      setError('Failed to load profile data');
+    }
+  };
 
   const [activeAchievements, setActiveAchievements] = useState<string[]>(['1', '2', '5']);
-  const [error, setError] = useState<string>('');
 
   const handleImagePick = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -85,7 +98,26 @@ export default function EditProfileScreen() {
     });
 
     if (!pickerResult.canceled) {
-      setProfileData((prev) => ({ ...prev, profilePicture: pickerResult.assets[0].uri }));
+      try {
+        const token = await getToken();
+        const formData = new FormData();
+        formData.append('profilePicture', new File([pickerResult.assets[0].uri], 'profile.jpg', { type: 'image/jpeg' }));
+        const response = await fetch('/api/users/profile-picture', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error('Failed to upload profile picture');
+        }
+        setProfileData(prev => prev ? { ...prev, profilePicture: pickerResult.assets[0].uri } : null);
+      } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        Alert.alert('Error', 'Failed to upload profile picture');
+      }
     }
   };
 
@@ -98,7 +130,9 @@ export default function EditProfileScreen() {
         { 
           text: 'OK', 
           onPress: () => {
-            setProfileData((prev) => ({ ...prev, highlightsVideo: 'https://example.com/new-highlights.mp4' }));
+            setProfileData((prev) => 
+              prev ? { ...prev, highlightsVideo: 'https://example.com/new-highlights.mp4' } : null
+            );
             Alert.alert('Success', 'Video uploaded successfully!');
           }
         }
@@ -107,7 +141,10 @@ export default function EditProfileScreen() {
   };
 
   const handleInputChange = (key: keyof ProfileData, value: any) => {
-    setProfileData((prev) => ({ ...prev, [key]: value }));
+    setProfileData((prev) => {
+      if (!prev) return {} as ProfileData; // Initialize if null
+      return { ...prev, [key]: value };
+    });
   };
 
   const handleMeasurementChange = (
@@ -117,6 +154,7 @@ export default function EditProfileScreen() {
     field?: 'feet' | 'inches'
   ) => {
     setProfileData((prevData) => {
+      if (!prevData) return null;
       const updatedCategory = { ...prevData[category] as MeasurementValue, unit };
 
       if (unit === 'ft' && field) {
@@ -126,7 +164,10 @@ export default function EditProfileScreen() {
         updatedCategory.value = value;
       }
 
-      return { ...prevData, [category]: updatedCategory };
+      return {
+        ...prevData,
+        [category]: updatedCategory
+      };
     });
   };
 
@@ -141,23 +182,37 @@ export default function EditProfileScreen() {
     );
   };
 
-  const handleSubmit = () => {
-    if (!profileData.displayName.trim()) {
+  const handleSubmit = async () => {
+    if (!profileData?.displayName.trim()) {
       setError('Display name cannot be empty');
       return;
     }
 
-    // Here you would typically send the updated profile data to your backend
-    console.log('Updated Profile Data:', profileData);
-    console.log('Updated Achievements:', dummyAchievements.filter(a => activeAchievements.includes(a.id)));
-    setError('');
-    Alert.alert('Success', 'Profile updated successfully!');
+    try {
+      const token = await getToken();
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify(profileData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+      Alert.alert('Success', 'Profile updated successfully!');
+      router.back();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setError('Failed to update profile');
+    }
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.profileImageContainer}>
-        {profileData.profilePicture ? (
+        {profileData?.profilePicture ? (
           <Image source={{ uri: profileData.profilePicture }} style={styles.profileImage} />
         ) : (
           <View style={[styles.profileImagePlaceholder, { backgroundColor: colors.primary }]}>
@@ -173,7 +228,7 @@ export default function EditProfileScreen() {
         style={[styles.input, { borderColor: colors.border, color: colors.text }]}
         placeholder="Display Name *"
         placeholderTextColor={colors.text}
-        value={profileData.displayName}
+        value={profileData?.displayName}
         onChangeText={(value) => handleInputChange('displayName', value)}
       />
 
@@ -181,39 +236,39 @@ export default function EditProfileScreen() {
         style={[styles.input, { borderColor: colors.border, color: colors.text }]}
         placeholder="UserName"
         placeholderTextColor={colors.text}
-        value={profileData.userName}
+        value={profileData?.userName}
         onChangeText={(value) => handleInputChange('userName', value)}
       />
 
       <SocialMediaSelector
-        socialMedia={profileData.socialMedia}
+        socialMedia={profileData?.socialMedia ?? {}}
         onSocialMediaChange={(newSocialMedia) => handleInputChange('socialMedia', newSocialMedia)}
       />
 
       <MeasurementField
         label="Height"
-        measurement={profileData.height}
+        measurement={profileData?.height ?? { value: '', unit: 'cm' }}
         units={['cm', 'ft']}
         onMeasurementChange={(value, unit, field) => handleMeasurementChange('height', value, unit, field)}
       />
 
       <MeasurementField
         label="Weight"
-        measurement={profileData.weight}
+        measurement={profileData?.weight ?? { value: '', unit: 'kg' }}
         units={['kg', 'lbs']}
         onMeasurementChange={(value, unit) => handleMeasurementChange('weight', value, unit)}
       />
 
       <MeasurementField
         label="Wingspan"
-        measurement={profileData.wingspan}
+        measurement={profileData?.wingspan ?? { value: '', unit: 'cm' }}
         units={['cm', 'in']}
         onMeasurementChange={(value, unit) => handleMeasurementChange('wingspan', value, unit)}
       />
 
       <MeasurementField
         label="Vertical Jump"
-        measurement={profileData.verticalJump}
+        measurement={profileData?.verticalJump ?? { value: '', unit: 'cm' }}
         units={['cm', 'in']}
         onMeasurementChange={(value, unit) => handleMeasurementChange('verticalJump', value, unit)}
       />
@@ -222,7 +277,7 @@ export default function EditProfileScreen() {
         style={[styles.input, { borderColor: colors.border, color: colors.text }]}
         placeholder="Position"
         placeholderTextColor={colors.text}
-        value={profileData.position}
+        value={profileData?.position}
         onChangeText={(value) => handleInputChange('position', value)}
       />
 
@@ -230,7 +285,7 @@ export default function EditProfileScreen() {
         style={[styles.textArea, { borderColor: colors.border, color: colors.text }]}
         placeholder="About Me"
         placeholderTextColor={colors.text}
-        value={profileData.aboutMe}
+        value={profileData?.aboutMe}
         onChangeText={(value) => handleInputChange('aboutMe', value)}
         multiline
       />
@@ -239,7 +294,7 @@ export default function EditProfileScreen() {
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Highlights Video</Text>
         <TouchableOpacity style={[styles.uploadButton, { borderColor: colors.border }]} onPress={handleVideoUpload}>
           <Text style={[styles.uploadButtonText, { color: colors.primary }]}>
-            {profileData.highlightsVideo ? 'Change Video' : 'Upload Video'}
+            {profileData?.highlightsVideo ? 'Change Video' : 'Upload Video'}
           </Text>
         </TouchableOpacity>
       </View>
