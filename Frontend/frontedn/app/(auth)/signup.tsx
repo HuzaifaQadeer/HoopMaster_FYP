@@ -67,8 +67,7 @@ export default function SignupScreen() {
           },
           body: JSON.stringify({
             email,
-            password,
-            displayName: email.split('@')[0] // Using email username as initial display name
+            password
           }),
         });
 

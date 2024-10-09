@@ -2,22 +2,20 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const sendEmail = require('../utils/sendEmail');
+//const sendEmail = require('../utils/sendEmail');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { email, password, displayName } = req.body;
+    const { email, password} = req.body;
 
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await User.create({
       email,
       password: hashedPassword,
-      displayName
     });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
