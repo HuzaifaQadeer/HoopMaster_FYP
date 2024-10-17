@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, BackHandler} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext'; // Adjust the import path as needed
 import { useTheme } from '@react-navigation/native';
+import { API_ROUTES } from '@/config/config'; // Add this import
+import { Ionicons } from '@expo/vector-icons'; // Add this import
 
 export default function SignupScreen() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isVerificationModalVisible, setIsVerificationModalVisible] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const router = useRouter();
   const { colors } = useTheme();
   const { login } = useAuth();
+  const [verificationEmail, setVerificationEmail] = useState('');
 
   const validateEmail = (email : string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -32,6 +41,11 @@ export default function SignupScreen() {
   const handleSignup = async () => {
     let isValid = true;
     let errorMessage = "";
+
+    if (!username) {
+      isValid = false;
+      errorMessage += "Username is required. ";
+    }
 
     if (!email) {
       isValid = false;
@@ -60,30 +74,109 @@ export default function SignupScreen() {
       setError('');
       setIsLoading(true);
       try {
-        const response = await fetch('/api/users/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Signup failed');
-        }
-
-        const { token, user } = await response.json();
-        await login(token, user); // Assuming login function is provided by AuthContext
-        router.replace('/setup');
+        // Send verification email
+        await sendVerificationEmail();
+        setIsVerificationModalVisible(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
+        console.error('Signup error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to send verification email. Please try again.');
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const sendVerificationEmail = async () => {
+    const response = await fetch(API_ROUTES.SEND_VERIFICATION_EMAIL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send verification email');
+    }
+  };
+
+  const handleVerifyEmail = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(API_ROUTES.VERIFY_EMAIL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, code: verificationCode }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Email verification failed');
+      }
+
+      // If verification is successful, set email as verified
+      setIsEmailVerified(true);
+      setError('');
+      // Close the verification modal
+      setIsVerificationModalVisible(false);
+      // Proceed with registration
+      await registerUser();
+    } catch (err) {
+      console.error('Verification error:', err);
+      setError(err instanceof Error ? err.message : 'Email verification failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const registerUser = async () => {
+    if (!isEmailVerified) {
+      setError('Please verify your email before registering.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(API_ROUTES.REGISTER, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          displayName: username
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+
+      const data = await response.json();
+      console.log('Registration response:', data);
+
+      if (!data.token || !data.user) {
+        throw new Error('Invalid response from server');
+      }
+
+      const { token, user } = data;
+      console.log('Received token:', token);
+      
+      // Log the user in after successful registration
+      await login(token, user);
+      console.log('Login completed');
+
+      // Navigate to setup screen
+      await router.replace('/setup');
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,6 +186,14 @@ export default function SignupScreen() {
         <Text style={[styles.title, { color: colors.text }]}>Sign up for HoopMaster</Text>
       </View>
       <View style={styles.formContainer}>
+        <TextInput
+          style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+          placeholder="Username"
+          placeholderTextColor={colors.text}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
         <TextInput
           style={[styles.input, { borderColor: colors.border, color: colors.text }]}
           placeholder="Email"
@@ -118,9 +219,6 @@ export default function SignupScreen() {
           onChangeText={setConfirmPassword}
           secureTextEntry
         />
-        {error ? (
-          <Text style={styles.errorText}>{error}</Text>
-        ) : null}
         <TouchableOpacity 
           style={[styles.button, { backgroundColor: colors.primary }]} 
           onPress={handleSignup}
@@ -132,6 +230,9 @@ export default function SignupScreen() {
             <Text style={styles.buttonText}>Sign Up</Text>
           )}
         </TouchableOpacity>
+        {error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : null}
         <Link href="/login" asChild>
           <TouchableOpacity style={styles.linkButton}>
             <Text style={[styles.linkText, { color: colors.primary }]}>
@@ -140,6 +241,51 @@ export default function SignupScreen() {
           </TouchableOpacity>
         </Link>
       </View>
+
+      <Modal
+        visible={isVerificationModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setIsVerificationModalVisible(false)}
+            >
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              Email Verification
+            </Text>
+            <Text style={[styles.modalText, { color: colors.text }]}>
+              Please enter the verification code sent to your email.
+            </Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+              value={verificationCode}
+              onChangeText={setVerificationCode}
+              placeholder="Enter verification code"
+              placeholderTextColor={colors.text}
+              keyboardType="number-pad"
+            />
+            <TouchableOpacity 
+              style={[styles.button, { backgroundColor: colors.primary }]} 
+              onPress={handleVerifyEmail}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Verify</Text>
+              )}
+            </TouchableOpacity>
+            {error ? (
+              <Text style={styles.errorText}>{error}</Text>
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -197,5 +343,34 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
     marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
   },
 });

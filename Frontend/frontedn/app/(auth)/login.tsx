@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator 
 import { Link, useRouter} from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '@react-navigation/native';
+import { API_ROUTES } from '@/config/config';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -52,7 +53,7 @@ export default function LoginScreen() {
       setError('');
       setIsLoading(true);
       try {
-        const response = await fetch('/api/users/login', {
+        const response = await fetch(API_ROUTES.LOGIN, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ export default function LoginScreen() {
         }
 
         const { token, user } = await response.json();
-        await login(token, user); // Assuming login function is provided by AuthContext
+        await login(token, user); // Store the token and user data
         router.replace('/(tabs)/home');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');

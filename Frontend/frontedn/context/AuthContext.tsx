@@ -17,6 +17,7 @@ type AuthContextType = {
   logout: () => Promise<void>;
   checkAuthStatus: () => Promise<void>;
   getToken: () => Promise<string | null>;
+  authenticatedRequest: (url: string, options?: RequestInit) => Promise<Response>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,22 +57,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const isSetupScreen = segments[1] === 'setup';
 
-    if (isAuthenticated && inAuthGroup) {
+    if (isAuthenticated && inAuthGroup && !isSetupScreen) {
       router.replace('/(tabs)/home');
     } else if (!isAuthenticated && !inAuthGroup) {
       router.replace('/(auth)/login');
     }
   }, [isAuthenticated, segments, isLoading]);
 
-  const login = async (token: string, user: User) => {
+  const login = async (token: string | null, user: User | null) => {
     try {
+      console.log('Login function called with token:', token, 'and user:', user);
+      
+      if (!token || !user) {
+        console.error('Attempted to login with null token or user');
+        throw new Error('Invalid login data');
+      }
+
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
       setIsAuthenticated(true);
       setUser(user);
+      console.log('Token and user stored successfully');
     } catch (error) {
       console.error('Error during login:', error);
+      throw error;
     }
   };
 
@@ -88,11 +99,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getToken = async (): Promise<string | null> => {
     try {
-      return await AsyncStorage.getItem('userToken');
+      const token = await AsyncStorage.getItem('userToken');
+      console.log('Retrieved token:', token);
+      if (!token) {
+        console.warn('No token found in AsyncStorage');
+      }
+      return token;
     } catch (error) {
       console.error('Error getting token:', error);
       return null;
     }
+  };
+
+  const authenticatedRequest = async (url: string, options: RequestInit = {}) => {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
+    
+    const headers = new Headers(options.headers || {});
+    headers.append('Authorization', `Bearer ${token}`);
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    if (response.status === 401) {
+      // Token might be invalid or expired
+      await logout();
+      throw new Error('Authentication failed');
+    }
+
+    return response;
   };
 
   const contextValue: AuthContextType = {
@@ -102,6 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     logout,
     checkAuthStatus,
     getToken,
+    authenticatedRequest,
   };
 
   if (isLoading) {

@@ -3,9 +3,15 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  displayName: { type: String, unique: true},
+  displayName: {
+    type: String,
+    unique: true,
+    sparse: true,
+    default: undefined  // This ensures the field is not set if no value is provided
+  },
   userName: { type: String, unique: true, sparse: true },
   profilePicture: String,
+  profileVideo: String,
   socialMedia: {
     instagram: String,
     facebook: String,
@@ -41,5 +47,8 @@ const userSchema = new mongoose.Schema({
   emailVerificationToken: String,
   emailVerificationExpires: Date
 }, { timestamps: true });
+
+// Remove any existing indexes on displayName
+userSchema.index({ displayName: 1 }, { unique: true, sparse: true, background: true });
 
 module.exports = mongoose.model('User', userSchema);

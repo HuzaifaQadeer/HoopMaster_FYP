@@ -7,16 +7,20 @@ import { useAuth } from '../../context/AuthContext';
 import Course from '@/components/custom/course';
 import Achievement from '@/components/custom/achivement';
 import SocialIcons from '@/components/custom/renderSocialIcons';
-import { useRouter, Link } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { API_ROUTES } from '@/config/config';
+import { Image as ExpoImage } from 'expo-image';
+import { Video, ResizeMode } from 'expo-av';
+import { Link } from 'expo-router';
 
 interface UserProfile {
   profilePicture?: string;
   displayName: string;
   username: string;
-  height?: string;
-  weight?: string;
-  wingspan?: string;
-  verticalJump?: string;
+  height?: { value: number; unit: string };
+  weight?: { value: number; unit: string };
+  wingspan?: { value: number; unit: string };
+  verticalJump?: { value: number; unit: string };
   position?: string;
   aboutMe?: string;
   isPremium: boolean;
@@ -45,7 +49,7 @@ const UserProfileScreen: React.FC = () => {
   const fetchUserProfile = async () => {
     try {
       const token = await getToken();
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(API_ROUTES.GET_PROFILE, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -61,7 +65,7 @@ const UserProfileScreen: React.FC = () => {
   const togglePrivacy = async () => {
     try {
       const token = await getToken();
-      const response = await fetch('/api/users/toggle-privacy', {
+      const response = await fetch(API_ROUTES.TOGGLE_PRIVACY, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -80,11 +84,6 @@ const UserProfileScreen: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const token = await getToken();
-      await fetch('/api/users/logout', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
       await logout();
       router.replace('/login');
     } catch (error) {
@@ -133,7 +132,12 @@ const achievementData = [
       <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Highlights</Text>
       <View style={styles.videoContainer}>
         {userProfile?.highlightVideo ? (
-          <Text style={[styles.videoPlaceholder, { color: theme.colors.text }]}>Video Player Placeholder</Text>
+          <Video
+            source={{ uri: `../../../../Server/highlights/${userProfile.highlightVideo}` }}
+            style={styles.video}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
+          />
         ) : (
           <Text style={[styles.noVideoText, { color: theme.colors.text }]}>No highlight video available</Text>
         )}
@@ -153,7 +157,10 @@ const achievementData = [
       
       <View style={styles.profilePictureContainer}>
         {userProfile?.profilePicture ? (
-          <Image source={{ uri: userProfile.profilePicture }} style={styles.profilePicture} />
+          <ExpoImage
+            source={{ uri: `../../../../Server/profilePictures/${userProfile.profilePicture}` }}
+            style={styles.profilePicture}
+          />
         ) : (
           <View style={[styles.profilePicture, { backgroundColor: '#FFA500' }]}>
             <Ionicons name="person" size={50} color="white" />
@@ -176,25 +183,33 @@ const achievementData = [
           {userProfile?.height && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Height</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.height}</Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {`${userProfile.height.value} ${userProfile.height.unit}`}
+              </Text>
             </View>
           )}
           {userProfile?.weight && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Weight</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.weight}</Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {`${userProfile.weight.value} ${userProfile.weight.unit}`}
+              </Text>
             </View>
           )}
           {userProfile?.wingspan && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Wingspan</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.wingspan}</Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {`${userProfile.wingspan.value} ${userProfile.wingspan.unit}`}
+              </Text>
             </View>
           )}
           {userProfile?.verticalJump && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.colors.text }]}>Vertical Jump</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.verticalJump}</Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {`${userProfile.verticalJump.value} ${userProfile.verticalJump.unit}`}
+              </Text>
             </View>
           )}
           {userProfile?.position && (
@@ -345,6 +360,11 @@ const styles = StyleSheet.create({
   },
   aboutMeText: {
     fontSize: 14,
+  },
+  video: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
   },
 });
 

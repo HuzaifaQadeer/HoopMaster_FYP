@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
+import { API_ROUTES } from '../../config/config';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -10,12 +11,15 @@ const ForgotPassword: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { colors } = useTheme();
 
   const handleSendEmail = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch('/api/users/forgot-password', {
+      // First, check if the user exists
+      const checkUserResponse = await fetch(API_ROUTES.CHECK_USER_EXISTS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -23,14 +27,39 @@ const ForgotPassword: React.FC = () => {
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send reset email');
+      if (!checkUserResponse.ok) {
+        const errorData = await checkUserResponse.json();
+        throw new Error(errorData.message || 'Failed to check user existence');
+      }
+
+      const { exists } = await checkUserResponse.json();
+
+      if (!exists) {
+        Alert.alert('Error', 'No account found with this email address.');
+        return;
+      }
+
+      // If user exists, proceed with sending verification email
+      const sendEmailResponse = await fetch(API_ROUTES.SEND_VERIFICATION_EMAIL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!sendEmailResponse.ok) {
+        const errorData = await sendEmailResponse.json();
+        throw new Error(errorData.message || 'Failed to send reset email');
       }
 
       setIsEmailSent(true);
       Alert.alert('Email Sent', `A reset code has been sent to ${email}`);
     } catch (error) {
-      Alert.alert('Error', 'Failed to send reset email. Please try again.');
+      console.error('Error in handleSendEmail:', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,23 +81,27 @@ const ForgotPassword: React.FC = () => {
     }
   
     try {
-      const response = await fetch('/api/users/reset-password', {
+      const response = await fetch(API_ROUTES.RESET_PASSWORD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token: resetToken, password: newPassword }),
+        body: JSON.stringify({
+          email: email,
+          password: newPassword
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to reset password');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to reset password');
       }
 
       Alert.alert('Success', 'Password reset successfully');
       setIsModalVisible(false);
       router.replace('/login');
     } catch (error) {
-      Alert.alert('Error', 'Failed to reset password. Please try again.');
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to reset password. Please try again.');
     }
   };
 
@@ -88,10 +121,19 @@ const ForgotPassword: React.FC = () => {
 
       {!isEmailSent ? (
         <TouchableOpacity 
-          style={[styles.button, { backgroundColor: colors.primary }]}
+          style={[
+            styles.button, 
+            { backgroundColor: colors.primary },
+            isLoading && styles.disabledButton
+          ]}
           onPress={handleSendEmail}
+          disabled={isLoading}
         >
-          <Text style={styles.buttonText}>Send Email</Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>Send Email</Text>
+          )}
         </TouchableOpacity>
       ) : (
         <>
@@ -207,6 +249,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });
 

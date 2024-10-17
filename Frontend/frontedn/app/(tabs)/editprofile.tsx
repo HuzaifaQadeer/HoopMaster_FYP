@@ -17,6 +17,7 @@ import Achievement from '@/components/custom/achivement';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
+import { API_ROUTES } from '@/config/config';
 
 interface MeasurementValue {
   value: string;
@@ -67,7 +68,7 @@ export default function EditProfileScreen() {
   const fetchUserProfile = async () => {
     try {
       const token = await getToken();
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(API_ROUTES.GET_PROFILE, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -102,7 +103,7 @@ export default function EditProfileScreen() {
         const token = await getToken();
         const formData = new FormData();
         formData.append('profilePicture', new File([pickerResult.assets[0].uri], 'profile.jpg', { type: 'image/jpeg' }));
-        const response = await fetch('/api/users/profile-picture', {
+        const response = await fetch(API_ROUTES.UPDATE_PROFILE_PICTURE, {
           method: 'PUT',
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -190,7 +191,7 @@ export default function EditProfileScreen() {
 
     try {
       const token = await getToken();
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(API_ROUTES.UPDATE_PROFILE, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
