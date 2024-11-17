@@ -13,6 +13,7 @@ import { Image as ExpoImage } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import { Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
+import { Linking } from 'react-native';
 
 interface UserProfile {
   profilePicture?: string;
@@ -253,6 +254,41 @@ const achievementData = [
       <View style={styles.centerAlign}>
         <Text style={[styles.displayName, { color: theme.colors.text }]}>{userProfile?.displayName}</Text>
         <Text style={[styles.username, { color: theme.colors.text }]}>{userProfile?.username}</Text>
+        
+        <View style={styles.socialsContainer}>
+          {userProfile?.socials?.instagram && (
+            <TouchableOpacity 
+              style={styles.socialIcon}
+              onPress={() => Linking.openURL(`https://instagram.com/${userProfile.socials.instagram}`)}
+            >
+              <Ionicons name="logo-instagram" size={24} color={theme.colors.text} />
+            </TouchableOpacity>
+          )}
+          {userProfile?.socials?.facebook && (
+            <TouchableOpacity 
+              style={styles.socialIcon}
+              onPress={() => Linking.openURL(`https://facebook.com/${userProfile.socials.facebook}`)}
+            >
+              <Ionicons name="logo-facebook" size={24} color={theme.colors.text} />
+            </TouchableOpacity>
+          )}
+          {userProfile?.socials?.youtube && (
+            <TouchableOpacity 
+              style={styles.socialIcon}
+              onPress={() => Linking.openURL(`https://youtube.com/${userProfile.socials.youtube}`)}
+            >
+              <Ionicons name="logo-youtube" size={24} color={theme.colors.text} />
+            </TouchableOpacity>
+          )}
+          {userProfile?.socials?.twitter && (
+            <TouchableOpacity 
+              style={styles.socialIcon}
+              onPress={() => Linking.openURL(`https://twitter.com/${userProfile.socials.twitter}`)}
+            >
+              <Ionicons name="logo-twitter" size={24} color={theme.colors.text} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       
 
@@ -410,10 +446,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 16,
+    marginTop: 8,
   },
   socialIcon: {
     marginHorizontal: 8,
-    paddingHorizontal: 20,
+    padding: 8,
   },
   section: {
     marginHorizontal: 16,
