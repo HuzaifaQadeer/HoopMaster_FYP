@@ -83,6 +83,15 @@ export default function TabLayout() {
           tabBarStyle: { display: 'none' },  // This hides the entire tab bar on this screen
         }}
       />
+      <Tabs.Screen
+        name="setup"
+        options={{
+          title: 'Setup Profile',
+          headerShown: false,
+          tabBarButton: () => null,  // This removes the tab bar icon
+          tabBarStyle: { display: 'none' },  // This hides the entire tab bar on this screen
+        }}
+      />
     </Tabs>
   );
 }

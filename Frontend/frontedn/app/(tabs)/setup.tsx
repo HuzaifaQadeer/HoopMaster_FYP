@@ -65,7 +65,7 @@ export default function ProfileSetupScreen() {
 
   const [error, setError] = useState<string>('');
 
-  const { login, authenticatedRequest, getToken } = useAuth();
+  const { login, authenticatedRequest, getToken} = useAuth();
   const router = useRouter();
   const { colors } = useTheme();
 
@@ -206,52 +206,79 @@ export default function ProfileSetupScreen() {
       const token = await getToken();
       console.log('Token before API call:', token);
 
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
+
       const formData = new FormData();
 
-      // Append profilePicture if it exists
+      // Modified profile picture handling
       if (profileData.profilePicture) {
-        const response = await fetch(profileData.profilePicture);
-        const blob = await response.blob();
-        formData.append('profilePicture', blob, 'profile.jpg');
+        try {
+          // Get file extension from URI
+          const fileExtension = profileData.profilePicture.split('.').pop();
+          const fileName = `profile.${fileExtension}`;
+
+          // For React Native, we need to create the file object differently
+          formData.append('profilePicture', {
+            uri: profileData.profilePicture,
+            type: `image/${fileExtension}`,
+            name: fileName,
+          } as any);
+          
+          console.log('Profile picture appended to FormData');
+        } catch (error) {
+          console.error('Error processing profile picture:', error);
+          throw new Error('Failed to process profile picture');
+        }
       }
 
       // Append other fields
       formData.append('userName', profileData.userName);
+      formData.append('socialMedia', JSON.stringify(profileData.socialMedia));
       formData.append('height', JSON.stringify(profileData.height));
       formData.append('weight', JSON.stringify(profileData.weight));
       formData.append('wingspan', JSON.stringify(profileData.wingspan));
       formData.append('verticalJump', JSON.stringify(profileData.verticalJump));
       formData.append('position', profileData.position);
       formData.append('aboutMe', profileData.aboutMe);
-      formData.append('socialMedia', JSON.stringify(profileData.socialMedia));
 
-      console.log('API URL:', API_ROUTES.UPDATE_PROFILE);
-      console.log('FormData entries:', JSON.stringify(formData));
+      // Debug log without using entries()
+      console.log('FormData created:', formData);
 
-      const response = await authenticatedRequest(API_ROUTES.UPDATE_PROFILE, {
+      const response = await fetch(API_ROUTES.UPDATE_PROFILE, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
         body: formData,
       });
 
-      console.log('API call completed. Response status:', response.status);
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response body:', responseText);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
       }
 
-      const updatedUser = await response.json();
-      await login(await AsyncStorage.getItem('userToken') || '', updatedUser);
+      // Set setup completed flag
       await AsyncStorage.setItem('setupCompleted', 'true');
+
+      // Navigate to home immediately after successful update
       router.replace('/(tabs)/home');
     } catch (err) {
       console.error('Detailed error in handleSubmit:', err);
-      setError(`Failed to save profile: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      
+      // Check if it's an authentication error
+      if (err instanceof Error && err.message.includes('Authentication failed')) {
+        // Don't clear the token, instead show error and let user retry
+        setError('Authentication error. Please try again.');
+      } else {
+        setError(`Failed to save profile: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
     }
   };
 

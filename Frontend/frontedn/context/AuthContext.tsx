@@ -57,21 +57,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    const isSetupScreen = segments[1] === 'setup';
+    const isSetupScreen = segments[0] === '(tabs)' && segments[1] === 'setup';
 
-    if (isAuthenticated && inAuthGroup && !isSetupScreen) {
+    if (
+      isAuthenticated && 
+      inAuthGroup && 
+      !isSetupScreen
+    ) {
       router.replace('/(tabs)/home');
     } else if (!isAuthenticated && !inAuthGroup) {
       router.replace('/(auth)/login');
     }
   }, [isAuthenticated, segments, isLoading]);
 
-  const login = async (token: string | null, user: User | null) => {
+  const login = async (token: string, user: User) => {
     try {
       console.log('Login function called with token:', token, 'and user:', user);
       
       if (!token || !user) {
-        console.error('Attempted to login with null token or user');
         throw new Error('Invalid login data');
       }
 
@@ -126,8 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (response.status === 401) {
-      // Token might be invalid or expired
-      await logout();
+      // Let the calling component handle the error
       throw new Error('Authentication failed');
     }
 

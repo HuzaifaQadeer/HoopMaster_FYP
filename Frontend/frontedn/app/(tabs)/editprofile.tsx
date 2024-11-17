@@ -5,19 +5,20 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   ScrollView,
   Alert,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import SocialMediaSelector from '@/components/custom/socialMediaSelector';
-import MeasurementField from '@/components/custom/measurmentFields';
-import Achievement from '@/components/custom/achivement';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
+import SocialMediaSelector from '@/components/custom/socialMediaSelector';
+import MeasurementField from '@/components/custom/measurmentFields';
+import Achievement from '@/components/custom/achivement';
+import { Image as ExpoImage } from 'expo-image';
+import * as VideoPicker from 'expo-image-picker';
 
 interface MeasurementValue {
   value: string;
@@ -37,21 +38,15 @@ interface ProfileData {
   position: string;
   verticalJump: MeasurementValue;
   aboutMe: string;
-  highlightsVideo: string | null;
+  highlightVideo: string | null;
 }
 
-interface AchievementData {
-  id: string;
-  title: string;
-  rank : number;
-}
-
-const dummyAchievements: AchievementData[] = [
-  { id: '1', title: 'MVP 2023', rank:1 },
-  { id: '2', title: 'All-Star 2022', rank:6  },
-  { id: '3', title: 'Rookie of the Year', rank:51  },
-  { id: '4', title: 'Scoring Champion', rank:22  },
-  { id: '5', title: '3-Point Contest Winner', rank:3  },
+const dummyAchievements = [
+  { id: 1, title: "MVP 2023", rank: 1 },
+  { id: 2, title: "All-Star 2022", rank: 7 },
+  { id: 3, title: "Rookie of the Year", rank: 4 },
+  { id: 4, title: "Scoring Champion", rank: 5 },
+  { id: 5, title: "3-Point Contest Winner", rank: 6 },
 ];
 
 export default function EditProfileScreen() {
@@ -60,9 +55,12 @@ export default function EditProfileScreen() {
   const router = useRouter();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [error, setError] = useState<string>('');
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [selectedAchievements, setSelectedAchievements] = useState<number[]>([1, 2]);
 
   useEffect(() => {
     fetchUserProfile();
+    fetchProfilePicture();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -71,81 +69,177 @@ export default function EditProfileScreen() {
       const response = await fetch(API_ROUTES.GET_PROFILE, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
-      }
+      
+      if (!response.ok) throw new Error('Failed to fetch profile');
       const data = await response.json();
-      setProfileData(data);
+      
+      // Convert measurements to appropriate format
+      const formattedData = {
+        ...data,
+        height: formatMeasurement(data.height),
+        weight: formatMeasurement(data.weight),
+        wingspan: formatMeasurement(data.wingspan),
+        verticalJump: formatMeasurement(data.verticalJump),
+      };
+      
+      setProfileData(formattedData);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('Error fetching profile:', error);
       setError('Failed to load profile data');
     }
   };
 
-  const [activeAchievements, setActiveAchievements] = useState<string[]>(['1', '2', '5']);
+  const formatMeasurement = (measurement: any) => {
+    if (!measurement) return { value: '', unit: 'cm' };
 
-  const handleImagePick = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('Permission required', 'Permission to access camera roll is required!');
-      return;
+    if (measurement.unit === 'ft') {
+      const totalInches = parseFloat(measurement.value);
+      const feet = Math.floor(totalInches / 12);
+      const inches = totalInches % 12;
+      return {
+        value: measurement.value,
+        unit: 'ft',
+        feet: feet.toString(),
+        inches: inches.toString()
+      };
     }
 
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+    return {
+      value: measurement.value?.toString() || '',
+      unit: measurement.unit || 'cm'
+    };
+  };
 
-    if (!pickerResult.canceled) {
-      try {
+  const fetchProfilePicture = async () => {
+    try {
+      const token = await getToken();
+      const response = await fetch(API_ROUTES.GET_PROFILE_PICTURE, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!response.ok) {
+        if (response.status !== 404) { // Ignore 404 errors
+          throw new Error('Failed to fetch profile picture');
+        }
+        return;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType?.includes('image')) {
+        console.warn('Response is not an image:', contentType);
+        return;
+      }
+
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => setImageUri(reader.result as string);
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+      // Don't set imageUri to null here
+    }
+  };
+
+  const handleImagePick = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permission required', 'Permission to access camera roll is required!');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
         const token = await getToken();
         const formData = new FormData();
-        formData.append('profilePicture', new File([pickerResult.assets[0].uri], 'profile.jpg', { type: 'image/jpeg' }));
+        formData.append('profilePicture', {
+          uri: result.assets[0].uri,
+          type: 'image/jpeg',
+          name: 'profile.jpg',
+        } as any);
+
         const response = await fetch(API_ROUTES.UPDATE_PROFILE_PICTURE, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
           },
           body: formData,
         });
+
         if (!response.ok) {
-          throw new Error('Failed to upload profile picture');
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to update profile picture');
         }
-        setProfileData(prev => prev ? { ...prev, profilePicture: pickerResult.assets[0].uri } : null);
-      } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        Alert.alert('Error', 'Failed to upload profile picture');
+
+        // Update local state with new image
+        setImageUri(result.assets[0].uri);
+        
+        // Optionally refresh the entire profile data
+        await fetchUserProfile();
       }
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      Alert.alert('Error', 'Failed to update profile picture');
     }
   };
 
-  const handleVideoUpload = () => {
-    Alert.alert(
-      'Upload Video',
-      'This would typically open a video picker. For now, we\'ll simulate a successful upload.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'OK', 
-          onPress: () => {
-            setProfileData((prev) => 
-              prev ? { ...prev, highlightsVideo: 'https://example.com/new-highlights.mp4' } : null
-            );
-            Alert.alert('Success', 'Video uploaded successfully!');
-          }
+  const handleVideoUpload = async () => {
+    try {
+      const permissionResult = await VideoPicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permission required', 'Permission to access media library is required!');
+        return;
+      }
+
+      const result = await VideoPicker.launchImageLibraryAsync({
+        mediaTypes: VideoPicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const response = await fetch(result.assets[0].uri);
+        const blob = await response.blob();
+        if (blob.size > 100 * 1024 * 1024) {
+          Alert.alert('Error', 'Video must be smaller than 100MB');
+          return;
         }
-      ]
-    );
+
+        const token = await getToken();
+        const formData = new FormData();
+        formData.append('highlightVideo', {
+          uri: result.assets[0].uri,
+          type: 'video/mp4',
+          name: 'highlight.mp4',
+        } as any);
+
+        const uploadResponse = await fetch(API_ROUTES.UPDATE_HIGHLIGHT_VIDEO, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) throw new Error('Failed to update highlight video');
+        Alert.alert('Success', 'Highlight video uploaded successfully');
+      }
+    } catch (error) {
+      console.error('Error updating highlight video:', error);
+      Alert.alert('Error', 'Failed to update highlight video');
+    }
   };
 
   const handleInputChange = (key: keyof ProfileData, value: any) => {
-    setProfileData((prev) => {
-      if (!prev) return {} as ProfileData; // Initialize if null
-      return { ...prev, [key]: value };
-    });
+    setProfileData(prev => prev ? { ...prev, [key]: value } : null);
   };
 
   const handleMeasurementChange = (
@@ -154,7 +248,7 @@ export default function EditProfileScreen() {
     unit: string,
     field?: 'feet' | 'inches'
   ) => {
-    setProfileData((prevData) => {
+    setProfileData(prevData => {
       if (!prevData) return null;
       const updatedCategory = { ...prevData[category] as MeasurementValue, unit };
 
@@ -165,10 +259,7 @@ export default function EditProfileScreen() {
         updatedCategory.value = value;
       }
 
-      return {
-        ...prevData,
-        [category]: updatedCategory
-      };
+      return { ...prevData, [category]: updatedCategory };
     });
   };
 
@@ -177,44 +268,101 @@ export default function EditProfileScreen() {
     return totalInches.toString();
   };
 
-  const toggleAchievement = (id: string) => {
-    setActiveAchievements(prev =>
-      prev.includes(id) ? prev.filter(achievementId => achievementId !== id) : [...prev, id]
+  const toggleAchievement = (id: number) => {
+    setSelectedAchievements(prev => 
+      prev.includes(id) 
+        ? prev.filter(achievementId => achievementId !== id)
+        : [...prev, id]
     );
   };
 
   const handleSubmit = async () => {
-    if (!profileData?.displayName.trim()) {
-      setError('Display name cannot be empty');
-      return;
-    }
-
     try {
+      if (!profileData) return;
+
       const token = await getToken();
+      const formData = new FormData();
+
+      // Format the measurements before sending
+      const formattedData = {
+        ...profileData,
+        height: formatMeasurementForSubmit(profileData.height),
+        weight: formatMeasurementForSubmit(profileData.weight),
+        wingspan: formatMeasurementForSubmit(profileData.wingspan),
+        verticalJump: formatMeasurementForSubmit(profileData.verticalJump),
+      };
+
+      // Append all profile data except courses and achievements
+      Object.entries(formattedData).forEach(([key, value]) => {
+        // Skip courses and achievements fields
+        if (key === 'courses' || key === 'achievements') return;
+
+        if (key === 'socialMedia' || key === 'height' || key === 'weight' || 
+            key === 'wingspan' || key === 'verticalJump') {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      });
+
       const response = await fetch(API_ROUTES.UPDATE_PROFILE, {
         method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify(profileData),
+        body: formData,
       });
+
       if (!response.ok) {
-        throw new Error('Failed to update profile');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
       }
-      Alert.alert('Success', 'Profile updated successfully!');
-      router.back();
+
+      Alert.alert('Success', 'Profile updated successfully', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Navigate to profile tab and trigger a refresh
+            router.push({
+              pathname: '/(tabs)/profile',
+              params: { refresh: Date.now() }
+            });
+          }
+        }
+      ]);
     } catch (error) {
       console.error('Error updating profile:', error);
-      setError('Failed to update profile');
+      setError(error instanceof Error ? error.message : 'Failed to update profile');
     }
+  };
+
+  // Add this helper function to format measurements for submission
+  const formatMeasurementForSubmit = (measurement: MeasurementValue) => {
+    if (!measurement || !measurement.value) {
+      return null;
+    }
+
+    // Convert feet/inches to total inches if unit is 'ft'
+    if (measurement.unit === 'ft' && measurement.feet && measurement.inches) {
+      const totalInches = (parseFloat(measurement.feet) * 12) + parseFloat(measurement.inches);
+      return {
+        value: totalInches,
+        unit: measurement.unit
+      };
+    }
+
+    return {
+      value: parseFloat(measurement.value),
+      unit: measurement.unit
+    };
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.profileImageContainer}>
-        {profileData?.profilePicture ? (
-          <Image source={{ uri: profileData.profilePicture }} style={styles.profileImage} />
+        {imageUri ? (
+          <ExpoImage source={{ uri: imageUri }} style={styles.profileImage} />
         ) : (
           <View style={[styles.profileImagePlaceholder, { backgroundColor: colors.primary }]}>
             <Text style={styles.profileImagePlaceholderText}>Add Photo</Text>
@@ -293,11 +441,17 @@ export default function EditProfileScreen() {
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Highlights Video</Text>
-        <TouchableOpacity style={[styles.uploadButton, { borderColor: colors.border }]} onPress={handleVideoUpload}>
+        <TouchableOpacity 
+          style={[styles.uploadButton, { borderColor: colors.border }]} 
+          onPress={handleVideoUpload}
+        >
           <Text style={[styles.uploadButtonText, { color: colors.primary }]}>
-            {profileData?.highlightsVideo ? 'Change Video' : 'Upload Video'}
+            Upload New Video
           </Text>
         </TouchableOpacity>
+        <Text style={[styles.helperText, { color: colors.text }]}>
+          Maximum video size: 100MB
+        </Text>
       </View>
 
       <View style={styles.section}>
@@ -455,5 +609,10 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginBottom: 10,
+  },
+  helperText: {
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center',
   },
 });
