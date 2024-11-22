@@ -2,6 +2,10 @@ import cohere
 from typing import Dict, Any
 import os
 from dotenv import load_dotenv
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime
+from collections import deque
 
 # Load environment variables from .env file
 load_dotenv()
@@ -9,6 +13,15 @@ load_dotenv()
 # Get API key from .env file
 API_KEY = os.getenv('API_KEY')
 co = cohere.Client(API_KEY)
+
+@dataclass
+class ChatResponse:
+    text: str
+    timestamp: datetime
+    query: str
+
+# Replace the single chat_history with a dict of histories per user
+user_chat_histories = defaultdict(lambda: deque(maxlen=4))
 
 def format_context(user_data: Dict[str, Any]) -> str:
     """Format user physical stats and progress data"""
@@ -79,6 +92,11 @@ def create_prompt(user_query: str, user_data: Dict[str, Any]) -> str:
     return prompt
 
 def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
+    # Get user_id from user_data
+    user_id = user_data.get('user_id')
+    if not user_id:
+        raise ValueError("user_id is required in user_data")
+
     # Simplified basketball keywords for faster checking
     basketball_keywords = ['shoot', 'dribble', 'defense', 'layup', 'jump', 'drill', 'practice', 'game', 'basketball', 'nba', 'strech', 'skill', 'training', 'workout', 'coach', 'player', 'team', 'score', 'ball handling', 'crossover', 'pivot', 'footwork', 'conditioning']
     
@@ -115,8 +133,27 @@ def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
             return_likelihoods='NONE'
         )
         
-        return response.generations[0].text.strip()
+        response_text = response.generations[0].text.strip()
+        
+        # Store the response in user-specific history
+        user_chat_histories[user_id].append(ChatResponse(
+            text=response_text,
+            timestamp=datetime.now(),
+            query=user_query
+        ))
+        
+        return response_text
 
     except Exception as e:
         print(f"Error: {str(e)}")
         return "Error generating response. Please try again."
+
+# Update utility functions to be user-specific
+def get_chat_history(user_id: str) -> list:
+    """Return the last 4 chat responses for a specific user"""
+    return list(user_chat_histories.get(user_id, []))
+
+def clear_chat_history(user_id: str) -> None:
+    """Clear the chat history for a specific user"""
+    if user_id in user_chat_histories:
+        user_chat_histories[user_id].clear()

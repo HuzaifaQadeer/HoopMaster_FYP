@@ -15,8 +15,33 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import Colors from '@/constants/Colors';
 
+interface UserData {
+  user_id: string;
+  height: string;
+  weight: string;
+  wingspan: string;
+  vertical_jump: string;
+  current_courses: {
+    [key: string]: {
+      level: string;
+      schedule: string;
+      completion: number;
+    };
+  };
+  completed_courses: {
+    [key: string]: {
+      level: string;
+      completion: number;
+    };
+  };
+  drill_scores: {
+    [key: string]: number;
+  };
+}
+
 interface ChatProps {
   size?: number;
+  userData?: UserData;
 }
 
 interface Message {
@@ -24,7 +49,7 @@ interface Message {
   isUser: boolean;
 }
 
-const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
+const Chat: React.FC<ChatProps> = ({ size = 65, userData }) => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const { colors } = useTheme();
@@ -35,12 +60,81 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
     { text: 'Hey, how can I help you today?', isUser: false },
   ]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (inputText.trim()) {
-      setMessages([...messages, { text: inputText, isUser: true }]);
+      setMessages(prev => [...prev, { text: inputText, isUser: true }]);
+      
+      try {
+        setMessages(prev => [...prev, { text: "Thinking...", isUser: false }]);
+        
+        const requestData = {
+          user_query: inputText,
+          user_data: userData || {
+            user_id: "user123",
+            height: "6'2\"",
+            weight: "180 lbs",
+            wingspan: "6'4\"",
+            vertical_jump: "28 inches",
+            current_courses: {
+              "Three-Point Mastery": {
+                level: "Intermediate",
+                schedule: "Weekly",
+                completion: 65
+              },
+              "Ball Handling": {
+                level: "Beginner",
+                schedule: "2-Week",
+                completion: 30
+              }
+            },
+            completed_courses: {
+              "Dribbling Fundamentals": {
+                level: "Beginner",
+                completion: 100
+              },
+              "Layup Master": {
+                level: "Beginner",
+                completion: 100
+              }
+            },
+            drill_scores: {
+              "Mikan Drill": 85,
+              "Crossover Series": 70,
+              "Defensive Slides": 60,
+              "Form Shooting Close Range": 75,
+              "Corner Three Challenge": 45,
+              "Two-Ball Dribbling": 65
+            }
+          }
+        };
+
+        const response = await fetch('http://127.0.0.1:8080/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        setMessages(prev => prev.filter(msg => msg.text !== "Thinking..."));
+        
+        setMessages(prev => [...prev, { text: data.response, isUser: false }]);
+      } catch (error) {
+        setMessages(prev => prev.filter(msg => msg.text !== "Thinking..."));
+        setMessages(prev => [...prev, { 
+          text: "Sorry, I'm having trouble connecting right now. Please try again later.", 
+          isUser: false 
+        }]);
+        console.error('Chat API Error:', error);
+      }
+
       setInputText('');
-      // Here you would typically send the message to your chatbot backend
-      // and then add the response to the messages array
     }
   };
 
