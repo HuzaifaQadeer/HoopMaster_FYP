@@ -1,11 +1,22 @@
-from flask import Blueprint, jsonify, request
-from app.services.chatbot_service import ChatbotService
+from flask import Blueprint, request, jsonify
+from app.services.chatbot_service import get_chatbot_response
 
-bp = Blueprint('chatbot', __name__, url_prefix='/chatbot')
+chatbot_bp = Blueprint('chatbot', __name__)
 
-@bp.route('/chat', methods=['POST'])
+@chatbot_bp.route('/chat', methods=['POST'])
 def chat():
-    data = request.json
-    message = data.get('message')
-    response = ChatbotService.get_response(message)
-    return jsonify({'response': response})
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+        
+    user_query = data.get('user_query')
+    user_data = data.get('user_data')
+    
+    if not user_query:
+        return jsonify({"error": "No query provided"}), 400
+    if not user_data:
+        return jsonify({"error": "No user data provided"}), 400
+        
+    response = get_chatbot_response(user_query, user_data)
+    return jsonify({"response": response})
