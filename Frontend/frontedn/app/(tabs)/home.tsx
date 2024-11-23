@@ -18,20 +18,44 @@ import SearchBar from '../../components/custom/searchbar';
 import Chat from '@/components/custom/chat';
 
 const courses = [
-  { id: '1', name: 'Sharpshooter Masterclass', completion: 7, isPremium: true, imageUrl: 'https://example.com/course1.jpg' },
-  { id: '2', name: 'Handles mastery', completion: 25, isPremium: false, imageUrl: 'https://example.com/course1.jpg' },
-  { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://example.com/course1.jpg' }
+  { id: '1', name: 'Sharpshooter Masterclass', completion: 7, isPremium: true, imageUrl: 'https://proskillsbasketball.com/wp-content/uploads/2019/11/PSB-shooting-the-basket.jpg' },
+  { id: '2', name: 'Handles mastery', completion: 25, isPremium: false, imageUrl: 'https://www.vice.com/wp-content/uploads/sites/2/2018/12/1544458332692-h_54758643.jpeg?w=1024' },
+  { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Et6jpeaHZnq0f_lagtL3an1yt3mBCX3guA&s' }
 ];
 
 const drills = [
-  { id: '1', name: 'Free throw', imageUrl: 'https://example.com/drill1.jpg'},
-  { id: '2', name: 'Behind the back dribble', imageUrl: 'https://example.com/drill2.jpg' },
-  { id: '3', name: 'Hesitation dribble', imageUrl: 'https://example.com/drill3.jpg' },
-  { id: '4', name: 'Pivot exercise', imageUrl: 'https://example.com/drill3.jpg' },
-  { id: '5', name: 'Crossover dribble', imageUrl: 'https://example.com/drill4.jpg' },
-  { id: '6', name: 'Jump shot', imageUrl: 'https://example.com/drill5.jpg' },
-  // Add more drills...
+  {
+    id: '1',
+    name: 'Free throw',
+    imageUrl: 'https://images.unsplash.com/photo-1573496359142-ad4ec89459d6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+  },
+  {
+    id: '2',
+    name: 'Behind the back dribble',
+    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+  },
+  {
+    id: '3',
+    name: 'Hesitation dribble',
+    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+  },
+  {
+    id: '4',
+    name: 'Pivot exercise',
+    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+  },
+  {
+    id: '5',
+    name: 'Crossover dribble',
+    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+  },
+  {
+    id: '6',
+    name: 'Jump shot',
+    imageUrl: 'https://cdn.bleacherreport.net/images_root/slides/photos/000/756/224/109463728_original.jpg?1298906020'
+  }
 ];
+
 
 const HomePage = () => {
   const { colors } = useTheme();
