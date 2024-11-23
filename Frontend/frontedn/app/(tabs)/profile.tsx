@@ -14,11 +14,15 @@ import { Video, ResizeMode } from 'expo-av';
 import { Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { Linking } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import { captureRef } from 'react-native-view-shot';
+import * as MediaLibrary from 'expo-media-library';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface UserProfile {
   profilePicture?: string;
   displayName: string;
-  username: string;
+  userName: string;
   height?: { value: number; unit: string };
   weight?: { value: number; unit: string };
   wingspan?: { value: number; unit: string };
@@ -27,7 +31,7 @@ interface UserProfile {
   aboutMe?: string;
   isPremium: boolean;
   isPrivate: boolean;
-  socials: {
+  socialMedia: {
     instagram?: string;
     facebook?: string;
     youtube?: string;
@@ -46,6 +50,8 @@ const UserProfileScreen: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [videoUri, setVideoUri] = useState<string | null>(null);
   const { refresh } = useLocalSearchParams();
+  const scrollViewRef = React.useRef<ScrollView>(null);
+  const captureViewRef = React.useRef(null);
 
   useEffect(() => {
     fetchUserProfile();
@@ -125,15 +131,27 @@ const UserProfileScreen: React.FC = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const token = await getToken();
-      const response = await fetch(API_ROUTES.GET_PROFILE, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
+      // Try to get cached data first
+      const userDetailsJson = await AsyncStorage.getItem('userDetails');
+      if (!userDetailsJson) {
+        // No cached data, make API call
+        const token = await getToken();
+        const response = await fetch(API_ROUTES.GET_PROFILE, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+        const data = await response.json();
+        setUserProfile(data);
+        // Cache the data
+        await AsyncStorage.setItem('userDetails', JSON.stringify(data));
+        return;
       }
-      const data = await response.json();
-      setUserProfile(data);
+
+      // Use cached data
+      const userDetails = JSON.parse(userDetailsJson);
+      setUserProfile(userDetails);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -153,7 +171,17 @@ const UserProfileScreen: React.FC = () => {
         throw new Error('Failed to toggle privacy');
       }
       const data = await response.json();
+      
+      // Update state
       setUserProfile(prev => prev ? { ...prev, isPrivate: data.isPrivate } : null);
+      
+      // Update AsyncStorage
+      const userDetailsJson = await AsyncStorage.getItem('userDetails');
+      if (userDetailsJson) {
+        const userDetails = JSON.parse(userDetailsJson);
+        const updatedDetails = { ...userDetails, isPrivate: data.isPrivate };
+        await AsyncStorage.setItem('userDetails', JSON.stringify(updatedDetails));
+      }
     } catch (error) {
       console.error('Error toggling privacy:', error);
     }
@@ -180,6 +208,27 @@ const achievementData = [
   { id: 2, title: "Community challange#1", rank: 7 },
 ];
 
+  const captureAndShare = async () => {
+    try {
+      setShowOptions(false);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      if (captureViewRef.current) {
+        const uri = await captureRef(captureViewRef, {
+          format: 'jpg',
+          quality: 0.8,
+          result: 'tmpfile'
+        });
+
+        await Sharing.shareAsync(uri, {
+          mimeType: 'image/jpeg',
+          dialogTitle: 'Share your profile'
+        });
+      }
+    } catch (error) {
+      console.error('Error capturing or sharing screenshot:', error);
+    }
+  };
+
   const renderOptionsMenu = () => (
     <View style={[styles.optionsMenu, { backgroundColor: theme.colors.card }]}>
       <TouchableOpacity style={styles.optionItem}>
@@ -200,6 +249,9 @@ const achievementData = [
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
         <Text style={[styles.optionText, { color: theme.colors.text }]}>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.optionItem} onPress={captureAndShare}>
+        <Text style={[styles.optionText, { color: theme.colors.text }]}>Share Profile</Text>
       </TouchableOpacity>
     </View>
   );
@@ -227,7 +279,10 @@ const achievementData = [
   );
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <ScrollView 
+      ref={scrollViewRef}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.header}>
         <TouchableOpacity style={styles.optionsButton} onPress={() => setShowOptions(!showOptions)}>
           <Ionicons name="ellipsis-vertical" size={24} color={theme.colors.text} />
@@ -236,133 +291,139 @@ const achievementData = [
       
       {showOptions && renderOptionsMenu()}
       
-      <View style={styles.profilePictureContainer}>
-        {imageUri ? (
-          <ExpoImage
-            source={{ uri: imageUri }}
-            style={styles.profilePicture}
-            contentFit="cover"
-            transition={1000}
-          />
-        ) : (
-          <View style={[styles.profilePicture, { backgroundColor: '#FFA500' }]}>
-            <Ionicons name="person" size={50} color="white" />
+      <View ref={captureViewRef} style={{ backgroundColor: theme.colors.background }}>
+        <View style={styles.profilePictureContainer}>
+          {imageUri ? (
+            <ExpoImage
+              source={{ uri: imageUri }}
+              style={styles.profilePicture}
+              contentFit="cover"
+              transition={1000}
+            />
+          ) : (
+            <View style={[styles.profilePicture, { backgroundColor: '#FFA500' }]}>
+              <Ionicons name="person" size={50} color="white" />
+            </View>
+          )}
+        </View>
+
+        <View style={styles.centerAlign}>
+          <Text style={[styles.displayName, { color: theme.colors.text }]}>
+            {userProfile?.displayName}
+          </Text>
+          <Text style={[styles.username, { color: theme.colors.text }]}>
+            {userProfile?.userName}
+          </Text>
+          
+          <View style={styles.socialsContainer}>
+            {userProfile?.socialMedia?.instagram && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => Linking.openURL(`https://instagram.com/${userProfile.socialMedia.instagram}`)}
+              >
+                <Ionicons name="logo-instagram" size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            )}
+            {userProfile?.socialMedia?.facebook && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => Linking.openURL(`https://facebook.com/${userProfile.socialMedia.facebook}`)}
+              >
+                <Ionicons name="logo-facebook" size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            )}
+            {userProfile?.socialMedia?.youtube && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => Linking.openURL(`https://youtube.com/${userProfile.socialMedia.youtube}`)}
+              >
+                <Ionicons name="logo-youtube" size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            )}
+            {userProfile?.socialMedia?.twitter && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => Linking.openURL(`https://twitter.com/${userProfile.socialMedia.twitter}`)}
+              >
+                <Ionicons name="logo-twitter" size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        
+
+
+        {renderHighlights()}
+
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Stats</Text>
+          <View style={styles.statsContainer}>
+            {userProfile?.height && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: theme.colors.text }]}>Height</Text>
+                <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                  {`${userProfile.height.value} ${userProfile.height.unit}`}
+                </Text>
+              </View>
+            )}
+            {userProfile?.weight && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: theme.colors.text }]}>Weight</Text>
+                <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                  {`${userProfile.weight.value} ${userProfile.weight.unit}`}
+                </Text>
+              </View>
+            )}
+            {userProfile?.wingspan && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: theme.colors.text }]}>Wingspan</Text>
+                <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                  {`${userProfile.wingspan.value} ${userProfile.wingspan.unit}`}
+                </Text>
+              </View>
+            )}
+            {userProfile?.verticalJump && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: theme.colors.text }]}>Vertical Jump</Text>
+                <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                  {`${userProfile.verticalJump.value} ${userProfile.verticalJump.unit}`}
+                </Text>
+              </View>
+            )}
+            {userProfile?.position && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: theme.colors.text }]}>Position</Text>
+                <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.position}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+        
+        {userProfile?.aboutMe && (
+          <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>About Me</Text>
+            <Text style={[styles.aboutMeText, { color: theme.colors.text }]}>{userProfile.aboutMe}</Text>
           </View>
         )}
-      </View>
 
-      <View style={styles.centerAlign}>
-        <Text style={[styles.displayName, { color: theme.colors.text }]}>{userProfile?.displayName}</Text>
-        <Text style={[styles.username, { color: theme.colors.text }]}>{userProfile?.username}</Text>
-        
-        <View style={styles.socialsContainer}>
-          {userProfile?.socials?.instagram && (
-            <TouchableOpacity 
-              style={styles.socialIcon}
-              onPress={() => Linking.openURL(`https://instagram.com/${userProfile.socials.instagram}`)}
-            >
-              <Ionicons name="logo-instagram" size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          )}
-          {userProfile?.socials?.facebook && (
-            <TouchableOpacity 
-              style={styles.socialIcon}
-              onPress={() => Linking.openURL(`https://facebook.com/${userProfile.socials.facebook}`)}
-            >
-              <Ionicons name="logo-facebook" size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          )}
-          {userProfile?.socials?.youtube && (
-            <TouchableOpacity 
-              style={styles.socialIcon}
-              onPress={() => Linking.openURL(`https://youtube.com/${userProfile.socials.youtube}`)}
-            >
-              <Ionicons name="logo-youtube" size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          )}
-          {userProfile?.socials?.twitter && (
-            <TouchableOpacity 
-              style={styles.socialIcon}
-              onPress={() => Linking.openURL(`https://twitter.com/${userProfile.socials.twitter}`)}
-            >
-              <Ionicons name="logo-twitter" size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-      
-
-
-      {renderHighlights()}
-
-      <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Stats</Text>
-        <View style={styles.statsContainer}>
-          {userProfile?.height && (
-            <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.colors.text }]}>Height</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
-                {`${userProfile.height.value} ${userProfile.height.unit}`}
-              </Text>
-            </View>
-          )}
-          {userProfile?.weight && (
-            <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.colors.text }]}>Weight</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
-                {`${userProfile.weight.value} ${userProfile.weight.unit}`}
-              </Text>
-            </View>
-          )}
-          {userProfile?.wingspan && (
-            <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.colors.text }]}>Wingspan</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
-                {`${userProfile.wingspan.value} ${userProfile.wingspan.unit}`}
-              </Text>
-            </View>
-          )}
-          {userProfile?.verticalJump && (
-            <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.colors.text }]}>Vertical Jump</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
-                {`${userProfile.verticalJump.value} ${userProfile.verticalJump.unit}`}
-              </Text>
-            </View>
-          )}
-          {userProfile?.position && (
-            <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.colors.text }]}>Position</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{userProfile.position}</Text>
-            </View>
-          )}
-        </View>
-      </View>
-      
-      {userProfile?.aboutMe && (
         <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>About Me</Text>
-          <Text style={[styles.aboutMeText, { color: theme.colors.text }]}>{userProfile.aboutMe}</Text>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Courses</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {courses.map((course) => (
+              <Course key={course.id} {...course} />
+            ))}
+          </ScrollView>
         </View>
-      )}
-
-      <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Courses</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {courses.map((course) => (
-            <Course key={course.id} {...course} />
-          ))}
-        </ScrollView>
-      </View>
-      
-      
-      <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Achievements</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {achievementData.map((data) => (
-            <Achievement key={data.id} {...data} />
-          ))}
-        </ScrollView>
+        
+        
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Achievements</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {achievementData.map((data) => (
+              <Achievement key={data.id} {...data} />
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </ScrollView>
   );
@@ -425,6 +486,7 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 16,
     textAlign: 'center',
+    marginTop: 4,
     marginBottom: 16,
   },
   videoContainer: {

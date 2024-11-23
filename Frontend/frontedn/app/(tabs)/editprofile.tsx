@@ -19,6 +19,7 @@ import MeasurementField from '@/components/custom/measurmentFields';
 import Achievement from '@/components/custom/achivement';
 import { Image as ExpoImage } from 'expo-image';
 import * as VideoPicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface MeasurementValue {
   value: string;
@@ -27,11 +28,18 @@ interface MeasurementValue {
   inches?: string;
 }
 
+interface SocialMedia {
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  twitter: string;
+}
+
 interface ProfileData {
   displayName: string;
   userName: string;
   profilePicture: string | null;
-  socialMedia: Record<string, string>;
+  socialMedia: SocialMedia;
   height: MeasurementValue;
   weight: MeasurementValue;
   wingspan: MeasurementValue;
@@ -51,7 +59,7 @@ const dummyAchievements = [
 
 export default function EditProfileScreen() {
   const { colors } = useTheme();
-  const { getToken } = useAuth();
+  const { getToken, checkAuthStatus } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [error, setError] = useState<string>('');
@@ -294,7 +302,6 @@ export default function EditProfileScreen() {
 
       // Append all profile data except courses and achievements
       Object.entries(formattedData).forEach(([key, value]) => {
-        // Skip courses and achievements fields
         if (key === 'courses' || key === 'achievements') return;
 
         if (key === 'socialMedia' || key === 'height' || key === 'weight' || 
@@ -319,11 +326,19 @@ export default function EditProfileScreen() {
         throw new Error(errorData.message || 'Failed to update profile');
       }
 
+      // Get the updated user data from the response
+      const updatedUserData = await response.json();
+
+      // Update AsyncStorage with new user details
+      await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserData));
+
+      // Trigger a refresh of the auth context
+      await checkAuthStatus();
+
       Alert.alert('Success', 'Profile updated successfully', [
         {
           text: 'OK',
           onPress: () => {
-            // Navigate to profile tab and trigger a refresh
             router.push({
               pathname: '/(tabs)/profile',
               params: { refresh: Date.now() }
@@ -390,8 +405,18 @@ export default function EditProfileScreen() {
       />
 
       <SocialMediaSelector
-        socialMedia={profileData?.socialMedia ?? {}}
-        onSocialMediaChange={(newSocialMedia) => handleInputChange('socialMedia', newSocialMedia)}
+        socialMedia={{
+          instagram: profileData?.socialMedia?.instagram || '',
+          facebook: profileData?.socialMedia?.facebook || '',
+          youtube: profileData?.socialMedia?.youtube || '',
+          twitter: profileData?.socialMedia?.twitter || ''
+        }}
+        onSocialMediaChange={(newSocialMedia) => handleInputChange('socialMedia', {
+          instagram: newSocialMedia.instagram || '',
+          facebook: newSocialMedia.facebook || '',
+          youtube: newSocialMedia.youtube || '',
+          twitter: newSocialMedia.twitter || ''
+        })}
       />
 
       <MeasurementField

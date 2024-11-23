@@ -18,10 +18,17 @@ interface MeasurementValue {
   inches?: string;
 }
 
+interface SocialMedia {
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  twitter: string;
+}
+
 interface ProfileData {
   userName: string;
   profilePicture: string | null;
-  socialMedia: Record<string, string>;
+  socialMedia: SocialMedia;
   height: MeasurementValue;
   weight: MeasurementValue;
   wingspan: MeasurementValue;
@@ -54,7 +61,12 @@ export default function ProfileSetupScreen() {
   const [profileData, setProfileData] = useState<ProfileData>({
     userName: '',
     profilePicture: null,
-    socialMedia: {},
+    socialMedia: {
+      instagram: '',
+      facebook: '',
+      youtube: '',
+      twitter: ''
+    },
     height: { value: '', unit: 'cm', feet: '', inches: '' },
     weight: { value: '', unit: 'kg' },
     wingspan: { value: '', unit: 'cm' },
@@ -308,8 +320,18 @@ export default function ProfileSetupScreen() {
       />
 
       <SocialMediaSelector
-        socialMedia={profileData.socialMedia}
-        onSocialMediaChange={(newSocialMedia) => handleInputChange('socialMedia', newSocialMedia)}
+        socialMedia={{
+          instagram: profileData.socialMedia.instagram || '',
+          facebook: profileData.socialMedia.facebook || '',
+          youtube: profileData.socialMedia.youtube || '',
+          twitter: profileData.socialMedia.twitter || ''
+        }}
+        onSocialMediaChange={(newSocialMedia) => handleInputChange('socialMedia', {
+          instagram: newSocialMedia.instagram || '',
+          facebook: newSocialMedia.facebook || '',
+          youtube: newSocialMedia.youtube || '',
+          twitter: newSocialMedia.twitter || ''
+        })}
       />
 
       <MeasurementField

@@ -2,12 +2,13 @@ import React, { createContext, useState, useContext, useEffect, useCallback } fr
 import { useRouter, useSegments } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, View } from 'react-native';
+import { API_ROUTES } from '@/config/config';
 
 type User = {
   id: string;
   email: string;
   displayName: string;
-  // Add other user properties as needed
+  [key: string]: any;
 };
 
 type AuthContextType = {
@@ -33,9 +34,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const userJson = await AsyncStorage.getItem('user');
+      const userDetails = await AsyncStorage.getItem('userDetails');
+
       if (token && userJson) {
+        const basicUser = JSON.parse(userJson);
+        const detailedUser = userDetails ? JSON.parse(userDetails) : {};
+        
+        setUser({ ...basicUser, ...detailedUser });
         setIsAuthenticated(true);
-        setUser(JSON.parse(userJson));
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -70,6 +76,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, segments, isLoading]);
 
+  const fetchAndStoreUserDetails = async (token: string) => {
+    try {
+      const response = await fetch(API_ROUTES.GET_PROFILE, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+
+      const userData = await response.json();
+      await AsyncStorage.setItem('userDetails', JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      throw error;
+    }
+  };
+
   const login = async (token: string, user: User) => {
     try {
       console.log('Login function called with token:', token, 'and user:', user);
@@ -80,9 +107,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
+
+      const userDetails = await fetchAndStoreUserDetails(token);
+      setUser({ ...user, ...userDetails });
       setIsAuthenticated(true);
-      setUser(user);
-      console.log('Token and user stored successfully');
+      
+      console.log('Token and user data stored successfully');
     } catch (error) {
       console.error('Error during login:', error);
       throw error;
@@ -93,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await AsyncStorage.removeItem('userToken');
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('userDetails');
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {

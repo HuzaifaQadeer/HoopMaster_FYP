@@ -14,6 +14,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import Colors from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext';
+import { API_ROUTES } from '@/config/config';
 
 interface UserData {
   user_id: string;
@@ -41,7 +43,6 @@ interface UserData {
 
 interface ChatProps {
   size?: number;
-  userData?: UserData;
 }
 
 interface Message {
@@ -49,7 +50,8 @@ interface Message {
   isUser: boolean;
 }
 
-const Chat: React.FC<ChatProps> = ({ size = 65, userData }) => {
+const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
+  const { user } = useAuth();
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const { colors } = useTheme();
@@ -69,46 +71,19 @@ const Chat: React.FC<ChatProps> = ({ size = 65, userData }) => {
         
         const requestData = {
           user_query: inputText,
-          user_data: userData || {
-            user_id: "user123",
-            height: "6'2\"",
-            weight: "180 lbs",
-            wingspan: "6'4\"",
-            vertical_jump: "28 inches",
-            current_courses: {
-              "Three-Point Mastery": {
-                level: "Intermediate",
-                schedule: "Weekly",
-                completion: 65
-              },
-              "Ball Handling": {
-                level: "Beginner",
-                schedule: "2-Week",
-                completion: 30
-              }
-            },
-            completed_courses: {
-              "Dribbling Fundamentals": {
-                level: "Beginner",
-                completion: 100
-              },
-              "Layup Master": {
-                level: "Beginner",
-                completion: 100
-              }
-            },
-            drill_scores: {
-              "Mikan Drill": 85,
-              "Crossover Series": 70,
-              "Defensive Slides": 60,
-              "Form Shooting Close Range": 75,
-              "Corner Three Challenge": 45,
-              "Two-Ball Dribbling": 65
-            }
+          user_data: {
+            user_id: user?.id || "anonymous",
+            height: user?.height || "Not provided",
+            weight: user?.weight || "Not provided",
+            wingspan: user?.wingspan || "Not provided",
+            vertical_jump: user?.vertical_jump || "Not provided",
+            current_courses: user?.current_courses || {},
+            completed_courses: user?.completed_courses || {},
+            drill_scores: user?.drill_scores || {}
           }
         };
 
-        const response = await fetch('http://127.0.0.1:8080/api/chat', {
+        const response = await fetch(API_ROUTES.CHATBOT_QUERY, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

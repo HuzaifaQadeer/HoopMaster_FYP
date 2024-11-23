@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://16db-223-123-45-58.ngrok-free.app';
+const API_BASE_URL = 'https://nodeapp.loca.lt';
+const AI_API_URL = 'https://flaskapp.loca.lt';
 
 export const API_ROUTES = {
   REGISTER: `${API_BASE_URL}/users/register`,
@@ -21,6 +22,7 @@ export const API_ROUTES = {
   GET_PROFILE_PICTURE: `${API_BASE_URL}/users/profilepicture`,
   GET_HIGHLIGHT_VIDEO: `${API_BASE_URL}/users/highlightvideo`,
   ADD_HIGHLIGHT_VIDEO: `${API_BASE_URL}/users/highlight-video`,
+  CHATBOT_QUERY: `${AI_API_URL}/api/chat`,
 };
 
 export default {
