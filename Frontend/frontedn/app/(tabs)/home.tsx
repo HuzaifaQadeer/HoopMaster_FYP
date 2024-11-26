@@ -27,27 +27,27 @@ const drills = [
   {
     id: '1',
     name: 'Free throw',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-ad4ec89459d6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuh27U7yq3pXN9SK58P-cHaS-5QlsawKiDQQ&s'
   },
   {
     id: '2',
     name: 'Behind the back dribble',
-    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+    imageUrl: 'https://i.ytimg.com/vi/9G-TF0_5m8c/maxresdefault.jpg'
   },
   {
     id: '3',
     name: 'Hesitation dribble',
-    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtA1tIl3ReZPUGsGZf9OCrMTkp3-6cifUACw&s'
   },
   {
     id: '4',
-    name: 'Pivot exercise',
-    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+    name: 'Cross over dribble',
+    imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg'
   },
   {
     id: '5',
-    name: 'Crossover dribble',
-    imageUrl: 'https://images.unsplash.com/photo-1594293598359-693833245e06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90YW9uMHwyMDI4fHxlJj4%3D'
+    name: 'Pivot dribble',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1tr2-wSRifi4NcyiAXuW19FserHE9CZIGtw&s'
   },
   {
     id: '6',

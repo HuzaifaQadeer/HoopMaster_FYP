@@ -18,28 +18,7 @@ const ForgotPassword: React.FC = () => {
   const handleSendEmail = async () => {
     setIsLoading(true);
     try {
-      // First, check if the user exists
-      const checkUserResponse = await fetch(API_ROUTES.CHECK_USER_EXISTS, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!checkUserResponse.ok) {
-        const errorData = await checkUserResponse.json();
-        throw new Error(errorData.message || 'Failed to check user existence');
-      }
-
-      const { exists } = await checkUserResponse.json();
-
-      if (!exists) {
-        Alert.alert('Error', 'No account found with this email address.');
-        return;
-      }
-
-      // If user exists, proceed with sending verification email
+      // Send verification email directly since we know the user exists
       const sendEmailResponse = await fetch(API_ROUTES.SEND_VERIFICATION_EMAIL, {
         method: 'POST',
         headers: {
@@ -48,13 +27,16 @@ const ForgotPassword: React.FC = () => {
         body: JSON.stringify({ email }),
       });
 
+      const responseData = await sendEmailResponse.json();
+      
       if (!sendEmailResponse.ok) {
-        const errorData = await sendEmailResponse.json();
-        throw new Error(errorData.message || 'Failed to send reset email');
+        throw new Error(responseData.message || 'Failed to send reset email');
       }
 
+      // If we get here, the email was sent successfully
       setIsEmailSent(true);
-      Alert.alert('Email Sent', `A reset code has been sent to ${email}`);
+      Alert.alert('Success', `A reset code has been sent to ${email}`);
+      
     } catch (error) {
       console.error('Error in handleSendEmail:', error);
       Alert.alert('Error', error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.');
@@ -91,7 +73,7 @@ const ForgotPassword: React.FC = () => {
           password: newPassword
         }),
       });
-
+ 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to reset password');

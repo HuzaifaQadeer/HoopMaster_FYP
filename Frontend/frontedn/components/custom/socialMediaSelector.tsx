@@ -17,10 +17,10 @@ const SocialMediaSelector: React.FC<SocialMediaSelectorProps> = ({ socialMedia, 
   const { colors } = useTheme();
 
   const handleSocialMediaAdd = () => {
-    if (selectedSocialMedia && socialMediaInput && !socialMedia[selectedSocialMedia]) {
+    if (selectedSocialMedia && socialMediaInput) {
       const updatedSocialMedia = {
         ...socialMedia,
-        [selectedSocialMedia]: socialMediaInput,
+        [selectedSocialMedia.toLowerCase()]: socialMediaInput,
       };
       onSocialMediaChange(updatedSocialMedia);
       setSocialMediaInput('');
@@ -29,23 +29,25 @@ const SocialMediaSelector: React.FC<SocialMediaSelectorProps> = ({ socialMedia, 
   };
 
   const handleSocialMediaRemove = (platform: string) => {
-    const updatedSocialMedia = { ...socialMedia };
-    delete updatedSocialMedia[platform];
+    const updatedSocialMedia = {
+      ...socialMedia,
+      [platform]: '',
+    };
     onSocialMediaChange(updatedSocialMedia);
   };
 
   const getPlatformIcon = (platform: string) => {
-    switch (platform) {
-      case 'Facebook':
+    switch (platform.toLowerCase()) {
+      case 'facebook':
         return <FontAwesome name="facebook" size={24} color="#1877F2" />;
-      case 'Instagram':
+      case 'instagram':
         return <FontAwesome name="instagram" size={24} color="#C13584" />;
-      case 'YouTube':
+      case 'youtube':
         return <FontAwesome name="youtube" size={24} color="#FF0000" />;
-      case 'Twitter':
+      case 'twitter':
         return <FontAwesome name="twitter" size={24} color="#1DA1F2" />;
       default:
-        return <Ionicons name="close-circle" size={24} color={colors.text} />;
+        return null;
     }
   };
 
@@ -74,13 +76,29 @@ const SocialMediaSelector: React.FC<SocialMediaSelectorProps> = ({ socialMedia, 
         </TouchableOpacity>
       </View>
       <View style={styles.list}>
-        {Object.entries(socialMedia).map(([platform]) => (
-          <View key={platform} style={styles.item}>
-            {getPlatformIcon(platform)}
-            <TouchableOpacity onPress={() => handleSocialMediaRemove(platform)}>
-              <Ionicons name="close" size={20} color={colors.text} />
-            </TouchableOpacity>
-          </View>
+        {Object.entries(socialMedia).map(([platform, value]) => (
+          value ? (
+            <View 
+              key={platform} 
+              style={[
+                styles.item, 
+                { 
+                  backgroundColor: colors.card,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                }
+              ]}
+            >
+              {getPlatformIcon(platform)}
+              <Text style={[styles.linkText, { color: colors.text }]}>{value}</Text>
+              <TouchableOpacity 
+                style={styles.removeButton} 
+                onPress={() => handleSocialMediaRemove(platform)}
+              >
+                <Ionicons name="close-circle" size={20} color="red" />
+              </TouchableOpacity>
+            </View>
+          ) : null
         ))}
       </View>
     </View>
@@ -128,7 +146,18 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 10,
+    paddingVertical: 8,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+  },
+  linkText: {
+    flex: 1,
+    marginHorizontal: 10,
+    fontSize: 14,
+  },
+  removeButton: {
+    padding: 8,
   },
 });
 

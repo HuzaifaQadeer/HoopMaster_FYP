@@ -36,7 +36,7 @@ interface ProfileData {
   verticalJump: MeasurementValue;
   aboutMe: string;
 }
-
+ 
 // Add this function near the top of your file
 const convertToStandardUnit = (measurement: MeasurementValue): number => {
   const value = parseFloat(measurement.value);
@@ -77,7 +77,7 @@ export default function ProfileSetupScreen() {
 
   const [error, setError] = useState<string>('');
 
-  const { login, authenticatedRequest, getToken} = useAuth();
+  const { login, authenticatedRequest, getToken, logout} = useAuth();
   const router = useRouter();
   const { colors } = useTheme();
 
@@ -279,8 +279,9 @@ export default function ProfileSetupScreen() {
       // Set setup completed flag
       await AsyncStorage.setItem('setupCompleted', 'true');
 
-      // Navigate to home immediately after successful update
-      router.replace('/(tabs)/home');
+      // Call logout instead of directly navigating to home
+      await logout();
+      router.replace('/(auth)/login');
     } catch (err) {
       console.error('Detailed error in handleSubmit:', err);
       
@@ -296,7 +297,8 @@ export default function ProfileSetupScreen() {
 
   const handleSkip = async () => {
     await AsyncStorage.setItem('setupCompleted', 'true');
-    router.replace('/(tabs)/home');
+    await logout();
+    router.replace('/(auth)/login');
   };
 
   return (
@@ -404,10 +406,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    marginTop: 40,
   },
   profileImageContainer: {
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 20,
   },
   profileImage: {
     width: 120,

@@ -61,16 +61,15 @@ export default function LoginScreen() {
           body: JSON.stringify({ email, password }),
         });
 
+        const data = await response.json();
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login failed');
+          throw new Error(data.message);
         }
 
-        const { token, user } = await response.json();
-        await login(token, user); // Store the token and user data
+        await login(data.token, data.user); // Store the token and user data
         router.replace('/(tabs)/home');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       } finally {
         setIsLoading(false);
       }

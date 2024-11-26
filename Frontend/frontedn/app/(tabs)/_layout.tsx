@@ -40,7 +40,7 @@ export default function TabLayout() {
         name="videoRecordScreen"
         options={{
           title: 'Record',
-          headerShown: true,
+          headerShown: false,
           tabBarButton: () => null,  // This removes the tab bar icon
           tabBarStyle: { display: 'none' },  // This hides the entire tab bar on this screen
         }}
@@ -49,6 +49,7 @@ export default function TabLayout() {
         name="courses"
         options={{
           title: 'Courses',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="book" size={size} color={color} />,
         }}
       />
@@ -56,6 +57,7 @@ export default function TabLayout() {
         name="community"
         options={{
           title: 'Community',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="people" size={size} color={color} />,
         }}
       />
@@ -63,6 +65,7 @@ export default function TabLayout() {
         name="video"
         options={{
           title: 'Video',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="videocam" size={size} color={color} />,
         }}
       />
