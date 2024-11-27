@@ -4,8 +4,6 @@ import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 
-
-
 const DrillMenuScreen: React.FC = () => {
   const router = useRouter();
   const { colors } = useTheme();

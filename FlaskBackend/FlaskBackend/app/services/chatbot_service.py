@@ -73,6 +73,18 @@ def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
         
         response_text = response.generations[0].text.strip()
         
+        # Check for missing profile data
+        missing_fields = []
+        if not user_data.get('height'):
+            missing_fields.append('height')
+        if not user_data.get('vertical_jump'):
+            missing_fields.append('vertical jump')
+        
+        # Add profile update reminder if any fields are missing
+        if missing_fields:
+            reminder = f"\n\nTo provide you with more personalized advice, please update your profile with your {', '.join(missing_fields)}."
+            response_text += reminder
+        
         # Store the response in user-specific history
         user_chat_histories[user_id].append(ChatResponse(
             text=response_text,
