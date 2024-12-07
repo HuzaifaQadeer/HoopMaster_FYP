@@ -1,6 +1,0 @@
--clickable links
--share to social media
--video recorder
--app bot
--bot integration
--drill integration

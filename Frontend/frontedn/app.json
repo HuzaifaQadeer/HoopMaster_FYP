@@ -28,7 +28,14 @@
     },
     "plugins": [
       "expo-router",
-      "react-native-video"
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow HoopMaster to access your camera.",
+          "microphonePermission": "Allow HoopMaster to access your microphone."
+        }
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
