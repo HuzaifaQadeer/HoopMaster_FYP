@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const drillController = require('../controllers/drillController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Define drill routes here
-router.get('/', drillController.getAllDrills);
-router.post('/', drillController.createDrill);
+router.post('/create', authMiddleware, drillController.createDrill);
+router.get('/all', drillController.getAllDrills);
+router.get('/popular', drillController.getTopPopularDrills);
 
 module.exports = router;

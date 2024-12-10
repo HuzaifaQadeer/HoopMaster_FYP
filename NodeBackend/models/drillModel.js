@@ -10,7 +10,14 @@ const drillSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     score: Number,
     date: { type: Date, default: Date.now }
-  }]
+  }],
+  totalAttempts: { type: Number, default: 0 },
+  averageScore: { type: Number, default: 0 },
+  difficulty: { 
+    type: String, 
+    enum: ['beginner', 'intermediate', 'advanced'], 
+    required: true 
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Drill', drillSchema);

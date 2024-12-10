@@ -41,7 +41,10 @@ const userSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   
-  isEmailVerified: { type: Boolean, default: false }
+  isEmailVerified: { type: Boolean, default: false },
+  premiumStartDate: Date,
+  premiumExpiryDate: Date,
+  totalSpent: { type: Number, default: 0 }
 }, { timestamps: true });
 
 // Remove any existing indexes on displayName

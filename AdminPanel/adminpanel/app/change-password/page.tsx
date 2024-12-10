@@ -9,32 +9,33 @@ const ChangePassword = () => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
+    verificationCode: '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Validate passwords match
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError('New passwords do not match');
+    if (!showVerification) {
+      // First step: Send verification code
+      try {
+        // TODO: Implement API call to send verification code
+        setShowVerification(true);
+        setSuccess(true);
+        setError('');
+      } catch (err) {
+        setError('Failed to send verification code. Please try again.');
+      }
       return;
     }
 
-    // Validate password length
-    if (formData.newPassword.length < 6) {
-      setError('New password must be at least 6 characters long');
-      return;
-    }
-
+    // Second step: Verify code and change password
     try {
-      // TODO: Implement actual password change logic here
-      // For now, just show success message
+      // TODO: Implement API call to verify code and change password
       setSuccess(true);
-      
-      // Redirect to dashboard after 2 seconds
       setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -56,7 +57,13 @@ const ChangePassword = () => {
           </div>
         )}
 
-        {success && (
+        {success && !showVerification && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            Verification code sent to your email!
+          </div>
+        )}
+
+        {success && showVerification && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
             Password changed successfully! Redirecting...
           </div>
@@ -119,11 +126,27 @@ const ChangePassword = () => {
             />
           </div>
 
+          {showVerification && (
+            <div>
+              <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-1">
+                Verification Code
+              </label>
+              <input
+                type="text"
+                id="verificationCode"
+                value={formData.verificationCode}
+                onChange={(e) => setFormData({ ...formData, verificationCode: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+          )}
+
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
           >
-            Confirm
+            {showVerification ? 'Verify' : 'Send Verification Code'}
           </button>
         </form>
       </div>
