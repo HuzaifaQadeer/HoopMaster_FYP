@@ -1,60 +1,57 @@
-import cv2
 import mediapipe as mp
+import cv2
 import numpy as np
+import os
+
 from ultralytics import YOLO
-from pathlib import Path
 
-# Optimize MediaPipe configuration
-pose = mp.solutions.pose.Pose(
-    min_detection_confidence=0.5,  # Reduce from default 0.7
-    min_tracking_confidence=0.5,   # Reduce from default 0.7
-    model_complexity=0            # Use lightweight model (0 instead of 1)
-)
+# Get the current file's directory and construct the correct path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(current_dir))), 'app', 'static', 'yolov8n_basketball.pt')
 
-# Load model once and configure for faster inference
-model_path = Path(__file__).parent.parent.parent / 'static' / 'models' / 'yolov8n_basketball.pt'
-ball_detector = YOLO(str(model_path))
-ball_detector.conf = 0.5  # Lower confidence threshold
-ball_detector.iou = 0.45  # Slightly lower IoU threshold
+# Load the YOLO model for ball detection
+ball_detector = YOLO(model_path)
 
 def extract_features(frame):
     """
     Extract features from a single frame.
     """
-    # Resize frame for faster processing
-    height, width = frame.shape[:2]
-    if width > 640:  # Only resize if larger than 640px
-        frame = cv2.resize(frame, (640, int(640 * height/width)))
-    
-    # Convert to RGB only once
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
     # Process the frame with MediaPipe Pose
-    pose_results = pose.process(rgb_frame)
+    pose = mp.solutions.pose.Pose()
+    pose_results = pose.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if not pose_results.pose_landmarks:
         return None
 
-    # Use smaller inference size for YOLO
-    yolo_results = ball_detector.predict(rgb_frame, imgsz=416, verbose=False)[0]
+    # Detect the ball using YOLOv8
+    yolo_results = ball_detector.predict(frame, verbose=False)[0]
     ball_coords = get_ball_coordinates(yolo_results)
     if ball_coords is None:
         return None
 
+    # Calculate features
     features = calculate_features(pose_results.pose_landmarks, frame.shape, ball_coords)
     return features
 
 def get_ball_coordinates(yolo_results):
+    """
+    Extract ball coordinates from YOLOv8 detections.
+    """
     for box in yolo_results.boxes:
         cls_id = int(box.cls)
         class_name = ball_detector.names[cls_id]
-        if class_name == 'ball':
+        if class_name == 'ball':  # Replace with your class name
             x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+            # Return the center coordinates of the ball
             return [(x1 + x2) / 2, (y1 + y2) / 2]
     return None
 
 def calculate_features(landmarks, image_shape, ball_coords):
+    """
+    Calculate relevant features from landmarks and ball coordinates.
+    """
     image_height, image_width, _ = image_shape
 
+    # Helper function to get coordinates
     def get_coords(landmark):
         return np.array([landmark.x * image_width, landmark.y * image_height])
 
@@ -68,28 +65,47 @@ def calculate_features(landmarks, image_shape, ball_coords):
     right_ankle = get_coords(landmarks.landmark[mp.solutions.pose.PoseLandmark.RIGHT_ANKLE])
     nose = get_coords(landmarks.landmark[mp.solutions.pose.PoseLandmark.NOSE])
 
-    # Calculate derived positions
+    # Calculate neck position (midpoint between shoulders)
     neck = (left_shoulder + right_shoulder) / 2
+
+    # Calculate mid-hip position (pelvis)
     mid_hip = (left_hip + right_hip) / 2
+
+    # Calculate torso vector (from mid-hip to neck)
     torso_vector = neck - mid_hip
+
+    # Calculate head vector (from neck to nose)
     head_vector = nose - neck
 
-    # Calculate angles and measurements
+    # Calculate head tilt angle relative to torso
     head_tilt_angle = calculate_angle_between_vectors(torso_vector, head_vector)
+
+    # Calculate back angle (using left side for consistency)
     back_angle = calculate_angle(left_shoulder, left_hip, left_knee)
+
+    # Calculate knee angle
     knee_angle = calculate_angle(left_hip, left_knee, left_ankle)
+
+    # Calculate leg width
     leg_width = np.linalg.norm(left_ankle - right_ankle) / image_width
 
-    # Calculate levels and normalize
+    # Calculate waist level
     waist_level = (left_hip[1] + right_hip[1]) / 2
+
+    # Calculate shoulder level
     shoulder_level = (left_shoulder[1] + right_shoulder[1]) / 2
+
+    # Normalize coordinates
     normalized_ball_y = ball_coords[1] / image_height
     normalized_waist_y = waist_level / image_height
     normalized_shoulder_y = shoulder_level / image_height
-    waist_to_shoulder_distance = normalized_waist_y - normalized_shoulder_y
-    margin = waist_to_shoulder_distance * 0.2
 
-    return {
+    # Calculate margin for ball height
+    waist_to_shoulder_distance = normalized_waist_y - normalized_shoulder_y
+    margin = waist_to_shoulder_distance * 0.2  # Adjust as needed
+
+    # Package features
+    features = {
         'back_angle': back_angle,
         'knee_angle': knee_angle,
         'head_tilt_angle': head_tilt_angle,
@@ -98,8 +114,12 @@ def calculate_features(landmarks, image_shape, ball_coords):
         'normalized_waist_y': normalized_waist_y,
         'margin': margin
     }
+    return features
 
 def calculate_angle(a, b, c):
+    """
+    Calculate the angle between three points (in degrees).
+    """
     ba = a - b
     bc = c - b
     cosine_angle = np.dot(ba, bc) / ((np.linalg.norm(ba) * np.linalg.norm(bc)) + 1e-6)
@@ -107,6 +127,9 @@ def calculate_angle(a, b, c):
     return np.degrees(angle)
 
 def calculate_angle_between_vectors(v1, v2):
+    """
+    Calculate the angle between two vectors (in degrees).
+    """
     dot_product = np.dot(v1, v2)
     magnitude_product = (np.linalg.norm(v1) * np.linalg.norm(v2)) + 1e-6
     cosine_angle = dot_product / magnitude_product

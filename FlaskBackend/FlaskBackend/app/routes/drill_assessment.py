@@ -1,50 +1,54 @@
-from flask import Blueprint, jsonify, request, Response
+import os
+from pathlib import Path
 import cv2
-from app.services.basic_dribble.video_processor import process_video_frame
+from flask import Blueprint, request, jsonify, send_file, current_app
 
-bp = Blueprint('drill_assessment', __name__, url_prefix='/drill')
+from app.services.basic_dribble.process_services import process_basic_dribble_video, overlay_evaluation
 
-@bp.route('/basic_dribble', methods=['POST'])
-def process_video():
+drill_assessment_bp = Blueprint('drill_assessment', __name__)
+
+@drill_assessment_bp.route('/basic-dribble', methods=['POST'])
+def basic_dribble():
     """
-    Process a full video file and return the processed video stream
+    Process a video file and return the processed video file
     """
     if 'video' not in request.files:
         return jsonify({'error': 'No video file provided'}), 400
     
     video_file = request.files['video']
-    temp_path = 'temp_video.mp4'  # You might want to use a more secure temporary file
-    video_file.save(temp_path)
+    if video_file.filename == '':
+        return jsonify({"error": "No video selected for uploading"}), 400
     
-    def generate_frames():
-        cap = cv2.VideoCapture(temp_path)
-        frame_count = 0
-        processing_interval = 10  # Changed from 5 to 10
+    # Create directories if they don't exist
+    os.makedirs(current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    input_path = Path(current_app.config['UPLOAD_FOLDER']) / f"input_{video_file.filename}"
+    output_path = Path(current_app.config['UPLOAD_FOLDER']) / f"processed_{video_file.filename}"
+    
+    # Save input video
+    video_file.save(input_path)
+    
+    try:
+        # Process the video using the imported function
+        process_basic_dribble_video(str(input_path), str(output_path))
         
-        try:
-            while cap.isOpened():
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                    
-                frame_count += 1
-                if frame_count % processing_interval == 0:
-                    # Resize frame to reduce processing time
-                    resized_frame = cv2.resize(frame, (640, 480))
-                    evaluation, annotated_frame = process_video_frame(resized_frame)
-                    if evaluation:
-                        _, buffer = cv2.imencode('.jpg', annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
-                        frame_bytes = buffer.tobytes()
-                        
-                        # Yield the frame in multipart format
-                        yield (b'--frame\r\n'
-                               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-                    
-        finally:
-            cap.release()
-            import os
-            os.remove(temp_path)
-    
-    return Response(generate_frames(),
-                   mimetype='multipart/x-mixed-replace; boundary=frame',
-                   timeout=600)  # Increased from 300 to 600 seconds
+        # Send the processed video file
+        response = send_file(output_path, as_attachment=True, download_name=f"processed_{video_file.filename}")
+        
+        # Clean up the output file after sending
+        @response.call_on_close
+        def cleanup():
+            if output_path.exists():
+                os.remove(output_path)
+            if input_path.exists():
+                os.remove(input_path)
+                
+        return response
+        
+    except Exception as e:
+        # Clean up on error
+        if input_path.exists():
+            os.remove(input_path)
+        if output_path.exists():
+            os.remove(output_path)
+        return jsonify({'error': str(e)}), 500
