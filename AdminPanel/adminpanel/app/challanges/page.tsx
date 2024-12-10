@@ -1,8 +1,11 @@
 'use client';
 import Navbar from "../components/navbar";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Challenges() {
-  const communityChallenges = [
+  const router = useRouter();
+  const [communityChallenges, setCommunityChallenges] = useState([
     {
       id: 1,
       name: "Three-Point Challenge",
@@ -19,7 +22,11 @@ export default function Challenges() {
       creator: "HandleMaster",
       dateCreated: "2024-03-18"
     }
-  ];
+  ]);
+
+  const handleRemoveChallenge = (id: number) => {
+    setCommunityChallenges(communityChallenges.filter(challenge => challenge.id !== id));
+  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -41,7 +48,7 @@ export default function Challenges() {
                   </div>
                   <button 
                     className="text-red-500 hover:text-red-700 p-1"
-                    onClick={() => alert(`Delete challenge ${challenge.id}`)}
+                    onClick={() => handleRemoveChallenge(challenge.id)}
                   >
                     ✕
                   </button>
@@ -64,7 +71,7 @@ export default function Challenges() {
 
         <button 
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => alert('Add new challenge')}
+          onClick={() => router.push('/add-challenge')}
         >
           Add Challenge
         </button>

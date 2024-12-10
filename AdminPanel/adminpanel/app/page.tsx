@@ -1,101 +1,128 @@
-import Image from "next/image";
+'use client';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Navbar from './components/navbar';
 
-export default function Home() {
+const Dashboard = () => {
+  const data = [
+    { month: 'Jan', players: 50, revenue: 300 },
+    { month: 'Feb', players: 70, revenue: 400 },
+    { month: 'Mar', players: 40, revenue: 350 },
+    { month: 'Apr', players: 90, revenue: 500 },
+    { month: 'May', players: 60, revenue: 450 },
+  ];
+
+  const challenges = [
+    {
+      id: 1,
+      name: "Speed Dribbling Course",
+      attempts: 1234,
+      topScore: 98,
+      topScorer: "FastPlayer123",
+      avgScore: 76,
+      completionRate: "68%",
+      difficulty: "Intermediate"
+    },
+    {
+      id: 2,
+      name: "Precision Shooting Challenge",
+      attempts: 2156,
+      topScore: 95,
+      topScorer: "SniperPro",
+      avgScore: 71,
+      completionRate: "54%",
+      difficulty: "Advanced"
+    },
+    {
+      id: 3,
+      name: "Passing Mastery Test",
+      attempts: 1879,
+      topScore: 100,
+      topScorer: "MasterPasser",
+      avgScore: 82,
+      completionRate: "75%",
+      difficulty: "Expert"
+    }
+  ];
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="bg-white min-h-screen">
+      <Navbar />
+      <div className="container mx-auto p-6">
+        <h2 className="text-xl font-bold mb-4 text-black">Dashboard</h2>
+        
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="bg-white text-black p-4 rounded-lg shadow-lg">
+            <h3 className="font-semibold mb-2">Player Growth</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="players" fill="#000000" name="New Players" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="bg-white text-black p-4 rounded-lg shadow-lg">
+            <h3 className="font-semibold mb-2">Revenue Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="revenue" stroke="#000000" fill="rgba(0, 0, 0, 0.2)" name="Revenue ($)" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Challenges Section */}
+        <div className="bg-white text-black p-4 rounded-lg shadow-lg">
+          <h3 className="font-semibold mb-4">Popular Challenges</h3>
+          <div className="grid gap-4">
+            {challenges.map((challenge) => (
+              <div 
+                key={challenge.id} 
+                className="border border-gray-300 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-bold text-lg">{challenge.name}</h4>
+                  <span className="bg-blue-500 text-white text-sm px-2 py-1 rounded">
+                    {challenge.difficulty}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-3">
+                  <div>
+                    <p className="text-gray-600 text-sm">Total Attempts</p>
+                    <p className="font-semibold">{challenge.attempts.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm">Top Score</p>
+                    <p className="font-semibold">{challenge.topScore}/100</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm">Top Scorer</p>
+                    <p className="font-semibold">{challenge.topScorer}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm">Average Score</p>
+                    <p className="font-semibold">{challenge.avgScore}/100</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm">Completion Rate</p>
+                    <p className="font-semibold">{challenge.completionRate}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default Dashboard;
