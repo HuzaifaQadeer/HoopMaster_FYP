@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import cv2
-from flask import Blueprint, request, jsonify, send_file, current_app
+from flask import Blueprint, request, jsonify, send_file, current_app, after_this_request
 
 from app.services.basic_dribble.process_services import process_basic_dribble_video, overlay_evaluation
 
@@ -25,25 +25,28 @@ def basic_dribble():
     input_path = Path(current_app.config['UPLOAD_FOLDER']) / f"input_{video_file.filename}"
     output_path = Path(current_app.config['UPLOAD_FOLDER']) / f"processed_{video_file.filename}"
     
-    # Save input video
-    video_file.save(input_path)
+    @after_this_request
+    def cleanup(response):
+        try:
+            if os.path.exists(output_path):
+                os.remove(output_path)
+                current_app.logger.info(f"Successfully deleted processed video: {output_path}")
+        except Exception as e:
+            current_app.logger.error(f"Error removing processed video: {e}")
+        return response
     
     try:
+        # Save input video
+        video_file.save(input_path)
+        
         # Process the video using the imported function
         process_basic_dribble_video(str(input_path), str(output_path))
         
-        # Send the processed video file
-        response = send_file(output_path, as_attachment=True, download_name=f"processed_{video_file.filename}")
+        # Clean up input file as it's no longer needed
+        os.remove(input_path)
         
-        # Clean up the output file after sending
-        @response.call_on_close
-        def cleanup():
-            if output_path.exists():
-                os.remove(output_path)
-            if input_path.exists():
-                os.remove(input_path)
-                
-        return response
+        # Send the processed video file
+        return send_file(output_path, as_attachment=True, download_name=f"processed_{video_file.filename}")
         
     except Exception as e:
         # Clean up on error
