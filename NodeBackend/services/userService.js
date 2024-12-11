@@ -335,6 +335,113 @@ class UserService {
       return null;
     }
   }
+
+  async getTotalUsers() {
+    return await User.countDocuments();
+  }
+
+  async getTotalPremiumUsers() {
+    return await User.countDocuments({ isPremium: true });
+  }
+
+  async getTotalRevenue() {
+    const users = await User.find();
+    return users.reduce((total, user) => total + (user.totalSpent || 0), 0);
+  }
+
+  async getUsersGrowthThreeMonths() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    return await User.find({ createdAt: { $gte: threeMonthsAgo } })
+      .sort('createdAt');
+  }
+
+  async getUsersGrowthYear() {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return await User.find({ createdAt: { $gte: oneYearAgo } })
+      .sort('createdAt');
+  }
+
+  async getUsersGrowthLifetime() {
+    return await User.find().sort('createdAt');
+  }
+
+  async getRevenueGrowthThreeMonths() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    return await User.find({ 
+      createdAt: { $gte: threeMonthsAgo },
+      totalSpent: { $gt: 0 }
+    }).sort('createdAt');
+  }
+
+  async getRevenueGrowthYear() {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return await User.find({ 
+      createdAt: { $gte: oneYearAgo },
+      totalSpent: { $gt: 0 }
+    }).sort('createdAt');
+  }
+
+  async getRevenueGrowthLifetime() {
+    return await User.find({ totalSpent: { $gt: 0 } }).sort('createdAt');
+  }
+
+  async getPremiumSubscriptionsThreeMonths() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    return await User.find({ 
+      'premiumHistory.subscribedAt': { $gte: threeMonthsAgo }
+    }).sort('premiumHistory.subscribedAt');
+  }
+
+  async getPremiumSubscriptionsYear() {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return await User.find({ 
+      'premiumHistory.subscribedAt': { $gte: oneYearAgo }
+    }).sort('premiumHistory.subscribedAt');
+  }
+
+  async getPremiumSubscriptionsLifetime() {
+    return await User.find({ 
+      'premiumHistory.subscribedAt': { $exists: true }
+    }).sort('premiumHistory.subscribedAt');
+  }
+
+  async getPremiumUnsubscriptionsThreeMonths() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    return await User.find({ 
+      'premiumHistory.unsubscribedAt': { $gte: threeMonthsAgo }
+    }).sort('premiumHistory.unsubscribedAt');
+  }
+
+  async getPremiumUnsubscriptionsYear() {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return await User.find({ 
+      'premiumHistory.unsubscribedAt': { $gte: oneYearAgo }
+    }).sort('premiumHistory.unsubscribedAt');
+  }
+ 
+  async getPremiumUnsubscriptionsLifetime() {
+    return await User.find({ 
+      'premiumHistory.unsubscribedAt': { $exists: true }
+    }).sort('premiumHistory.unsubscribedAt');
+  }
+
+  async searchPlayers(query) {
+    if (!query) {
+      return [];
+    }
+    
+    return await User.find({
+      displayName: { $regex: query, $options: 'i' }
+    }).select('-password').limit(10);
+  }
 }
 
 module.exports = new UserService();

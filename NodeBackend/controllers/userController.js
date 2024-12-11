@@ -228,3 +228,148 @@ exports.getHighlightVideo = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getTotalUsers = async (req, res) => {
+  try {
+    const count = await userService.getTotalUsers();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getTotalPremiumUsers = async (req, res) => {
+  try {
+    const count = await userService.getTotalPremiumUsers();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getTotalRevenue = async (req, res) => {
+  try {
+    const revenue = await userService.getTotalRevenue();
+    res.json({ revenue });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUsersGrowthThreeMonths = async (req, res) => {
+  try {
+    const data = await userService.getUsersGrowthThreeMonths();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUsersGrowthYear = async (req, res) => {
+  try {
+    const data = await userService.getUsersGrowthYear();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUsersGrowthLifetime = async (req, res) => {
+  try {
+    const data = await userService.getUsersGrowthLifetime();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getRevenueGrowthThreeMonths = async (req, res) => {
+  try {
+    const data = await userService.getRevenueGrowthThreeMonths();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getRevenueGrowthYear = async (req, res) => {
+  try {
+    const data = await userService.getRevenueGrowthYear();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getRevenueGrowthLifetime = async (req, res) => {
+  try {
+    const data = await userService.getRevenueGrowthLifetime();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumSubscriptionsThreeMonths = async (req, res) => {
+  try {
+    const data = await userService.getPremiumSubscriptionsThreeMonths();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumSubscriptionsYear = async (req, res) => {
+  try {
+    const data = await userService.getPremiumSubscriptionsYear();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumSubscriptionsLifetime = async (req, res) => {
+  try {
+    const data = await userService.getPremiumSubscriptionsLifetime();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumUnsubscriptionsThreeMonths = async (req, res) => {
+  try {
+    const data = await userService.getPremiumUnsubscriptionsThreeMonths();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumUnsubscriptionsYear = async (req, res) => {
+  try {
+    const data = await userService.getPremiumUnsubscriptionsYear();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPremiumUnsubscriptionsLifetime = async (req, res) => {
+  try {
+    const data = await userService.getPremiumUnsubscriptionsLifetime();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.searchPlayers = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const players = await userService.searchPlayers(query);
+    res.json(players);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

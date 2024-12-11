@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const appConfigSchema = new mongoose.Schema({
     premiumPrice: { type: Number, required: true },
     currentDiscount: {
