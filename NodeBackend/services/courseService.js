@@ -16,5 +16,4 @@ exports.getTopPopularCourses = async () => {
   return await Course.find()
     .sort('-enrolledUsers')
     .limit(4)
-    .populate('enrolledUsers', 'displayName profilePicture');
 };

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel'); // Adjust the path as needed
+const Admin = require('../models/adminModel'); // Add this line at the top
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -16,12 +17,19 @@ const authMiddleware = async (req, res, next) => {
     // Find user by id
     const user = await User.findById(decoded.id).select('-password');
 
+    // If not found in User, check in Admin
     if (!user) {
-      return res.status(401).json({ message: 'Token is valid but user not found' });
+      const admin = await Admin.findById(decoded.id).select('-password');
+      if (!admin) {
+        return res.status(401).json({ message: 'Token is valid but user/admin not found' });
+      }
+      // Attach admin to request object
+      req.user = admin;
+    } else {
+      // Attach user to request object
+      req.user = user;
     }
 
-    // Attach user to request object
-    req.user = user;
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);

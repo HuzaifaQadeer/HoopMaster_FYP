@@ -5,17 +5,16 @@ exports.setPremiumAmount = async (amount) => {
     throw new Error('Invalid premium amount');
   }
 
-  let config = await Premium.findOne();
-  if (!config) {
-    config = new Premium({ premiumPrice: amount });
-  } else {
-    config.premiumPrice = amount;
-  }
-  await config.save();
+  const config = await Premium.findOneAndUpdate(
+    {}, // Find the first document
+    { premiumPrice: amount }, // Update the premiumPrice
+    { new: true, upsert: true } // Return the updated document, create if not found
+  );
+
   return config;
 };
 
-exports.setDiscount = async (percentage, validUntil, description) => {
+exports.setDiscount = async (percentage, validUntil) => {
   if (!percentage || percentage <= 0 || percentage > 100) {
     throw new Error('Invalid discount percentage');
   }
@@ -31,8 +30,7 @@ exports.setDiscount = async (percentage, validUntil, description) => {
 
   config.currentDiscount = {
     percentage,
-    validUntil: new Date(validUntil),
-    description: description || ''
+    validUntil: new Date(validUntil)
   };
 
   await config.save();

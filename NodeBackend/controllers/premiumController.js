@@ -9,11 +9,11 @@ exports.setPremiumAmount = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
+ 
 exports.setDiscount = async (req, res) => {
   try {
-    const { percentage, validUntil, description } = req.body;
-    const result = await premiumService.setDiscount(percentage, validUntil, description);
+    const { percentage, validUntil } = req.body;
+    const result = await premiumService.setDiscount(percentage, validUntil);
     res.json(result);
   } catch (error) {
     res.status(400).json({ message: error.message });

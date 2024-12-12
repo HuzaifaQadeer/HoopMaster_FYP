@@ -22,8 +22,11 @@ exports.createAdmin = async (req, res) => {
 
 exports.logoutAdmin = async (req, res) => {
   try {
-    await adminService.logoutAdmin(req.admin.id);
-    res.json({ message: 'Logged out successfully' });
+    await adminService.logoutAdmin(req.user.id);
+    res.json({ 
+      message: 'Logged out successfully',
+      clearToken: true  // Frontend can use this flag to clear the token
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -32,7 +35,7 @@ exports.logoutAdmin = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    await adminService.changePassword(req.admin.id, currentPassword, newPassword);
+    await adminService.changePassword(req.user.id, currentPassword, newPassword);
     res.json({ message: 'Password changed successfully' });
   } catch (error) {
     res.status(400).json({ message: error.message });

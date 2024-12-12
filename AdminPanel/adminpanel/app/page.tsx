@@ -11,7 +11,7 @@ interface MonthlyDataType {
   premiumUnsubscribed: number;
 }
 
-type TimeFrameType = '3months' | 'year' | 'allTime' | 'thisMonth';
+type TimeFrameType = '3months' | 'year' | 'allTime';
 
 interface PopularItem {
   id: number;
@@ -49,8 +49,6 @@ const Dashboard = () => {
     switch(timeFrame) {
       case '3months':
         return monthlyData.slice(-3);
-      case 'thisMonth':
-        return monthlyData.slice(-1);
       case 'allTime':
       case 'year':
         return monthlyData;
@@ -113,7 +111,6 @@ const Dashboard = () => {
             value={timeFrame}
             onChange={(e) => setTimeFrame(e.target.value as TimeFrameType)}
           >
-            <option value="thisMonth">This Month</option>
             <option value="3months">Last 3 Months</option>
             <option value="year">Year</option>
             <option value="allTime">All Time</option>

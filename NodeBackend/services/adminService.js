@@ -4,11 +4,19 @@ const jwt = require('jsonwebtoken');
 
 exports.loginAdmin = async (email, password) => {
   const admin = await Admin.findOne({ email });
+  console.log('Found admin:', admin ? 'yes' : 'no');
+  
   if (!admin) {
     throw new Error('Invalid credentials');
   }
 
+  console.log('Comparing passwords...');
+  console.log('Provided password:', password);
+  console.log('Stored hashed password:', admin.password);
+  
   const isMatch = await bcrypt.compare(password, admin.password);
+  console.log('Password match:', isMatch);
+
   if (!isMatch) {
     throw new Error('Invalid credentials');
   }
@@ -55,4 +63,12 @@ exports.changePassword = async (adminId, currentPassword, newPassword) => {
   
   admin.password = hashedPassword;
   await admin.save();
+};
+
+exports.logoutAdmin = async (adminId) => {
+  const admin = await Admin.findById(adminId);
+  if (!admin) {
+    throw new Error('Admin not found');
+  }
+  return true;
 };

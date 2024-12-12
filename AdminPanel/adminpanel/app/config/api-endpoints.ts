@@ -1,91 +1,82 @@
-const API_BASE_URL = 'https://nodeapp.loca.lt';
+const API_BASE_URL = "https://nodeapp.loca.lt";
 
 export const API_ROUTES = {
   // User Routes
-  user: {
-    create: '/user/register',
-    delete: '/user/delete-user',
-    getTotalUsers: '/user/total-users',
-    getTotalPremiumUsers: '/user/total-premium-users',
-    getTotalRevenue: '/user/total-revenue',
-    getUsersGrowth: {
-      threeMonths: '/user/users-growth/three-months',
-      year: '/user/users-growth/year',
-      lifetime: '/user/users-growth/lifetime'
+  USER: {
+    TOTAL_USERS: `${API_BASE_URL}/users/total-users`,
+    TOTAL_PREMIUM_USERS: `${API_BASE_URL}/users/total-premium-users`,
+    TOTAL_REVENUE: `${API_BASE_URL}/users/total-revenue`,
+    USERS_GROWTH: {
+      THREE_MONTHS: `${API_BASE_URL}/user/users-growth/three-months`,
+      YEAR: `${API_BASE_URL}/user/users-growth/year`,
+      LIFETIME: `${API_BASE_URL}/user/users-growth/lifetime`
     },
-    getRevenueGrowth: {
-      threeMonths: '/user/revenue-growth/three-months',
-      year: '/user/revenue-growth/year',
-      lifetime: '/user/revenue-growth/lifetime'
+    REVENUE_GROWTH: {
+      THREE_MONTHS: `${API_BASE_URL}/user/revenue-growth/three-months`,
+      YEAR: `${API_BASE_URL}/user/revenue-growth/year`,
+      LIFETIME: `${API_BASE_URL}/user/revenue-growth/lifetime`
     },
-    getPremiumSubscriptions: {
-      threeMonths: '/user/premium-subscriptions/three-months',
-      year: '/user/premium-subscriptions/year',
-      lifetime: '/user/premium-subscriptions/lifetime'
+    PREMIUM_SUBSCRIPTIONS: {
+      THREE_MONTHS: `${API_BASE_URL}/user/premium-subscriptions/three-months`,
+      YEAR: `${API_BASE_URL}/user/premium-subscriptions/year`,
+      LIFETIME: `${API_BASE_URL}/user/premium-subscriptions/lifetime`
     },
-    getPremiumUnsubscriptions: {
-      threeMonths: '/user/premium-unsubscriptions/three-months',
-      year: '/user/premium-unsubscriptions/year',
-      lifetime: '/user/premium-unsubscriptions/lifetime'
+    PREMIUM_UNSUBSCRIPTIONS: {
+      THREE_MONTHS: `${API_BASE_URL}/user/premium-unsubscriptions/three-months`,
+      YEAR: `${API_BASE_URL}/user/premium-unsubscriptions/year`,
+      LIFETIME: `${API_BASE_URL}/user/premium-unsubscriptions/lifetime`
     },
-    searchPlayers: '/user/search-players'
+    SEARCH_PLAYERS: `${API_BASE_URL}/user/search-players`
   },
 
   // Course Routes
-  course: {
-    create: '/course/create',
-    getAll: '/course/all',
-    getPopular: '/course/popular'
+  COURSE: {
+    GET_ALL: `${API_BASE_URL}/course/all`,
+    GET_POPULAR: `${API_BASE_URL}/course/popular`
   },
 
   // Challenge Routes
-  challenge: {
-    create: '/challenge/create',
-    getAll: '/challenge/all',
-    delete: '/challenge', // Note: Requires /:id parameter to be appended
-    getPopular: '/challenge/popular'
+  CHALLENGE: {
+    GET_ALL: `${API_BASE_URL}/challenge/all`,
+    DELETE: `${API_BASE_URL}/challenge`, // Note: Requires /:id parameter to be appended
+    GET_POPULAR: `${API_BASE_URL}/challenge/popular`
   },
 
   // Drill Routes
-  drill: {
-    create: '/drill/create',
-    getAll: '/drill/all',
-    getPopular: '/drill/popular'
+  DRILL: {
+    GET_ALL: `${API_BASE_URL}/drill/all`,
+    GET_POPULAR: `${API_BASE_URL}/drill/popular`
   },
 
   // Post Routes
-  post: {
-    getAll: '/post/all',
-    create: '/post/create',
-    getOne: '/post', // Note: Requires /:id parameter to be appended
-    getComments: '/post' // Note: Requires /:id/comments to be appended
+  POST: {
+    CREATE: `${API_BASE_URL}/post/create`,
+    GET_ONE: `${API_BASE_URL}/post`, // Note: Requires /:id parameter to be appended
+    GET_COMMENTS: `${API_BASE_URL}/post` // Note: Requires /:id/comments to be appended
   },
 
   // Comment Routes
-  comment: {
-    create: '/comment/create',
-    getOne: '/comment' // Note: Requires /:id parameter to be appended
+  COMMENT: {
+    GET_ONE: `${API_BASE_URL}/comment` // Note: Requires /:id parameter to be appended
   },
 
   // Report Routes
-  report: {
-    create: '/report/create',
-    getAll: '/report/all'
+  REPORT: {
+    GET_ALL: `${API_BASE_URL}/report/all`
   },
 
   // Premium Routes
-  premium: {
-    setAmount: '/premium/set-amount',
-    setDiscount: '/premium/set-discount',
-    removeDiscount: '/premium/remove-discount'
+  PREMIUM: {
+    SET_AMOUNT: `${API_BASE_URL}/premium/set-amount`,
+    SET_DISCOUNT: `${API_BASE_URL}/premium/set-discount`,
+    REMOVE_DISCOUNT: `${API_BASE_URL}/premium/remove-discount`
   },
 
   // Admin Routes
-  admin: {
-    login: '/admin/login',
-    create: '/admin/create',
-    logout: '/admin/logout',
-    changePassword: '/admin/change-password'
+  ADMIN: {
+    LOGIN: `${API_BASE_URL}/admin/login`,
+    LOGOUT: `${API_BASE_URL}/admin/logout`,
+    CHANGE_PASSWORD: `${API_BASE_URL}/admin/change-password`
   }
 };
 

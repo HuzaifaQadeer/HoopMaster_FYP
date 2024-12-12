@@ -1,5 +1,7 @@
 const Report = require('../models/reportModel');
 const User = require('../models/userModel');
+const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
 
 exports.createReport = async (reporterId, contentType, contentId, reason, comment) => {
   const reportedContent = await getReportedContent(contentType, contentId);

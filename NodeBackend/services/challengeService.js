@@ -18,7 +18,7 @@ exports.deleteChallenge = async (challengeId) => {
   if (!challenge) {
     throw new Error('Challenge not found');
   }
-  await challenge.remove();
+  await Challenge.findByIdAndDelete(challengeId);
 };
 
 exports.getTopPopularChallenges = async () => {
