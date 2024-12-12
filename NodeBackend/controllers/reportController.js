@@ -24,3 +24,23 @@ exports.getAllReports = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getReportById = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    const report = await reportService.getReportById(reportId);
+    res.json(report);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+exports.resolveReport = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    const report = await reportService.resolveReport(reportId, req.user.id);
+    res.json(report);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

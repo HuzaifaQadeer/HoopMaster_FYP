@@ -5,5 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/create', authMiddleware, reportController.createReport);
 router.get('/all', authMiddleware, reportController.getAllReports);
+router.get('/:reportId', authMiddleware, reportController.getReportById);
+router.patch('/:reportId/resolve', authMiddleware, reportController.resolveReport);
 
 module.exports = router;

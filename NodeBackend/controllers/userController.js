@@ -161,14 +161,11 @@ exports.checkUserExists = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const { userId } = req.body;
-    await userService.deleteUser(userId);
-    res.json({ message: 'User deleted successfully' });
+    const { userId } = req.params;
+    const result = await userService.deleteUser(userId);
+    res.json(result);
   } catch (error) {
-    if (error.message === 'User not found') {
-      return res.status(404).json({ message: error.message });
-    }
-    res.status(500).json({ message: 'Error deleting user', error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -371,5 +368,89 @@ exports.searchPlayers = async (req, res) => {
     res.json(players);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await userService.getProfile(userId);
+    
+    // Optional: Check if requesting user is an admin
+    // if (!req.user.isAdmin) {
+    //   return res.status(403).json({ message: 'Access denied: Admin only' });
+    // }
+    
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await userService.getAllUsers();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.searchUsers = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const users = await userService.searchUsers(query);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.banUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { duration, reason } = req.body;
+    
+    if (!duration || !reason) {
+      return res.status(400).json({ 
+        message: 'Ban duration and reason are required' 
+      });
+    }
+
+    const banData = {
+      duration: parseInt(duration),
+      reason: reason
+    };
+
+    const user = await userService.banUser(userId, banData, req.user.id);
+    res.json({
+      message: 'User banned successfully',
+      banStatus: user.banStatus
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.unbanUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await userService.unbanUser(userId, req.user.id);
+    res.json({
+      message: 'User unbanned successfully',
+      banStatus: user.banStatus
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.checkBanStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const banStatus = await userService.checkBanStatus(userId);
+    res.json(banStatus);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };

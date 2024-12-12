@@ -28,3 +28,12 @@ exports.removeDiscount = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getPremiumConfig = async (req, res) => {
+  try {
+    const result = await premiumService.getPremiumConfig();
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

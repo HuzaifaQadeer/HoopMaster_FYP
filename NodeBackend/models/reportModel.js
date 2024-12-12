@@ -11,6 +11,7 @@ const reportSchema = new mongoose.Schema({
   contentId: mongoose.Schema.Types.ObjectId,
   reason: { type: String, required: true },
   comment: String,
+  resolved: { type: Boolean, default: false },
   status: {
     type: String,
     enum: ['pending', 'resolved', 'dismissed'],

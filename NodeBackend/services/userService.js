@@ -442,6 +442,102 @@ class UserService {
       displayName: { $regex: query, $options: 'i' }
     }).select('-password').limit(10);
   }
+
+  async getAllUsers() {
+    return await User.find().select('-password');
+  }
+
+  async searchUsers(query) {
+    return await User.find({
+      $or: [
+        { displayName: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } }
+      ]
+    }).select('-password');
+  }
+
+  async banUser(userId, banData, adminId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const bannedAt = new Date();
+    const bannedUntil = new Date();
+    bannedUntil.setDate(bannedUntil.getDate() + banData.duration);
+
+    // Create ban record
+    const banRecord = {
+      reason: banData.reason,
+      duration: banData.duration,
+      bannedAt: bannedAt,
+      bannedUntil: bannedUntil,
+      bannedBy: adminId
+    };
+
+    // Update current ban status
+    user.banStatus = {
+      isBanned: true,
+      banReason: banData.reason,
+      banDuration: banData.duration,
+      bannedAt: bannedAt,
+      bannedUntil: bannedUntil,
+      bannedBy: adminId
+    };
+
+    // Add to ban history
+    if (!user.banStatus.banHistory) {
+      user.banStatus.banHistory = [];
+    }
+    user.banStatus.banHistory.push(banRecord);
+
+    await user.save();
+    return user;
+  }
+
+  async unbanUser(userId, adminId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.banStatus.isBanned) {
+      throw new Error('User is not banned');
+    }
+
+    // Update the last ban record in history with unban info
+    if (user.banStatus.banHistory.length > 0) {
+      const lastBan = user.banStatus.banHistory[user.banStatus.banHistory.length - 1];
+      lastBan.unbannedAt = new Date();
+      lastBan.unbannedBy = adminId;
+    }
+
+    // Clear current ban status
+    user.banStatus = {
+      isBanned: false,
+      banHistory: user.banStatus.banHistory // Preserve ban history
+    };
+
+    await user.save();
+    return user;
+  }
+
+  async checkBanStatus(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.banStatus;
+  }
+
+  async deleteUser(userId) {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User deleted successfully' };
+  }
 }
 
 module.exports = new UserService();

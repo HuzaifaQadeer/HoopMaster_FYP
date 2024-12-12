@@ -18,3 +18,13 @@ exports.getComment = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const result = await commentService.deleteComment(req.params.id, req.user.id);
+    res.json(result);
+  } catch (error) {
+    res.status(error.message.includes('Not authorized') ? 403 : 400)
+      .json({ message: error.message });
+  }
+};

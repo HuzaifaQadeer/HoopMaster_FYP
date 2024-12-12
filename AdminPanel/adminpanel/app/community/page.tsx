@@ -1,60 +1,75 @@
 'use client';
 import Navbar from "../components/navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
+import { API_ROUTES } from "../config/api-endpoints";
+
+interface Post {
+  id: string;
+  content: string;
+  status: string;
+}
+
+interface Report {
+  id: number;
+  reporter: string;
+  reported: string;
+  reason: string;
+  comment: string;
+  reportedContent: string;
+  date: string;
+}
 
 const Community: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const posts = [
-    { id: 1, content: "Player A: Great game today!", status: "Approved" },
-    { id: 2, content: "Player B: Need help with dribbling.", status: "Reported" },
-  ];
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
 
-  const players = [
-    "John Smith",
-    "Sarah Johnson",
-    "Mike Wilson",
-    "Emma Davis"
-  ];
+  const fetchInitialData = async () => {
+    try {
+      // Fetch posts for community feed
+      const postsResponse = await fetch(API_ROUTES.POST.GET_ALL, {
+        credentials: 'include'
+      });
+      if (!postsResponse.ok) throw new Error('Failed to fetch posts');
+      const postsData = await postsResponse.json();
+      setPosts(postsData);
 
-  const reports = [
-    { 
-      id: 1, 
-      reporter: "User123", 
-      reported: "ToxicPlayer99", 
-      reason: "Inappropriate language",
-      comment: "This behavior is unacceptable in our community",
-      reportedContent: "You're all terrible at this game! *explicit content*",
-      date: "2024-03-20" 
-    },
-    { 
-      id: 2, 
-      reporter: "Coach_Mike", 
-      reported: "SpamBot42", 
-      reason: "Spam messages",
-      comment: "This user keeps posting promotional links",
-      reportedContent: "Buy cheap coins at www.scam-site.com!",
-      date: "2024-03-19" 
-    },
-    { 
-      id: 3, 
-      reporter: "Admin_Sarah", 
-      reported: "Hacker777", 
-      reason: "Suspected cheating",
-      comment: "Player was showing impossible scores",
-      reportedContent: "Just won 50 matches in a row! Too easy!",
-      date: "2024-03-18" 
-    },
-  ];
+      // Fetch reports
+      const reportsResponse = await fetch(API_ROUTES.REPORT.GET_ALL, {
+        credentials: 'include'
+      });
+      if (!reportsResponse.ok) throw new Error('Failed to fetch reports');
+      const reportsData = await reportsResponse.json();
+      setReports(reportsData);
+    } catch (err) {
+      setError('Failed to load data');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleSearch = () => {
-    const results = players.filter(player =>
-      player.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setSearchResults(results);
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`${API_ROUTES.USER.SEARCH_PLAYERS}?query=${searchQuery}`, {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Search failed');
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (err) {
+      console.error('Search failed:', err);
+      setSearchResults([]);
+    }
   };
 
   const handleUserClick = (username: string) => {
@@ -65,11 +80,16 @@ const Community: React.FC = () => {
     router.push(`/report/${reportId}`);
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
       <div className="container mx-auto p-6">
         <h2 className="text-xl font-bold mb-4 text-black">Community Management</h2>
+        
+        {/* Community Feed */}
         <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6">
           <h3 className="font-semibold mb-2">Community Feed</h3>
           <ul>
@@ -82,6 +102,7 @@ const Community: React.FC = () => {
           </ul>
         </div>
 
+        {/* Player Search */}
         <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6">
           <h3 className="font-semibold mb-2">Player Search</h3>
           <div className="mb-4 flex gap-2">
@@ -114,6 +135,7 @@ const Community: React.FC = () => {
           )}
         </div>
 
+        {/* Player Reports */}
         <div className="bg-white text-black p-4 rounded-lg shadow-lg">
           <h3 className="font-semibold mb-2">Player Reports</h3>
           <ul>

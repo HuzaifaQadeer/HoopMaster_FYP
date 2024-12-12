@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_ROUTES } from '../config/api-endpoints';
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -22,7 +23,18 @@ const ChangePassword = () => {
     if (!showVerification) {
       // First step: Send verification code
       try {
-        // TODO: Implement API call to send verification code
+        const response = await fetch(API_ROUTES.USER.SEND_VERIFICATION_EMAIL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: formData.email }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send verification code');
+        }
+
         setShowVerification(true);
         setSuccess(true);
         setError('');
@@ -34,13 +46,45 @@ const ChangePassword = () => {
 
     // Second step: Verify code and change password
     try {
-      // TODO: Implement API call to verify code and change password
+      // First verify the email code
+      const verifyResponse = await fetch(API_ROUTES.USER.VERIFY_EMAIL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          code: formData.verificationCode,
+        }),
+      });
+
+      if (!verifyResponse.ok) {
+        throw new Error('Invalid verification code');
+      }
+
+      // Then change the password
+      const changePasswordResponse = await fetch(API_ROUTES.ADMIN.CHANGE_PASSWORD, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword,
+        }),
+      });
+
+      if (!changePasswordResponse.ok) {
+        throw new Error('Failed to change password');
+      }
+
       setSuccess(true);
       setTimeout(() => {
         router.push('/');
       }, 2000);
     } catch (err) {
-      setError('Failed to change password. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to change password. Please try again.');
     }
   };
 

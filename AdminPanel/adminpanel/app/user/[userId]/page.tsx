@@ -2,6 +2,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import Navbar from "@/app/components/navbar";
 import { useState, useEffect } from 'react';
+import { API_ROUTES } from '@/app/config/api-endpoints';
 
 // Mock user data type
 interface UserProfile {
@@ -40,54 +41,72 @@ const UserProfile = () => {
   const router = useRouter();
   const params = useParams();
   const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock fetch data
   useEffect(() => {
-    // Simulating API call
-    const mockUserData: UserProfile = {
-      id: params.id as string,
-      name: "John Smith",
-      handle: "@jsmith_baller",
-      imageUrl: "https://example.com/profile.jpg",
-      physicalStats: {
-        height: "6'2\"",
-        weight: "185 lbs",
-        wingspan: "6'5\"",
-        verticalJump: "32 inches"
-      },
-      isPremium: true,
-      highlightVideo: "https://example.com/highlight.mp4",
-      courses: [
-        { id: 1, name: "Advanced Dribbling", progress: 75 },
-        { id: 2, name: "Shooting Fundamentals", progress: 90 },
-        { id: 3, name: "Defense Mastery", progress: 45 }
-      ],
-      drills: [
-        { id: 1, name: "Free Throw Challenge", score: 85, date: "2024-03-15" },
-        { id: 2, name: "3-Point Shootout", score: 78, date: "2024-03-18" },
-        { id: 3, name: "Dribbling Course", score: 92, date: "2024-03-20" }
-      ],
-      challenges: [
-        { id: 1, name: "Weekly Shootout", score: 95, rank: "1st" },
-        { id: 2, name: "Defense Challenge", score: 88, rank: "3rd" },
-        { id: 3, name: "Team Tournament", score: 90, rank: "2nd" }
-      ]
-    };
-    setUserData(mockUserData);
-  }, [params.id]);
+    fetchUserData();
+  }, [params.userId]);
 
-  const handleBan = (duration: string) => {
-    alert(`User banned for ${duration}`);
-  };
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(API_ROUTES.USER.GET_USER_BY_ID.replace(':userId', params.userId as string), {
+        credentials: 'include'
+      });
 
-  const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-      alert('User deleted');
-      router.push('/community');
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      const data = await response.json();
+      setUserData(data);
+    } catch (err) {
+      setError('Failed to load user data');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!userData) return <div>Loading...</div>;
+  const handleBan = async (duration: string) => {
+    try {
+      const durationDays = duration.includes('week') ? 7 : 30;
+      
+      const response = await fetch(API_ROUTES.USER.BAN.replace(':userId', params.userId as string), {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          duration: durationDays,
+          reason: `User banned for ${duration} due to community guidelines violation`
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to ban user');
+      alert(`User banned for ${duration}`);
+    } catch (err) {
+      alert('Failed to ban user');
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    try {
+      const response = await fetch(API_ROUTES.USER.DELETE.replace(':userId', params.userId as string), {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (!response.ok) throw new Error('Failed to delete user');
+      router.push('/community');
+    } catch (err) {
+      alert('Failed to delete user');
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!userData) return <div>User not found</div>;
 
   return (
     <div className="bg-white min-h-screen">

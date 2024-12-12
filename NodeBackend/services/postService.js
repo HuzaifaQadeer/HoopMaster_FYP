@@ -34,7 +34,15 @@ exports.getAllPosts = async () => {
       path: 'comments',
       populate: { path: 'user', select: 'displayName profilePicture' }
     })
-    .sort('-createdAt');
+    .sort('-createdAt')
+    .select('content status createdAt')
+    .lean()
+    .then(posts => posts.map(post => ({
+      id: post._id,
+      content: post.content,
+      status: post.status || 'Active',
+      date: post.createdAt
+    })));
 };
 
 exports.getPost = async (postId) => {
@@ -60,4 +68,33 @@ exports.getPostComments = async (postId) => {
   return await Comment.find({ post: postId })
     .populate('user', 'displayName profilePicture')
     .sort('-createdAt');
+};
+
+exports.deletePost = async (postId, userId) => {
+  const post = await Post.findById(postId);
+  
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  // Check if user is the post owner
+  if (post.user.toString() !== userId) {
+    throw new Error('Not authorized to delete this post');
+  }
+
+  // Delete associated media if exists
+  if (post.media && post.media.url) {
+    const mediaPath = path.join(__dirname, '..', '..', 'Server', 'posts', post.media.url);
+    await fs.unlink(mediaPath).catch(err => 
+      console.error('Error deleting post media:', err)
+    );
+  }
+
+  // Delete all comments associated with the post
+  await Comment.deleteMany({ post: postId });
+
+  // Delete the post
+  await Post.findByIdAndDelete(postId);
+
+  return { message: 'Post deleted successfully' };
 };

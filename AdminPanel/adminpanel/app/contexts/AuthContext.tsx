@@ -1,11 +1,12 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { API_ROUTES } from '../config/api-endpoints';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -16,11 +17,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check if user is authenticated on mount
     const token = localStorage.getItem('auth_token');
     setIsAuthenticated(!!token);
 
-    // Redirect if needed
     if (!token && pathname !== '/login') {
       router.push('/login');
     } else if (token && pathname === '/login') {
@@ -29,14 +28,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    if (email && password) {
-      // For demo, any non-empty email/password combination works
-      localStorage.setItem('auth_token', 'demo_token');
+    try {
+      const response = await fetch(API_ROUTES.ADMIN.LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Login failed');
+      }
+
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('admin_data', JSON.stringify(data.admin));
       setIsAuthenticated(true);
       router.push('/');
-    } else {
-      throw new Error('Invalid credentials');
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
   };
 
@@ -45,9 +58,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
     router.push('/login');
   };
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout: async () => {
+      localStorage.removeItem('auth_token');
+      setIsAuthenticated(false);
+      await router.push('/login');
+    } }}>
       {children}
     </AuthContext.Provider>
   );
@@ -59,4 +75,4 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};

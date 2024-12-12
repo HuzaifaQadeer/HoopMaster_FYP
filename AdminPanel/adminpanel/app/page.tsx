@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Navbar from './components/navbar';
+import { API_ROUTES } from './config/api-endpoints';
 
 interface MonthlyDataType {
   month: string;
@@ -20,16 +21,105 @@ interface PopularItem {
 }
 
 const Dashboard = () => {
-  const [timeFrame, setTimeFrame] = useState('3months');
+  const [timeFrame, setTimeFrame] = useState<TimeFrameType>('3months');
+  const [monthlyData, setMonthlyData] = useState<MonthlyDataType[]>([]);
+  const [popularCourses, setPopularCourses] = useState<PopularItem[]>([]);
+  const [popularChallenges, setPopularChallenges] = useState<PopularItem[]>([]);
+  const [popularDrills, setPopularDrills] = useState<PopularItem[]>([]);
+  const [overallTotals, setOverallTotals] = useState({ players: 0, revenue: 0, premiumUsers: 0 });
 
-  // Monthly data
-  const monthlyData = [
-    { month: 'Jan', players: 50, revenue: 300, premiumSubscribed: 30, premiumUnsubscribed: 10 },
-    { month: 'Feb', players: 70, revenue: 400, premiumSubscribed: 45, premiumUnsubscribed: 15 },
-    { month: 'Mar', players: 40, revenue: 350, premiumSubscribed: 25, premiumUnsubscribed: 20 },
-    { month: 'Apr', players: 90, revenue: 500, premiumSubscribed: 60, premiumUnsubscribed: 25 },
-    { month: 'May', players: 60, revenue: 450, premiumSubscribed: 40, premiumUnsubscribed: 30 },
-  ];
+  // Fetch overall totals
+  useEffect(() => {
+    const fetchTotals = async () => {
+      try {
+        const [usersRes, revenueRes, premiumRes] = await Promise.all([
+          fetch(API_ROUTES.USER.TOTAL_USERS),
+          fetch(API_ROUTES.USER.TOTAL_REVENUE),
+          fetch(API_ROUTES.USER.TOTAL_PREMIUM_USERS)
+        ]);
+        
+        const [totalUsers, totalRevenue, totalPremium] = await Promise.all([
+          usersRes.json(),
+          revenueRes.json(),
+          premiumRes.json()
+        ]);
+
+        setOverallTotals({
+          players: totalUsers.count,
+          revenue: totalRevenue.amount,
+          premiumUsers: totalPremium.count
+        });
+      } catch (error) {
+        console.error('Error fetching totals:', error);
+      }
+    };
+    fetchTotals();
+  }, []);
+
+  // Fetch time-based data
+  useEffect(() => {
+    const fetchTimeData = async () => {
+      try {
+        const endpoint = timeFrame === '3months' 
+          ? 'THREE_MONTHS' 
+          : timeFrame === 'year' ? 'YEAR' : 'LIFETIME';
+
+        const [growthRes, revenueRes, subsRes, unsubsRes] = await Promise.all([
+          fetch(API_ROUTES.USER.USERS_GROWTH[endpoint]),
+          fetch(API_ROUTES.USER.REVENUE_GROWTH[endpoint]),
+          fetch(API_ROUTES.USER.PREMIUM_SUBSCRIPTIONS[endpoint]),
+          fetch(API_ROUTES.USER.PREMIUM_UNSUBSCRIPTIONS[endpoint])
+        ]);
+
+        const [growth, revenue, subs, unsubs] = await Promise.all([
+          growthRes.json(),
+          revenueRes.json(),
+          subsRes.json(),
+          unsubsRes.json()
+        ]);
+
+        // Combine the data into the monthlyData format
+        const combinedData = growth.data.map((item: any, index: number) => ({
+          month: item.month,
+          players: item.count,
+          revenue: revenue.data[index].amount,
+          premiumSubscribed: subs.data[index].count,
+          premiumUnsubscribed: unsubs.data[index].count
+        }));
+
+        setMonthlyData(combinedData);
+      } catch (error) {
+        console.error('Error fetching time data:', error);
+      }
+    };
+    fetchTimeData();
+  }, [timeFrame]);
+
+  // Fetch popular items
+  useEffect(() => {
+    const fetchPopularItems = async () => {
+      try {
+        const [coursesRes, challengesRes, drillsRes] = await Promise.all([
+          fetch(API_ROUTES.COURSE.GET_POPULAR),
+          fetch(API_ROUTES.CHALLENGE.GET_POPULAR),
+          fetch(API_ROUTES.DRILL.GET_POPULAR)
+        ]);
+
+        const [courses, challenges, drills] = await Promise.all([
+          coursesRes.json(),
+          challengesRes.json(),
+          drillsRes.json()
+        ]);
+
+        setPopularCourses(courses.data);
+        setPopularChallenges(challenges.data);
+        setPopularDrills(drills.data);
+      } catch (error) {
+        console.error('Error fetching popular items:', error);
+      }
+    };
+    fetchPopularItems();
+  }, []);
 
   // Calculate totals
   const calculateTotals = (data: MonthlyDataType[]): { 
@@ -58,29 +148,6 @@ const Dashboard = () => {
   };
 
   const totals = calculateTotals(getDisplayData());
-  const overallTotals = calculateTotals(monthlyData);
-
-  // Add this data with your other const declarations
-  const popularCourses: PopularItem[] = [
-    { id: 1, name: "Shooting Fundamentals 101", participants: 1234 },
-    { id: 2, name: "Advanced Dribbling Techniques", participants: 982 },
-    { id: 3, name: "Basketball IQ Masterclass", participants: 876 },
-    { id: 4, name: "Pro-Level Defense Training", participants: 654 },
-  ];
-
-  const popularChallenges: PopularItem[] = [
-    { id: 1, name: "100 Free Throws Challenge", participants: 2341 },
-    { id: 2, name: "3-Point Shootout", participants: 1876 },
-    { id: 3, name: "Dribble Marathon", participants: 1543 },
-    { id: 4, name: "Defense Drill Challenge", participants: 1232 },
-  ];
-
-  const popularDrills: PopularItem[] = [
-    { id: 1, name: "Mikan Drill", participants: 3214 },
-    { id: 2, name: "Figure-8 Dribbling", participants: 2876 },
-    { id: 3, name: "Spot Shooting Drill", participants: 2654 },
-    { id: 4, name: "Box-Out Practice", participants: 2143 },
-  ];
 
   return (
     <div className="bg-white min-h-screen">

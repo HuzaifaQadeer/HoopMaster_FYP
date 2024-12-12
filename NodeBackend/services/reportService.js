@@ -42,3 +42,35 @@ const getReportedContent = async (contentType, contentId) => {
       throw new Error('Invalid content type');
   }
 };
+
+exports.getReportById = async (reportId) => {
+  const report = await Report.findById(reportId)
+    .populate('reporter', 'displayName email')
+    .populate('reported', 'displayName email')
+    .populate('adminAction.admin', 'name email');
+    
+  if (!report) {
+    throw new Error('Report not found');
+  }
+  
+  return report;
+};
+
+exports.resolveReport = async (reportId, adminId) => {
+  const report = await Report.findById(reportId);
+  
+  if (!report) {
+    throw new Error('Report not found');
+  }
+
+  report.resolved = true;
+  report.status = 'resolved';
+  report.adminAction = {
+    admin: adminId,
+    action: 'resolved',
+    date: new Date(),
+  };
+
+  await report.save();
+  return report;
+};

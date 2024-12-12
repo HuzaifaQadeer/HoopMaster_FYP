@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Navbar from "../components/navbar";
+import { API_ROUTES } from "../config/api-endpoints";
 
 const AddChallenge = () => {
   const router = useRouter();
@@ -12,11 +13,33 @@ const AddChallenge = () => {
     creator: '',
     dateCreated: new Date().toISOString().split('T')[0]
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, just redirect back to challenges page
-    router.push('/challenges');
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(API_ROUTES.CHALLENGE.CREATE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(challenge)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create challenge');
+      }
+
+      router.push('/challenges');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -71,11 +94,16 @@ const AddChallenge = () => {
               />
             </div>
 
+            {error && (
+              <div className="text-red-500 text-sm">{error}</div>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600"
+              disabled={isLoading}
+              className="w-full bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 disabled:bg-blue-300"
             >
-              Add Challenge
+              {isLoading ? 'Adding...' : 'Add Challenge'}
             </button>
           </div>
         </form>

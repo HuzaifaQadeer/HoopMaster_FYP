@@ -32,3 +32,26 @@ exports.getComment = async (commentId) => {
 
   return comment;
 };
+
+exports.deleteComment = async (commentId, userId) => {
+  const comment = await Comment.findById(commentId);
+  
+  if (!comment) {
+    throw new Error('Comment not found');
+  }
+
+  // Check if user is the comment owner
+  if (comment.user.toString() !== userId) {
+    throw new Error('Not authorized to delete this comment');
+  }
+
+  // Remove comment reference from the post
+  await Post.findByIdAndUpdate(comment.post, {
+    $pull: { comments: commentId }
+  });
+
+  // Delete the comment
+  await Comment.findByIdAndDelete(commentId);
+
+  return { message: 'Comment deleted successfully' };
+};

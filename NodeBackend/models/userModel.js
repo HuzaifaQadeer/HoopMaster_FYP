@@ -44,7 +44,23 @@ const userSchema = new mongoose.Schema({
   isEmailVerified: { type: Boolean, default: false },
   premiumStartDate: Date,
   premiumExpiryDate: Date,
-  totalSpent: { type: Number, default: 0 }
+  totalSpent: { type: Number, default: 0 },
+  
+  banStatus: {
+    isBanned: { type: Boolean, default: false },
+    banReason: String,
+    banDuration: Number, // in days
+    bannedAt: Date,
+    bannedUntil: Date,
+    bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+    banHistory: [{
+      reason: String,
+      duration: Number,
+      bannedAt: Date,
+      bannedUntil: Date,
+      bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }
+    }]
+  }
 }, { timestamps: true });
 
 // Remove any existing indexes on displayName

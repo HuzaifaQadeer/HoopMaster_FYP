@@ -6,5 +6,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/set-amount', authMiddleware, premiumController.setPremiumAmount);
 router.patch('/set-discount', authMiddleware, premiumController.setDiscount);
 router.patch('/remove-discount', authMiddleware, premiumController.removeDiscount);
+router.get('/', authMiddleware, premiumController.getPremiumConfig);
 
 module.exports = router;

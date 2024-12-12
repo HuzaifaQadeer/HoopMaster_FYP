@@ -1,8 +1,12 @@
-const API_BASE_URL = "https://nodeapp.loca.lt";
+const API_BASE_URL = "http://localhost:5000";
 
 export const API_ROUTES = {
   // User Routes
   USER: {
+    GET_USER_BY_ID: `${API_BASE_URL}/admin/:userId`,
+    GET_PROFILE: `${API_BASE_URL}/users/profile`,
+    SEND_VERIFICATION_EMAIL: `${API_BASE_URL}/users/send-verification-email`,
+    VERIFY_EMAIL: `${API_BASE_URL}/users/verify-email`,
     TOTAL_USERS: `${API_BASE_URL}/users/total-users`,
     TOTAL_PREMIUM_USERS: `${API_BASE_URL}/users/total-premium-users`,
     TOTAL_REVENUE: `${API_BASE_URL}/users/total-revenue`,
@@ -26,7 +30,11 @@ export const API_ROUTES = {
       YEAR: `${API_BASE_URL}/user/premium-unsubscriptions/year`,
       LIFETIME: `${API_BASE_URL}/user/premium-unsubscriptions/lifetime`
     },
-    SEARCH_PLAYERS: `${API_BASE_URL}/user/search-players`
+    SEARCH_PLAYERS: `${API_BASE_URL}/user/search-players`,
+    GET_ALL: `${API_BASE_URL}/users/all`,
+    SEARCH: `${API_BASE_URL}/users/search`,
+    BAN: `${API_BASE_URL}/users/:userId/ban`,
+    DELETE: `${API_BASE_URL}/users/:userId`
   },
 
   // Course Routes
@@ -38,7 +46,8 @@ export const API_ROUTES = {
   // Challenge Routes
   CHALLENGE: {
     GET_ALL: `${API_BASE_URL}/challenge/all`,
-    DELETE: `${API_BASE_URL}/challenge`, // Note: Requires /:id parameter to be appended
+    CREATE: `${API_BASE_URL}/challenge/create`,
+    DELETE: `${API_BASE_URL}/challenge`,
     GET_POPULAR: `${API_BASE_URL}/challenge/popular`
   },
 
@@ -50,6 +59,7 @@ export const API_ROUTES = {
 
   // Post Routes
   POST: {
+    GET_ALL: `${API_BASE_URL}/post/all`,
     CREATE: `${API_BASE_URL}/post/create`,
     GET_ONE: `${API_BASE_URL}/post`, // Note: Requires /:id parameter to be appended
     GET_COMMENTS: `${API_BASE_URL}/post` // Note: Requires /:id/comments to be appended
@@ -62,11 +72,14 @@ export const API_ROUTES = {
 
   // Report Routes
   REPORT: {
-    GET_ALL: `${API_BASE_URL}/report/all`
+    GET_ALL: `${API_BASE_URL}/report/all`,
+    GET_ONE: `${API_BASE_URL}/report/:reportId`,
+    RESOLVE: `${API_BASE_URL}/report/:reportId/resolve`
   },
 
   // Premium Routes
   PREMIUM: {
+    GET: `${API_BASE_URL}/premium`,
     SET_AMOUNT: `${API_BASE_URL}/premium/set-amount`,
     SET_DISCOUNT: `${API_BASE_URL}/premium/set-discount`,
     REMOVE_DISCOUNT: `${API_BASE_URL}/premium/remove-discount`

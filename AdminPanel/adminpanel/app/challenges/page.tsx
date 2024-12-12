@@ -1,32 +1,82 @@
 'use client';
 import Navbar from "../components/navbar";
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_ROUTES } from '../config/api-endpoints';
+
+interface Challenge {
+  id: number;
+  name: string;
+  description: string;
+  instructions: string;
+  creator: string;
+  dateCreated: string;
+}
 
 export default function Challenges() {
   const router = useRouter();
-  const [communityChallenges, setCommunityChallenges] = useState([
-    {
-      id: 1,
-      name: "Three-Point Challenge",
-      description: "Test your accuracy from beyond the arc with this progressive shooting challenge",
-      instructions: "1. Start from five spots behind the 3pt line\n2. Take 5 shots from each spot\n3. Must make at least 3/5 to advance\n4. Record total makes out of 25",
-      creator: "SharpShooter",
-      dateCreated: "2024-03-15"
-    },
-    {
-      id: 2,
-      name: "Dribbling Circuit",
-      description: "Improve your ball handling with this timed dribbling obstacle course",
-      instructions: "1. Set up 6 cones in zigzag pattern\n2. Alternate crossovers between cones\n3. Complete circuit with both hands\n4. Record best time without losing control",
-      creator: "HandleMaster",
-      dateCreated: "2024-03-18"
-    }
-  ]);
+  const [communityChallenges, setCommunityChallenges] = useState<Challenge[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleRemoveChallenge = (id: number) => {
-    setCommunityChallenges(communityChallenges.filter(challenge => challenge.id !== id));
+  useEffect(() => {
+    fetchChallenges();
+  }, []);
+
+  const fetchChallenges = async () => {
+    try {
+      const response = await fetch(API_ROUTES.CHALLENGE.GET_ALL);
+      if (!response.ok) {
+        throw new Error('Failed to fetch challenges');
+      }
+      const data = await response.json();
+      setCommunityChallenges(data);
+    } catch (err) {
+      setError('Failed to load challenges');
+      console.error('Error fetching challenges:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const handleRemoveChallenge = async (id: number) => {
+    try {
+      const response = await fetch(`${API_ROUTES.CHALLENGE.DELETE}/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete challenge');
+      }
+      
+      setCommunityChallenges(communityChallenges.filter(challenge => challenge.id !== id));
+    } catch (err) {
+      console.error('Error deleting challenge:', err);
+      // Optionally show an error message to the user
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Navbar />
+        <div className="container mx-auto p-6">
+          <p className="text-black">Loading challenges...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Navbar />
+        <div className="container mx-auto p-6">
+          <p className="text-red-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen">

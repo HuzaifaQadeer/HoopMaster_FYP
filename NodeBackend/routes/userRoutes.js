@@ -38,5 +38,6 @@ router.get('/premium-unsubscriptions/three-months', userController.getPremiumUns
 router.get('/premium-unsubscriptions/year', userController.getPremiumUnsubscriptionsYear);
 router.get('/premium-unsubscriptions/lifetime', userController.getPremiumUnsubscriptionsLifetime);
 router.get('/search-players', userController.searchPlayers);
+router.get('/admin/:userId', authMiddleware, userController.getUserById);
 
 module.exports = router;

@@ -9,7 +9,12 @@ const postSchema = new mongoose.Schema({
   },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-  isPrivate: { type: Boolean, default: false }
+  isPrivate: { type: Boolean, default: false },
+  status: { 
+    type: String, 
+    enum: ['Active', 'Reported', 'Removed'],
+    default: 'Active'
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Post', postSchema);

@@ -47,3 +47,11 @@ exports.removeDiscount = async () => {
   await config.save();
   return config;
 };
+
+exports.getPremiumConfig = async () => {
+  const config = await Premium.findOne();
+  if (!config) {
+    throw new Error('Premium configuration not found');
+  }
+  return config;
+};

@@ -2,9 +2,12 @@
 import { useParams, useRouter } from 'next/navigation';
 import Navbar from "@/app/components/navbar";
 import { useState, useEffect } from 'react';
+import { API_ROUTES } from '@/app/config/api-endpoints';
 
 interface ReportDetails {
   id: string;
+  userId: string;
+  contentId: string;
   author: {
     name: string;
     handle: string;
@@ -13,6 +16,7 @@ interface ReportDetails {
   media?: string;
   content: string;
   type: 'post' | 'comment';
+  reason: string;
   reportedBy: {
     name: string;
     handle: string;
@@ -25,58 +29,96 @@ const ReportDetails = () => {
   const router = useRouter();
   const params = useParams();
   const [reportData, setReportData] = useState<ReportDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [contentData, setContentData] = useState<any>(null);
 
-  // Mock fetch data
   useEffect(() => {
-    // Simulating API call
-    const mockReportData: ReportDetails = {
-      id: params.id as string,
-      author: {
-        name: "John Smith",
-        handle: "@jsmith_baller",
-      },
-      date: "2024-03-20 14:30",
-      media: "https://example.com/post-image.jpg",
-      content: "I hate player who are alwsy take up space in the gynm doing sma edirll for hours on th ehoop like give some space for a game",
-      type: "post",
-      reportedBy: {
-        name: "Mike Wilson",
-        handle: "@mike_moderator",
-        date: "2024-03-20 15:45",
-        comment: "This user is creating a hostile environment and targeting specific players at the gym. This kind of aggressive behavior could lead to conflicts on the court."
-      }
-    };
-    setReportData(mockReportData);
-  }, [params.id]);
+    fetchReportData();
+  }, [params.reportId]);
 
-  const handleAction = (action: string) => {
-    switch (action) {
-      case 'remove':
-        if (confirm('Are you sure you want to remove this post/comment?')) {
-          alert('Content removed');
-          router.push('/community');
-        }
-        break;
-      case 'ban7':
-        if (confirm('Ban user for 7 days?')) {
-          alert('User banned for 7 days');
-        }
-        break;
-      case 'ban30':
-        if (confirm('Ban user for 30 days?')) {
-          alert('User banned for 30 days');
-        }
-        break;
-      case 'delete':
-        if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-          alert('User deleted');
-          router.push('/community');
-        }
-        break;
+  const fetchReportData = async () => {
+    try {
+      const reportResponse = await fetch(API_ROUTES.REPORT.GET_ONE.replace(':reportId', params.reportId as string), {
+        credentials: 'include'
+      });
+
+      if (!reportResponse.ok) throw new Error('Failed to fetch report');
+      const reportData = await reportResponse.json();
+      setReportData(reportData);
+
+      // Fetch the reported content (post or comment)
+      const contentEndpoint = reportData.type === 'post' 
+        ? API_ROUTES.POST.GET_ONE + '/' + reportData.contentId
+        : API_ROUTES.COMMENT.GET_ONE + '/' + reportData.contentId;
+
+      const contentResponse = await fetch(contentEndpoint, {
+        credentials: 'include'
+      });
+
+      if (!contentResponse.ok) throw new Error('Failed to fetch content');
+      const contentData = await contentResponse.json();
+      setContentData(contentData);
+    } catch (err) {
+      setError('Failed to load report data');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!reportData) return <div>Loading...</div>;
+  const handleAction = async (action: string) => {
+    try {
+      switch (action) {
+        case 'remove':
+          const contentEndpoint = reportData?.type === 'post'
+            ? API_ROUTES.POST.GET_ONE + '/' + reportData?.content
+            : API_ROUTES.COMMENT.GET_ONE + '/' + reportData?.content;
+
+          await fetch(contentEndpoint, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+          break;
+
+        case 'ban7':
+        case 'ban30':
+          const days = action === 'ban7' ? 7 : 30;
+          await fetch(API_ROUTES.USER.BAN.replace(':userId', reportData?.userId as string), {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              duration: days,
+              reason: `User banned for ${days} days due to reported content: ${reportData?.reason || 'No reason provided'}`
+            })
+          });
+          break;
+
+        case 'delete':
+          await fetch(API_ROUTES.USER.DELETE.replace(':userId', reportData?.userId as string), {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+          break;
+      }
+
+      // Mark report as resolved
+      await fetch(API_ROUTES.REPORT.RESOLVE.replace(':reportId', params.reportId as string), {
+        method: 'PATCH',
+        credentials: 'include'
+      });
+
+      router.push('/reports');
+    } catch (err) {
+      alert('Action failed');
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!reportData || !contentData) return <div>Report not found</div>;
 
   return (
     <div className="bg-white min-h-screen">

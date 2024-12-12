@@ -1,15 +1,52 @@
 'use client';
 import Navbar from "../components/navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { API_ROUTES } from "../config/api-endpoints";
 
 const Premium: React.FC = () => {
-  const [discounts, setDiscounts] = useState([
-    { id: 1, percentage: "20%", duration: "10 days", status: "Active" },
-  ]);
+  const [discounts, setDiscounts] = useState<any[]>([]);
   const [newPercentage, setNewPercentage] = useState("");
   const [newDuration, setNewDuration] = useState("");
 
-  const handleAddDiscount = () => {
+  useEffect(() => {
+    fetchPremiumConfig();
+  }, []);
+
+  const fetchPremiumConfig = async () => {
+    try {
+      const response = await fetch(API_ROUTES.PREMIUM.GET, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch premium config');
+      }
+
+      const data = await response.json();
+      
+      // If there's an active discount, add it to the discounts array
+      if (data.currentDiscount) {
+        const daysRemaining = Math.ceil(
+          (new Date(data.currentDiscount.validUntil).getTime() - new Date().getTime()) 
+          / (1000 * 60 * 60 * 24)
+        );
+        
+        setDiscounts([{
+          id: 1,
+          percentage: `${data.currentDiscount.percentage}%`,
+          duration: `${daysRemaining} days remaining`,
+          status: "Active"
+        }]);
+      } else {
+        setDiscounts([]);
+      }
+    } catch (error) {
+      console.error('Error fetching premium config:', error);
+    }
+  };
+
+  const handleAddDiscount = async () => {
     if (!newPercentage || !newDuration) return;
     
     const percentage = Number(newPercentage);
@@ -18,20 +55,51 @@ const Premium: React.FC = () => {
       return;
     }
     
-    const newDiscount = {
-      id: Date.now(),
-      percentage: newPercentage + "%",
-      duration: newDuration + " days",
-      status: "Active"
-    };
-    
-    setDiscounts([newDiscount]);
-    setNewPercentage("");
-    setNewDuration("");
+    try {
+      const validUntil = new Date();
+      validUntil.setDate(validUntil.getDate() + parseInt(newDuration));
+
+      const response = await fetch(API_ROUTES.PREMIUM.SET_DISCOUNT, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          percentage: percentage,
+          validUntil: validUntil.toISOString()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to set discount');
+      }
+
+      await fetchPremiumConfig(); // Refresh the discount display
+      setNewPercentage("");
+      setNewDuration("");
+    } catch (error) {
+      console.error('Error setting discount:', error);
+      alert('Failed to set discount. Please try again.');
+    }
   };
 
-  const handleDeleteDiscount = () => {
-    setDiscounts([]); // Remove all discounts
+  const handleDeleteDiscount = async () => {
+    try {
+      const response = await fetch(API_ROUTES.PREMIUM.REMOVE_DISCOUNT, {
+        method: 'PATCH',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove discount');
+      }
+
+      setDiscounts([]); // Remove all discounts
+    } catch (error) {
+      console.error('Error removing discount:', error);
+      alert('Failed to remove discount. Please try again.');
+    }
   };
 
   return (
