@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 const path = require('path');
 const fs = require('fs').promises;
+const Revenue = require('../models/revenueModel');
 
 class UserService {
   async registerUser(email, password, displayName) {
@@ -140,8 +141,21 @@ class UserService {
     if (!user) {
       throw new Error('User not found');
     }
+    
     user.isPremium = true;
+    user.premiumStartDate = new Date();
+    // Set expiry date to 30 days from now
+    user.premiumExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    
     await user.save();
+
+    // Create revenue record
+    await Revenue.create({
+      userId: user._id,
+      amount: 9.99, // Or whatever your premium amount is
+      source: 'premium_subscribed'
+    });
+
     return { isPremium: user.isPremium };
   }
 
@@ -268,21 +282,30 @@ class UserService {
   }
 
   async deleteUser(userId) {
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    if (!deletedUser) {
+    const user = await User.findById(userId);
+    if (!user) {
       throw new Error('User not found');
     }
 
-    if (deletedUser.profilePicture) {
-      const profilePicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', deletedUser.profilePicture);
+    // Delete associated files
+    if (user.profilePicture) {
+      const profilePicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', user.profilePicture);
       await fs.unlink(profilePicturePath).catch(err => console.error('Error deleting profile picture:', err));
     }
 
-    if (deletedUser.highlightVideo) {
-      const highlightVideoPath = path.join(__dirname, '..', '..', 'Server', 'highlights', deletedUser.highlightVideo);
+    if (user.highlightVideo) {
+      const highlightVideoPath = path.join(__dirname, '..', '..', 'Server', 'highlights', user.highlightVideo);
       await fs.unlink(highlightVideoPath).catch(err => console.error('Error deleting highlight video:', err));
     }
+
+    // Delete user from database
+    const result = await User.findByIdAndDelete(userId);
+    
+    if (!result) {
+      throw new Error('User not found');
+    }
+
+    return result;
   }
 
   async deleteAllUsers() {
@@ -344,93 +367,74 @@ class UserService {
     return await User.countDocuments({ isPremium: true });
   }
 
-  async getTotalRevenue() {
-    const users = await User.find();
-    return users.reduce((total, user) => total + (user.totalSpent || 0), 0);
-  }
-
   async getUsersGrowthThreeMonths() {
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    return await User.find({ createdAt: { $gte: threeMonthsAgo } })
-      .sort('createdAt');
+    
+    const users = await User.find({ 
+      createdAt: { $gte: threeMonthsAgo } 
+    });
+
+    // Group users by month
+    const monthlyData = users.reduce((acc, user) => {
+      const monthName = user.createdAt.toLocaleString('default', { month: 'long' });
+      if (!acc[monthName]) {
+        acc[monthName] = 0;
+      }
+      acc[monthName]++;
+      return acc;
+    }, {});
+
+    // Convert to array format
+    return Object.entries(monthlyData).map(([month, count]) => ({
+      month,
+      users: count
+    }));
   }
 
   async getUsersGrowthYear() {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return await User.find({ createdAt: { $gte: oneYearAgo } })
-      .sort('createdAt');
+    
+    const users = await User.find({ 
+      createdAt: { $gte: oneYearAgo } 
+    });
+
+    // Group users by month
+    const monthlyData = users.reduce((acc, user) => {
+      const monthName = user.createdAt.toLocaleString('default', { month: 'long' });
+      if (!acc[monthName]) {
+        acc[monthName] = 0;
+      }
+      acc[monthName]++;
+      return acc;
+    }, {});
+
+    // Convert to array format
+    return Object.entries(monthlyData).map(([month, count]) => ({
+      month,
+      users: count
+    }));
   }
 
   async getUsersGrowthLifetime() {
-    return await User.find().sort('createdAt');
-  }
+    const users = await User.find();
 
-  async getRevenueGrowthThreeMonths() {
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    return await User.find({ 
-      createdAt: { $gte: threeMonthsAgo },
-      totalSpent: { $gt: 0 }
-    }).sort('createdAt');
-  }
+    // Group users by month
+    const monthlyData = users.reduce((acc, user) => {
+      const monthName = user.createdAt.toLocaleString('default', { month: 'long' });
+      if (!acc[monthName]) {
+        acc[monthName] = 0;
+      }
+      acc[monthName]++;
+      return acc;
+    }, {});
 
-  async getRevenueGrowthYear() {
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return await User.find({ 
-      createdAt: { $gte: oneYearAgo },
-      totalSpent: { $gt: 0 }
-    }).sort('createdAt');
-  }
-
-  async getRevenueGrowthLifetime() {
-    return await User.find({ totalSpent: { $gt: 0 } }).sort('createdAt');
-  }
-
-  async getPremiumSubscriptionsThreeMonths() {
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    return await User.find({ 
-      'premiumHistory.subscribedAt': { $gte: threeMonthsAgo }
-    }).sort('premiumHistory.subscribedAt');
-  }
-
-  async getPremiumSubscriptionsYear() {
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return await User.find({ 
-      'premiumHistory.subscribedAt': { $gte: oneYearAgo }
-    }).sort('premiumHistory.subscribedAt');
-  }
-
-  async getPremiumSubscriptionsLifetime() {
-    return await User.find({ 
-      'premiumHistory.subscribedAt': { $exists: true }
-    }).sort('premiumHistory.subscribedAt');
-  }
-
-  async getPremiumUnsubscriptionsThreeMonths() {
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    return await User.find({ 
-      'premiumHistory.unsubscribedAt': { $gte: threeMonthsAgo }
-    }).sort('premiumHistory.unsubscribedAt');
-  }
-
-  async getPremiumUnsubscriptionsYear() {
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return await User.find({ 
-      'premiumHistory.unsubscribedAt': { $gte: oneYearAgo }
-    }).sort('premiumHistory.unsubscribedAt');
-  }
- 
-  async getPremiumUnsubscriptionsLifetime() {
-    return await User.find({ 
-      'premiumHistory.unsubscribedAt': { $exists: true }
-    }).sort('premiumHistory.unsubscribedAt');
+    // Convert to array format
+    return Object.entries(monthlyData).map(([month, count]) => ({
+      month,
+      users: count
+    }));
   }
 
   async searchPlayers(query) {
@@ -529,14 +533,6 @@ class UserService {
     }
 
     return user.banStatus;
-  }
-
-  async deleteUser(userId) {
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return { message: 'User deleted successfully' };
   }
 }
 

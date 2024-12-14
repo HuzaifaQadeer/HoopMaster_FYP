@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel'); // Adjust the path as needed
-const Admin = require('../models/adminModel'); // Add this line at the top
+const User = require('../models/userModel');
+const Admin = require('../models/adminModel');
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // Get token from header
+    // Get token from Authorization header
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
@@ -23,10 +23,8 @@ const authMiddleware = async (req, res, next) => {
       if (!admin) {
         return res.status(401).json({ message: 'Token is valid but user/admin not found' });
       }
-      // Attach admin to request object
       req.user = admin;
     } else {
-      // Attach user to request object
       req.user = user;
     }
 
@@ -34,10 +32,16 @@ const authMiddleware = async (req, res, next) => {
   } catch (error) {
     console.error('Auth middleware error:', error);
     if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token' });
+      return res.status(401).json({ 
+        message: 'Invalid token',
+        tokenError: true
+      });
     }
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ message: 'Token expired' });
+      return res.status(401).json({ 
+        message: 'Token expired',
+        tokenError: true
+      });
     }
     res.status(500).json({ message: 'Server error in auth middleware' });
   }

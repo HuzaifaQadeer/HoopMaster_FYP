@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Navbar from './components/navbar';
 import { API_ROUTES } from './config/api-endpoints';
+import { fetchWithAuth } from './config/api-endpoints';
 
 interface MonthlyDataType {
   month: string;
@@ -15,16 +16,23 @@ interface MonthlyDataType {
 type TimeFrameType = '3months' | 'year' | 'allTime';
 
 interface PopularItem {
-  id: number;
-  name: string;
-  participants: number;
+  _id: string;
+  title: string;
+  participants?: { _id: string; displayName: string; profilePicture: string; }[] | number;
+  enrolledUsers?: string[] | number;
+  totalAttempts?: number;
+}
+
+interface TransformedPopularItem extends Omit<PopularItem, 'participants' | 'enrolledUsers'> {
+  participants?: number;
+  enrolledUsers?: number;
 }
 
 const Dashboard = () => {
   const [timeFrame, setTimeFrame] = useState<TimeFrameType>('3months');
   const [monthlyData, setMonthlyData] = useState<MonthlyDataType[]>([]);
-  const [popularCourses, setPopularCourses] = useState<PopularItem[]>([]);
-  const [popularChallenges, setPopularChallenges] = useState<PopularItem[]>([]);
+  const [popularCourses, setPopularCourses] = useState<TransformedPopularItem[]>([]);
+  const [popularChallenges, setPopularChallenges] = useState<TransformedPopularItem[]>([]);
   const [popularDrills, setPopularDrills] = useState<PopularItem[]>([]);
   const [overallTotals, setOverallTotals] = useState({ players: 0, revenue: 0, premiumUsers: 0 });
 
@@ -33,9 +41,9 @@ const Dashboard = () => {
     const fetchTotals = async () => {
       try {
         const [usersRes, revenueRes, premiumRes] = await Promise.all([
-          fetch(API_ROUTES.USER.TOTAL_USERS),
-          fetch(API_ROUTES.USER.TOTAL_REVENUE),
-          fetch(API_ROUTES.USER.TOTAL_PREMIUM_USERS)
+          fetchWithAuth(API_ROUTES.USER.TOTAL_USERS),
+          fetchWithAuth(API_ROUTES.REVENUE.TOTAL),
+          fetchWithAuth(API_ROUTES.USER.TOTAL_PREMIUM_USERS)
         ]);
         
         const [totalUsers, totalRevenue, totalPremium] = await Promise.all([
@@ -46,7 +54,7 @@ const Dashboard = () => {
 
         setOverallTotals({
           players: totalUsers.count,
-          revenue: totalRevenue.amount,
+          revenue: totalRevenue.revenue || 0,
           premiumUsers: totalPremium.count
         });
       } catch (error) {
@@ -65,10 +73,10 @@ const Dashboard = () => {
           : timeFrame === 'year' ? 'YEAR' : 'LIFETIME';
 
         const [growthRes, revenueRes, subsRes, unsubsRes] = await Promise.all([
-          fetch(API_ROUTES.USER.USERS_GROWTH[endpoint]),
-          fetch(API_ROUTES.USER.REVENUE_GROWTH[endpoint]),
-          fetch(API_ROUTES.USER.PREMIUM_SUBSCRIPTIONS[endpoint]),
-          fetch(API_ROUTES.USER.PREMIUM_UNSUBSCRIPTIONS[endpoint])
+          fetchWithAuth(API_ROUTES.USER.USERS_GROWTH[endpoint]),
+          fetchWithAuth(API_ROUTES.REVENUE.GROWTH[endpoint]),
+          fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_SUBSCRIPTIONS[endpoint]),
+          fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_UNSUBSCRIPTIONS[endpoint])
         ]);
 
         const [growth, revenue, subs, unsubs] = await Promise.all([
@@ -78,18 +86,18 @@ const Dashboard = () => {
           unsubsRes.json()
         ]);
 
-        // Combine the data into the monthlyData format
-        const combinedData = growth.data.map((item: any, index: number) => ({
+        const formattedData = (growth || []).map((item: any, index: number) => ({
           month: item.month,
-          players: item.count,
-          revenue: revenue.data[index].amount,
-          premiumSubscribed: subs.data[index].count,
-          premiumUnsubscribed: unsubs.data[index].count
+          players: item.users || 0,
+          revenue: revenue[index]?.amount || 0,
+          premiumSubscribed: subs[index]?.count || 0,
+          premiumUnsubscribed: unsubs[index]?.count || 0
         }));
 
-        setMonthlyData(combinedData);
+        setMonthlyData(formattedData);
       } catch (error) {
         console.error('Error fetching time data:', error);
+        setMonthlyData([]);
       }
     };
     fetchTimeData();
@@ -100,22 +108,34 @@ const Dashboard = () => {
     const fetchPopularItems = async () => {
       try {
         const [coursesRes, challengesRes, drillsRes] = await Promise.all([
-          fetch(API_ROUTES.COURSE.GET_POPULAR),
-          fetch(API_ROUTES.CHALLENGE.GET_POPULAR),
-          fetch(API_ROUTES.DRILL.GET_POPULAR)
+          fetchWithAuth(API_ROUTES.COURSE.GET_POPULAR),
+          fetchWithAuth(API_ROUTES.CHALLENGE.GET_POPULAR),
+          fetchWithAuth(API_ROUTES.DRILL.GET_POPULAR)
         ]);
 
-        const [courses, challenges, drills] = await Promise.all([
-          coursesRes.json(),
-          challengesRes.json(),
-          drillsRes.json()
-        ]);
+        const courses = await coursesRes.json();
+        const challenges = await challengesRes.json();
+        const drills = await drillsRes.json();
 
-        setPopularCourses(courses.data);
-        setPopularChallenges(challenges.data);
-        setPopularDrills(drills.data);
+        // Transform the data to include the correct counts
+        const transformedCourses = courses.map((course: PopularItem) => ({
+          ...course,
+          enrolledUsers: Array.isArray(course.enrolledUsers) ? course.enrolledUsers.length : (course.enrolledUsers || 0)
+        }));
+
+        const transformedChallenges = challenges.map((challenge: PopularItem) => ({
+          ...challenge,
+          participants: Array.isArray(challenge.participants) ? challenge.participants.length : (challenge.participants || 0)
+        }));
+
+        setPopularCourses(transformedCourses || []);
+        setPopularChallenges(transformedChallenges || []);
+        setPopularDrills(drills || []);
       } catch (error) {
         console.error('Error fetching popular items:', error);
+        setPopularCourses([]);
+        setPopularChallenges([]);
+        setPopularDrills([]);
       }
     };
     fetchPopularItems();
@@ -148,6 +168,11 @@ const Dashboard = () => {
   };
 
   const totals = calculateTotals(getDisplayData());
+  // Calculate total players for courses
+  const totalCoursePlayers = popularCourses.reduce((acc, course) => acc + (course.enrolledUsers || 0), 0);
+
+  // Calculate total participants for challenges 
+  const totalChallengeParticipants = popularChallenges.reduce((acc, challenge) => acc + (challenge.participants || 0), 0);
 
   return (
     <div className="bg-white min-h-screen">
@@ -274,9 +299,11 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold mb-4 text-black">Popular Courses</h3>
               <div className="space-y-4">
                 {popularCourses.map((course) => (
-                  <div key={course.id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{course.name}</span>
-                    <span className="text-gray-600 text-sm">{course.participants.toLocaleString()} players</span>
+                  <div key={course._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="text-gray-800">{course.title}</span>
+                    <span className="text-gray-600 text-sm">
+                      {(course.enrolledUsers || 0).toLocaleString()} players
+                    </span>
                   </div>
                 ))}
               </div>
@@ -287,9 +314,11 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold mb-4 text-black">Popular Challenges</h3>
               <div className="space-y-4">
                 {popularChallenges.map((challenge) => (
-                  <div key={challenge.id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{challenge.name}</span>
-                    <span className="text-gray-600 text-sm">{challenge.participants.toLocaleString()} players</span>
+                  <div key={challenge._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="text-gray-800">{challenge.title}</span>
+                    <span className="text-gray-600 text-sm">
+                      {(challenge.participants || 0).toLocaleString()} players
+                    </span>
                   </div>
                 ))}
               </div>
@@ -300,9 +329,11 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold mb-4 text-black">Popular Drills</h3>
               <div className="space-y-4">
                 {popularDrills.map((drill) => (
-                  <div key={drill.id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{drill.name}</span>
-                    <span className="text-gray-600 text-sm">{drill.participants.toLocaleString()} players</span>
+                  <div key={drill._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="text-gray-800">{drill.title}</span>
+                    <span className="text-gray-600 text-sm">
+                      {(drill.totalAttempts || 0).toLocaleString()} players
+                    </span>
                   </div>
                 ))}
               </div>

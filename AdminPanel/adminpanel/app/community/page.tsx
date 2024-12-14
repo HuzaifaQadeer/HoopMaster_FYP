@@ -3,27 +3,59 @@ import Navbar from "../components/navbar";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { API_ROUTES } from "../config/api-endpoints";
+import { fetchWithAuth } from '../config/api-endpoints';
 
 interface Post {
   id: string;
   content: string;
   status: string;
+  date: string;
+  author: string;
+  user: {
+    id: string;
+    displayName: string;
+    email: string;
+    profilePicture: string | null;
+  }
+}
+
+interface AdminAction {
+  admin: {
+    _id: string;
+    email: string;
+    name: string;
+  };
+  action: string;
+  date: string;
+  notes: string;
 }
 
 interface Report {
-  id: number;
-  reporter: string;
-  reported: string;
+  id: string;
+  adminAction?: AdminAction;
+  reporter: {
+    _id: string;
+    email: string;
+    displayName: string;
+  };
+  reported: {
+    _id: string;
+    email: string;
+    displayName: string;
+  };
+  contentType: 'post' | 'comment';
+  contentId: string;
   reason: string;
   comment: string;
-  reportedContent: string;
+  resolved: boolean;
+  status: string;
   date: string;
 }
 
 const Community: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<{displayName: string, _id: string}[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,24 +67,74 @@ const Community: React.FC = () => {
 
   const fetchInitialData = async () => {
     try {
-      // Fetch posts for community feed
-      const postsResponse = await fetch(API_ROUTES.POST.GET_ALL, {
-        credentials: 'include'
-      });
-      if (!postsResponse.ok) throw new Error('Failed to fetch posts');
-      const postsData = await postsResponse.json();
-      setPosts(postsData);
+      setLoading(true);
+      setError(null);
+
+      // Fetch posts
+      const postsRes = await fetchWithAuth(API_ROUTES.POST.GET_ALL);
+      if (!postsRes.ok) {
+        throw new Error(`Failed to fetch posts: ${postsRes.status}`);
+      }
+      const postsData = await postsRes.json();
 
       // Fetch reports
-      const reportsResponse = await fetch(API_ROUTES.REPORT.GET_ALL, {
-        credentials: 'include'
-      });
-      if (!reportsResponse.ok) throw new Error('Failed to fetch reports');
-      const reportsData = await reportsResponse.json();
-      setReports(reportsData);
-    } catch (err) {
-      setError('Failed to load data');
-      console.error(err);
+      const reportsRes = await fetchWithAuth(API_ROUTES.REPORT.GET_ALL);
+      if (!reportsRes.ok) {
+        throw new Error(`Failed to fetch reports: ${reportsRes.status}`);
+      }
+      const reportsData = await reportsRes.json();
+
+      // Transform posts data
+      setPosts(postsData.map((post: any) => ({
+        id: post.id || '',
+        content: post.content || '',
+        status: post.status || 'unknown',
+        date: post.date ? new Date(post.date).toLocaleDateString() : 'Unknown Date',
+        author: post.author || 'Unknown User',
+        user: {
+          id: post.user?.id || '',
+          displayName: post.user?.displayName || '',
+          email: post.user?.email || '',
+          profilePicture: post.user?.profilePicture || null
+        }
+      })));
+
+      // Transform reports data
+      setReports(reportsData.map((report: any) => ({
+        id: report._id,
+        adminAction: report.adminAction ? {
+          admin: {
+            _id: report.adminAction.admin._id,
+            email: report.adminAction.admin.email,
+            name: report.adminAction.admin.name
+          },
+          action: report.adminAction.action,
+          date: new Date(report.adminAction.date).toLocaleDateString(),
+          notes: report.adminAction.notes
+        } : undefined,
+        reporter: {
+          _id: report.reporter._id,
+          email: report.reporter.email,
+          displayName: report.reporter.displayName
+        },
+        reported: {
+          _id: report.reported._id,
+          email: report.reported.email,
+          displayName: report.reported.displayName
+        },
+        contentType: report.contentType,
+        contentId: report.contentId,
+        reason: report.reason,
+        comment: report.comment,
+        resolved: report.resolved,
+        status: report.status,
+        date: new Date(report.createdAt).toLocaleDateString(),
+        reportedContent: report.contentDetails?.content || report.contentDetails?.text || ''
+      })));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load data';
+      setError(errorMessage);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -65,19 +147,22 @@ const Community: React.FC = () => {
       });
       if (!response.ok) throw new Error('Search failed');
       const data = await response.json();
-      setSearchResults(data);
+      setSearchResults(data.map((user: any) => ({
+        displayName: user.displayName,
+        _id: user._id
+      })));
     } catch (err) {
       console.error('Search failed:', err);
       setSearchResults([]);
     }
   };
 
-  const handleUserClick = (username: string) => {
-    router.push(`/user/${username}`);
+  const handleUserClick = (userId: string) => {
+    router.push(`/user/${userId}`);
   };
 
-  const handleReportClick = (reportId: number) => {
-    router.push(`/report/${reportId}`);
+  const handleReportClick = (report: Report) => {
+    router.push(`/report/${report.id}?contentId=${report.contentId}&type=${report.contentType}`);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -94,9 +179,9 @@ const Community: React.FC = () => {
           <h3 className="font-semibold mb-2">Community Feed</h3>
           <ul>
             {posts.map((post) => (
-              <li key={post.id} className="border-b border-gray-300 py-2">
+              <li key={post.id} className="border-2 border-gray-300 rounded-lg p-4 mb-4">
+                <div className="mb-2 font-medium text-gray-600">{post.user.displayName}</div>
                 <p>{post.content}</p>
-                <small>Status: {post.status}</small>
               </li>
             ))}
           </ul>
@@ -122,13 +207,13 @@ const Community: React.FC = () => {
           </div>
           {searchResults.length > 0 && (
             <ul>
-              {searchResults.map((player, index) => (
+              {searchResults.map((player) => (
                 <li 
-                  key={index}
+                  key={player._id}
                   className="border-b border-gray-300 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleUserClick(player)}
+                  onClick={() => handleUserClick(player._id)}
                 >
-                  {player}
+                  {player.displayName}
                 </li>
               ))}
             </ul>
@@ -143,19 +228,24 @@ const Community: React.FC = () => {
               <li 
                 key={report.id} 
                 className="border-2 border-gray-300 rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleReportClick(report.id)}
+                onClick={() => handleReportClick(report)}
               >
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <p className="font-medium">Reporter: {report.reporter}</p>
+                    <p className="font-medium">Reporter: {report.reporter.displayName}</p>
                     <small className="text-gray-600 font-bold">Date: {report.date}</small>
                   </div>
-                  <p><span className="font-medium">Reported Player:</span> {report.reported}</p>
+                  <p><span className="font-medium">Reported Player:</span> {report.reported.displayName}</p>
+                  <p><span className="font-medium">Status:</span> {report.status}</p>
+                  {report.adminAction && (
+                    <div className="bg-blue-50 p-2 rounded-md border border-blue-200">
+                      <p className="text-sm text-blue-600 font-medium">Admin Action:</p>
+                      <p>Action: {report.adminAction.action}</p>
+                      <p>Notes: {report.adminAction.notes}</p>
+                      <p>Date: {report.adminAction.date}</p>
+                    </div>
+                  )}
                   <p><span className="font-medium">Reason:</span> {report.reason}</p>
-                  <div className="bg-gray-50 p-2 rounded-md mt-2 border border-gray-200">
-                    <p className="text-sm text-gray-600 font-medium">Reported Content:</p>
-                    <p className="italic">"{report.reportedContent}"</p>
-                  </div>
                   <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
                     <p className="text-sm text-gray-600 font-medium">Reporter's Comment:</p>
                     <p>"{report.comment}"</p>

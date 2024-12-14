@@ -2,9 +2,9 @@ const reportService = require('../services/reportService');
 
 exports.createReport = async (req, res) => {
   try {
-    const { contentType, contentId, reason, comment } = req.body;
+    const { reporter, contentType, contentId, reason, comment } = req.body;
     const report = await reportService.createReport(
-      req.user.id,
+      reporter,
       contentType,
       contentId,
       reason,
@@ -38,9 +38,24 @@ exports.getReportById = async (req, res) => {
 exports.resolveReport = async (req, res) => {
   try {
     const { reportId } = req.params;
-    const report = await reportService.resolveReport(reportId, req.user.id);
-    res.json(report);
+    const { action, notes } = req.body;
+    
+    const report = await reportService.resolveReport(
+      reportId,
+      req.user.id,
+      action,
+      notes
+    );
+    
+    res.json({
+      success: true,
+      message: 'Report resolved successfully',
+      report
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };

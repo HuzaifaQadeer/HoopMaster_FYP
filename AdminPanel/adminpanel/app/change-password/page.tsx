@@ -15,10 +15,27 @@ const ChangePassword = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+
+  const getAuthToken = () => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('auth_token');
+    }
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
+
+    const authToken = getAuthToken();
+    if (!authToken) {
+      setError('Authentication token not found. Please login again.');
+      setIsLoading(false);
+      return;
+    }
 
     if (!showVerification) {
       // First step: Send verification code
@@ -27,6 +44,7 @@ const ChangePassword = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
           },
           body: JSON.stringify({ email: formData.email }),
         });
@@ -40,51 +58,65 @@ const ChangePassword = () => {
         setError('');
       } catch (err) {
         setError('Failed to send verification code. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
       return;
     }
 
-    // Second step: Verify code and change password
+    // Second step: First verify the code
     try {
-      // First verify the email code
+      console.log('Attempting to verify code...');
       const verifyResponse = await fetch(API_ROUTES.USER.VERIFY_EMAIL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
           email: formData.email,
           code: formData.verificationCode,
         }),
       });
+      console.log('Verify response:', verifyResponse);
 
       if (!verifyResponse.ok) {
-        throw new Error('Invalid verification code');
+        const errorData = await verifyResponse.json();
+        console.log('Verification error:', errorData);
+        throw new Error(errorData.message || 'Invalid verification code');
       }
 
-      // Then change the password
+      console.log('Code verified, attempting to change password...');
       const changePasswordResponse = await fetch(API_ROUTES.ADMIN.CHANGE_PASSWORD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
-          email: formData.email,
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,
         }),
       });
+      console.log('Change password response:', changePasswordResponse);
 
       if (!changePasswordResponse.ok) {
         throw new Error('Failed to change password');
       }
 
       setSuccess(true);
+      setError('Password changed successfully!');
+      
+      // Add a slight delay before redirect to show the success message
       setTimeout(() => {
         router.push('/');
       }, 2000);
+
     } catch (err) {
+      console.error('Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to change password. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,7 +127,7 @@ const ChangePassword = () => {
           Change Password
         </h2>
 
-        {error && (
+        {error && !isCodeVerified && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
@@ -107,9 +139,15 @@ const ChangePassword = () => {
           </div>
         )}
 
-        {success && showVerification && (
+        {isCodeVerified && error !== 'Password changed successfully!' && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            Password changed successfully! Redirecting...
+            Code verified successfully!
+          </div>
+        )}
+
+        {error === 'Password changed successfully!' && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {error}
           </div>
         )}
 
@@ -188,9 +226,19 @@ const ChangePassword = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+            disabled={isLoading}
+            className={`w-full bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+            }`}
           >
-            {showVerification ? 'Verify' : 'Send Verification Code'}
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                {showVerification ? 'Verifying...' : 'Sending...'}
+              </div>
+            ) : (
+              showVerification ? 'Verify' : 'Send Verification Code'
+            )}
           </button>
         </form>
       </div>

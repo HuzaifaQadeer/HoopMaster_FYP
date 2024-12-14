@@ -2,15 +2,33 @@
 import Navbar from "../components/navbar";
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { API_ROUTES } from '../config/api-endpoints';
+import { API_ROUTES, fetchWithAuth } from '../config/api-endpoints';
+
+interface User {
+  _id: string;
+  displayName: string;
+  profilePicture: string;
+}
+
+interface TopScore {
+  user: User;
+  score: number;
+  rank: number;
+  _id: string;
+}
 
 interface Challenge {
-  id: number;
-  name: string;
+  _id: string;
+  title: string;
   description: string;
   instructions: string;
-  creator: string;
-  dateCreated: string;
+  startDate: string;
+  endDate: string;
+  topScores: TopScore[];
+  participants: User[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function Challenges() {
@@ -25,12 +43,15 @@ export default function Challenges() {
 
   const fetchChallenges = async () => {
     try {
-      const response = await fetch(API_ROUTES.CHALLENGE.GET_ALL);
+      setIsLoading(true);
+      const response = await fetchWithAuth(API_ROUTES.CHALLENGE.GET_ALL);
       if (!response.ok) {
         throw new Error('Failed to fetch challenges');
       }
       const data = await response.json();
-      setCommunityChallenges(data);
+      console.log('Fetched challenges data:', data);
+      const validChallenges = data.filter((challenge: Challenge) => challenge && challenge._id != null);
+      setCommunityChallenges(validChallenges);
     } catch (err) {
       setError('Failed to load challenges');
       console.error('Error fetching challenges:', err);
@@ -39,9 +60,9 @@ export default function Challenges() {
     }
   };
 
-  const handleRemoveChallenge = async (id: number) => {
+  const handleRemoveChallenge = async (id: string) => {
     try {
-      const response = await fetch(`${API_ROUTES.CHALLENGE.DELETE}/${id}`, {
+      const response = await fetchWithAuth(`${API_ROUTES.CHALLENGE.DELETE}/${id}`, {
         method: 'DELETE',
       });
       
@@ -49,10 +70,10 @@ export default function Challenges() {
         throw new Error('Failed to delete challenge');
       }
       
-      setCommunityChallenges(communityChallenges.filter(challenge => challenge.id !== id));
+      setCommunityChallenges(communityChallenges.filter(challenge => challenge._id !== id));
     } catch (err) {
       console.error('Error deleting challenge:', err);
-      // Optionally show an error message to the user
+      setError('Failed to delete challenge'); // Add error feedback
     }
   };
 
@@ -86,36 +107,59 @@ export default function Challenges() {
         
         <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6">
           <div className="grid gap-4">
-            {communityChallenges.map((challenge) => (
-              <div 
-                key={challenge.id} 
-                className="border border-gray-300 rounded-lg p-4"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-bold text-lg">{challenge.name}</h4>
-                    <p className="text-sm text-gray-600">Created by: {challenge.creator} on {challenge.dateCreated}</p>
+            {communityChallenges.length > 0 ? (
+              communityChallenges.map((challenge) => (
+                <div 
+                  key={challenge._id}
+                  className="border border-gray-300 rounded-lg p-4"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-bold text-lg">{challenge.title}</h4>
+                      <p className="text-sm text-gray-600">
+                        Created: {new Date(challenge.createdAt).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Active: {challenge.isActive ? "Yes" : "No"}
+                      </p>
+                    </div>
+                    <button 
+                      className="text-red-500 hover:text-red-700 p-1"
+                      onClick={() => handleRemoveChallenge(challenge._id)}
+                    >
+                      ✕
+                    </button>
                   </div>
-                  <button 
-                    className="text-red-500 hover:text-red-700 p-1"
-                    onClick={() => handleRemoveChallenge(challenge.id)}
-                  >
-                    ✕
-                  </button>
+                  
+                  <div className="mt-3 space-y-3">
+                    <div>
+                      <p className="text-gray-600 text-sm">Description</p>
+                      <p className="font-semibold">{challenge.description}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">Instructions</p>
+                      <pre className="font-semibold whitespace-pre-wrap">{challenge.instructions}</pre>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">Date Range</p>
+                      <p className="font-semibold">
+                        {new Date(challenge.startDate).toLocaleDateString()} - {new Date(challenge.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {challenge.topScores.length > 0 && (
+                      <div>
+                        <p className="text-gray-600 text-sm">Top Score</p>
+                        <p className="font-semibold">
+                          {challenge.topScores[0].user.displayName}: {challenge.topScores[0].score}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                
-                <div className="mt-3 space-y-3">
-                  <div>
-                    <p className="text-gray-600 text-sm">Description</p>
-                    <p className="font-semibold">{challenge.description}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-sm">Instructions</p>
-                    <pre className="font-semibold whitespace-pre-wrap">{challenge.instructions}</pre>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No challenges found.</p>
+            )}
           </div>
         </div>
 

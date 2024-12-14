@@ -1,12 +1,23 @@
 'use client';
 import Navbar from "../components/navbar";
 import { useState, useEffect } from "react";
-import { API_ROUTES } from "../config/api-endpoints";
+import { API_ROUTES, fetchWithAuth } from "../config/api-endpoints";
+
+interface PremiumConfig {
+  currentDiscount?: {
+    percentage: number;
+    validUntil: string;
+  };
+  premiumPrice: number;
+}
 
 const Premium: React.FC = () => {
+  const [premiumConfig, setPremiumConfig] = useState<PremiumConfig | null>(null);
   const [discounts, setDiscounts] = useState<any[]>([]);
   const [newPercentage, setNewPercentage] = useState("");
   const [newDuration, setNewDuration] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPremiumConfig();
@@ -14,21 +25,29 @@ const Premium: React.FC = () => {
 
   const fetchPremiumConfig = async () => {
     try {
-      const response = await fetch(API_ROUTES.PREMIUM.GET, {
-        method: 'GET',
-        credentials: 'include'
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetchWithAuth(API_ROUTES.PREMIUM.GET, {
+        method: 'GET'
       });
 
       if (!response.ok) {
         throw new Error('Failed to fetch premium config');
       }
 
-      const data = await response.json();
+      const data: PremiumConfig = await response.json();
+      setPremiumConfig(data);
       
-      // If there's an active discount, add it to the discounts array
       if (data.currentDiscount) {
-        const daysRemaining = Math.ceil(
-          (new Date(data.currentDiscount.validUntil).getTime() - new Date().getTime()) 
+        const validUntilDate = new Date(data.currentDiscount.validUntil);
+        validUntilDate.setHours(0, 0, 0, 0);
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const daysRemaining = Math.floor(
+          (validUntilDate.getTime() - today.getTime()) 
           / (1000 * 60 * 60 * 24)
         );
         
@@ -43,6 +62,9 @@ const Premium: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching premium config:', error);
+      setError('Failed to fetch premium configuration');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,21 +72,25 @@ const Premium: React.FC = () => {
     if (!newPercentage || !newDuration) return;
     
     const percentage = Number(newPercentage);
+    const duration = Number(newDuration);
+
     if (percentage < 1 || percentage > 80) {
       alert("Percentage must be between 1 and 80");
+      return;
+    }
+
+    if (duration < 1 || duration > 60) {
+      alert("Duration must be between 1 and 60 days");
       return;
     }
     
     try {
       const validUntil = new Date();
-      validUntil.setDate(validUntil.getDate() + parseInt(newDuration));
+      validUntil.setDate(validUntil.getDate() + duration);
+      validUntil.setHours(23, 59, 59, 999);
 
-      const response = await fetch(API_ROUTES.PREMIUM.SET_DISCOUNT, {
+      const response = await fetchWithAuth(API_ROUTES.PREMIUM.SET_DISCOUNT, {
         method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           percentage: percentage,
           validUntil: validUntil.toISOString()
@@ -72,10 +98,11 @@ const Premium: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to set discount');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to set discount');
       }
 
-      await fetchPremiumConfig(); // Refresh the discount display
+      await fetchPremiumConfig();
       setNewPercentage("");
       setNewDuration("");
     } catch (error) {
@@ -86,16 +113,15 @@ const Premium: React.FC = () => {
 
   const handleDeleteDiscount = async () => {
     try {
-      const response = await fetch(API_ROUTES.PREMIUM.REMOVE_DISCOUNT, {
-        method: 'PATCH',
-        credentials: 'include'
+      const response = await fetchWithAuth(API_ROUTES.PREMIUM.REMOVE_DISCOUNT, {
+        method: 'PATCH'
       });
 
       if (!response.ok) {
         throw new Error('Failed to remove discount');
       }
 
-      setDiscounts([]); // Remove all discounts
+      await fetchPremiumConfig();
     } catch (error) {
       console.error('Error removing discount:', error);
       alert('Failed to remove discount. Please try again.');
@@ -128,10 +154,12 @@ const Premium: React.FC = () => {
               <label className="block mb-1">Duration (days)</label>
               <input
                 type="number"
+                min="1"
+                max="60"
                 value={newDuration}
                 onChange={(e) => setNewDuration(e.target.value)}
                 className="border p-2 rounded w-full"
-                placeholder="Enter duration in days"
+                placeholder="Enter duration (1-60 days)"
               />
             </div>
             <div className="flex justify-center">

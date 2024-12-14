@@ -44,7 +44,6 @@ const userSchema = new mongoose.Schema({
   isEmailVerified: { type: Boolean, default: false },
   premiumStartDate: Date,
   premiumExpiryDate: Date,
-  totalSpent: { type: Number, default: 0 },
   
   banStatus: {
     isBanned: { type: Boolean, default: false },

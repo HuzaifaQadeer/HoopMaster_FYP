@@ -18,26 +18,19 @@ router.put('/highlight-video', authMiddleware, userController.updateHighlightVid
 router.post('/send-verification-email', userController.sendVerificationEmail);
 router.post('/verify-email', userController.verifyEmail);
 router.post('/check-user-exists', userController.checkUserExists);
-router.delete('/delete-user', userController.deleteUser);
+//router.delete('/delete-user', userController.deleteUser);
 router.delete('/delete-all-users', userController.deleteAllUsers);
 router.get('/profilepicture', authMiddleware, userController.getProfilePicture);
 router.get('/highlightvideo', authMiddleware, userController.getHighlightVideo);
 router.get('/total-users', userController.getTotalUsers);
 router.get('/total-premium-users', userController.getTotalPremiumUsers);
-router.get('/total-revenue', userController.getTotalRevenue);
 router.get('/users-growth/three-months', userController.getUsersGrowthThreeMonths);
 router.get('/users-growth/year', userController.getUsersGrowthYear);
 router.get('/users-growth/lifetime', userController.getUsersGrowthLifetime);
-router.get('/revenue-growth/three-months', userController.getRevenueGrowthThreeMonths);
-router.get('/revenue-growth/year', userController.getRevenueGrowthYear);
-router.get('/revenue-growth/lifetime', userController.getRevenueGrowthLifetime);
-router.get('/premium-subscriptions/three-months', userController.getPremiumSubscriptionsThreeMonths);
-router.get('/premium-subscriptions/year', userController.getPremiumSubscriptionsYear);
-router.get('/premium-subscriptions/lifetime', userController.getPremiumSubscriptionsLifetime);
-router.get('/premium-unsubscriptions/three-months', userController.getPremiumUnsubscriptionsThreeMonths);
-router.get('/premium-unsubscriptions/year', userController.getPremiumUnsubscriptionsYear);
-router.get('/premium-unsubscriptions/lifetime', userController.getPremiumUnsubscriptionsLifetime);
 router.get('/search-players', userController.searchPlayers);
-router.get('/admin/:userId', authMiddleware, userController.getUserById);
-
+router.get('/:userId', authMiddleware, userController.getUserById);
+router.post('/ban/:userId', authMiddleware, userController.banUser);
+router.post('/unban/:userId', authMiddleware, userController.unbanUser);
+router.delete('/:userId', authMiddleware, userController.deleteUser);
+    
 module.exports = router;

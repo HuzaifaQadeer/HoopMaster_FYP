@@ -2,16 +2,18 @@
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Navbar from "../components/navbar";
-import { API_ROUTES } from "../config/api-endpoints";
+import { API_ROUTES, fetchWithAuth } from "../config/api-endpoints";
 
 const AddChallenge = () => {
   const router = useRouter();
   const [challenge, setChallenge] = useState({
-    name: '',
+    title: '',
     description: '',
     instructions: '',
-    creator: '',
-    dateCreated: new Date().toISOString().split('T')[0]
+    demoVideo: '',
+    startDate: '',
+    endDate: '',
+    isActive: true
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,12 +24,13 @@ const AddChallenge = () => {
     setError("");
 
     try {
-      const response = await fetch(API_ROUTES.CHALLENGE.CREATE, {
+      const response = await fetchWithAuth(API_ROUTES.CHALLENGE.CREATE, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(challenge)
+        body: JSON.stringify({
+          ...challenge,
+          startDate: new Date(challenge.startDate).toISOString(),
+          endDate: new Date(challenge.endDate).toISOString(),
+        })
       });
 
       if (!response.ok) {
@@ -50,12 +53,12 @@ const AddChallenge = () => {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Challenge Name</label>
+              <label className="block text-sm font-medium text-gray-700">Challenge Title</label>
               <input
                 type="text"
                 className="mt-1 block w-full rounded-md border border-gray-300 p-2"
-                value={challenge.name}
-                onChange={(e) => setChallenge({...challenge, name: e.target.value})}
+                value={challenge.title}
+                onChange={(e) => setChallenge({...challenge, title: e.target.value})}
                 required
               />
             </div>
@@ -84,12 +87,34 @@ const AddChallenge = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Creator Name</label>
+              <label className="block text-sm font-medium text-gray-700">Demo Video URL</label>
               <input
-                type="text"
+                type="url"
                 className="mt-1 block w-full rounded-md border border-gray-300 p-2"
-                value={challenge.creator}
-                onChange={(e) => setChallenge({...challenge, creator: e.target.value})}
+                value={challenge.demoVideo}
+                onChange={(e) => setChallenge({...challenge, demoVideo: e.target.value})}
+                placeholder="https://example.com/video.mp4"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Start Date</label>
+              <input
+                type="date"
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                value={challenge.startDate}
+                onChange={(e) => setChallenge({...challenge, startDate: e.target.value})}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">End Date</label>
+              <input
+                type="date"
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                value={challenge.endDate}
+                onChange={(e) => setChallenge({...challenge, endDate: e.target.value})}
                 required
               />
             </div>

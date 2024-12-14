@@ -162,10 +162,26 @@ exports.checkUserExists = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    // Add admin check if needed
+    // if (!req.user.isAdmin) {
+    //   return res.status(403).json({ message: 'Access denied: Admin only' });
+    // }
+    
     const result = await userService.deleteUser(userId);
-    res.json(result);
+    
+    if (!result) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error in deleteUser controller:', error);
+    if (error.message === 'User not found') {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
   }
 };
 
@@ -244,15 +260,6 @@ exports.getTotalPremiumUsers = async (req, res) => {
   }
 };
 
-exports.getTotalRevenue = async (req, res) => {
-  try {
-    const revenue = await userService.getTotalRevenue();
-    res.json({ revenue });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 exports.getUsersGrowthThreeMonths = async (req, res) => {
   try {
     const data = await userService.getUsersGrowthThreeMonths();
@@ -274,87 +281,6 @@ exports.getUsersGrowthYear = async (req, res) => {
 exports.getUsersGrowthLifetime = async (req, res) => {
   try {
     const data = await userService.getUsersGrowthLifetime();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getRevenueGrowthThreeMonths = async (req, res) => {
-  try {
-    const data = await userService.getRevenueGrowthThreeMonths();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getRevenueGrowthYear = async (req, res) => {
-  try {
-    const data = await userService.getRevenueGrowthYear();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getRevenueGrowthLifetime = async (req, res) => {
-  try {
-    const data = await userService.getRevenueGrowthLifetime();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumSubscriptionsThreeMonths = async (req, res) => {
-  try {
-    const data = await userService.getPremiumSubscriptionsThreeMonths();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumSubscriptionsYear = async (req, res) => {
-  try {
-    const data = await userService.getPremiumSubscriptionsYear();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumSubscriptionsLifetime = async (req, res) => {
-  try {
-    const data = await userService.getPremiumSubscriptionsLifetime();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumUnsubscriptionsThreeMonths = async (req, res) => {
-  try {
-    const data = await userService.getPremiumUnsubscriptionsThreeMonths();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumUnsubscriptionsYear = async (req, res) => {
-  try {
-    const data = await userService.getPremiumUnsubscriptionsYear();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPremiumUnsubscriptionsLifetime = async (req, res) => {
-  try {
-    const data = await userService.getPremiumUnsubscriptionsLifetime();
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -423,12 +349,16 @@ exports.banUser = async (req, res) => {
     };
 
     const user = await userService.banUser(userId, banData, req.user.id);
-    res.json({
+    
+    res.status(200).json({
       message: 'User banned successfully',
       banStatus: user.banStatus
     });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Ban error:', error);
+    res.status(400).json({ 
+      message: error.message || 'Failed to ban user' 
+    });
   }
 };
 

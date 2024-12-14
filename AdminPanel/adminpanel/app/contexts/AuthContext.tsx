@@ -16,6 +16,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Create a function to handle API responses and check for token errors
+  const handleApiResponse = async (response: Response) => {
+    if (response.status === 401) {
+      const data = await response.json();
+      if (data.tokenError) {
+        // Token is invalid or expired, log out the user
+        await logout();
+        return null;
+      }
+    }
+    return response;
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
     setIsAuthenticated(!!token);
@@ -53,17 +66,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('admin_data');
     setIsAuthenticated(false);
-    router.push('/login');
+    await router.push('/login');
   };
+
+  // Create a wrapper for fetch that includes token handling
+  const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      options.headers = {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    const response = await fetch(url, options);
+    return handleApiResponse(response);
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout: async () => {
-      localStorage.removeItem('auth_token');
-      setIsAuthenticated(false);
-      await router.push('/login');
-    } }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      login, 
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   );

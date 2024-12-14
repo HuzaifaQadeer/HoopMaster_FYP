@@ -2,9 +2,9 @@ const postService = require('../services/postService');
 
 exports.createPost = async (req, res) => {
   try {
-    const { content, isPrivate } = req.body;
+    const { content, isPrivate, userId } = req.body;
     const media = req.files?.media;
-    const post = await postService.createPost(req.user.id, content, media, isPrivate);
+    const post = await postService.createPost(userId, content, media, isPrivate);
     res.status(201).json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -13,11 +13,6 @@ exports.createPost = async (req, res) => {
 
 exports.getAllPosts = async (req, res) => {
   try {
-    // Check if user is admin
-    if (!req.user.isAdmin) {
-      return res.status(403).json({ message: 'Access denied: Admin only' });
-    }
-
     const posts = await postService.getAllPosts();
     res.json(posts);
   } catch (error) {

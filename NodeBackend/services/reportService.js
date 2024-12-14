@@ -23,11 +23,27 @@ exports.createReport = async (reporterId, contentType, contentId, reason, commen
 };
 
 exports.getAllReports = async () => {
-  return await Report.find()
+  const reports = await Report.find({ resolved: false })
     .populate('reporter', 'displayName email')
     .populate('reported', 'displayName email')
     .populate('adminAction.admin', 'name email')
+    .populate({
+      path: 'contentId',
+      select: 'content text title',
+      refPath: 'contentType'
+    })
     .sort('-createdAt');
+
+  return reports.map(report => {
+    const contentDetails = report.contentId ? {
+      content: report.contentId.content || report.contentId.text || report.contentId.title,
+    } : null;
+
+    return {
+      ...report.toObject(),
+      contentDetails
+    };
+  });
 };
 
 const getReportedContent = async (contentType, contentId) => {
@@ -56,7 +72,7 @@ exports.getReportById = async (reportId) => {
   return report;
 };
 
-exports.resolveReport = async (reportId, adminId) => {
+exports.resolveReport = async (reportId, adminId, action = 'resolved', notes = '') => {
   const report = await Report.findById(reportId);
   
   if (!report) {
@@ -67,8 +83,9 @@ exports.resolveReport = async (reportId, adminId) => {
   report.status = 'resolved';
   report.adminAction = {
     admin: adminId,
-    action: 'resolved',
+    action: action,
     date: new Date(),
+    notes: notes
   };
 
   await report.save();

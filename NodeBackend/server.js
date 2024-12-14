@@ -15,6 +15,7 @@ const commentRoutes = require('./routes/commentRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const premiumRoutes = require('./routes/premiumRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const revenueRoutes = require('./routes/revenueRoutes');
 
 const app = express();
 app.use(cors({
@@ -41,6 +42,7 @@ app.use('/comments', commentRoutes);
 app.use('/reports', reportRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/admin', adminRoutes);
+app.use('/revenue', revenueRoutes);
 
 const PORT = process.env.PORT;
 
