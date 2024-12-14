@@ -4,6 +4,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, R
 import Navbar from './components/navbar';
 import { API_ROUTES } from './config/api-endpoints';
 import { fetchWithAuth } from './config/api-endpoints';
+import { monthlyData as dummyMonthlyData } from '../dummydata/data';
 
 interface MonthlyDataType {
   month: string;
@@ -35,73 +36,94 @@ const Dashboard = () => {
   const [popularChallenges, setPopularChallenges] = useState<TransformedPopularItem[]>([]);
   const [popularDrills, setPopularDrills] = useState<PopularItem[]>([]);
   const [overallTotals, setOverallTotals] = useState({ players: 0, revenue: 0, premiumUsers: 0 });
+  const [useRealData, setUseRealData] = useState<boolean>(true);
 
   // Fetch overall totals
   useEffect(() => {
     const fetchTotals = async () => {
-      try {
-        const [usersRes, revenueRes, premiumRes] = await Promise.all([
-          fetchWithAuth(API_ROUTES.USER.TOTAL_USERS),
-          fetchWithAuth(API_ROUTES.REVENUE.TOTAL),
-          fetchWithAuth(API_ROUTES.USER.TOTAL_PREMIUM_USERS)
-        ]);
-        
-        const [totalUsers, totalRevenue, totalPremium] = await Promise.all([
-          usersRes.json(),
-          revenueRes.json(),
-          premiumRes.json()
-        ]);
+      if (useRealData) {
+        try {
+          const [usersRes, revenueRes, premiumRes] = await Promise.all([
+            fetchWithAuth(API_ROUTES.USER.TOTAL_USERS),
+            fetchWithAuth(API_ROUTES.REVENUE.TOTAL),
+            fetchWithAuth(API_ROUTES.USER.TOTAL_PREMIUM_USERS)
+          ]);
+          
+          const [totalUsers, totalRevenue, totalPremium] = await Promise.all([
+            usersRes.json(),
+            revenueRes.json(),
+            premiumRes.json()
+          ]);
 
+          setOverallTotals({
+            players: totalUsers.count,
+            revenue: totalRevenue.revenue || 0,
+            premiumUsers: totalPremium.count
+          });
+        } catch (error) {
+          console.error('Error fetching totals:', error);
+        }
+      } else {
+        // Use dummy totals
         setOverallTotals({
-          players: totalUsers.count,
-          revenue: totalRevenue.revenue || 0,
-          premiumUsers: totalPremium.count
+          players: 310,
+          revenue: 2000,
+          premiumUsers: 180
         });
-      } catch (error) {
-        console.error('Error fetching totals:', error);
       }
     };
     fetchTotals();
-  }, []);
+  }, [useRealData]);
 
   // Fetch time-based data
   useEffect(() => {
     const fetchTimeData = async () => {
-      try {
-        const endpoint = timeFrame === '3months' 
-          ? 'THREE_MONTHS' 
-          : timeFrame === 'year' ? 'YEAR' : 'LIFETIME';
+      if (useRealData) {
+        try {
+          const endpoint = timeFrame === '3months' 
+            ? 'THREE_MONTHS' 
+            : timeFrame === 'year' ? 'YEAR' : 'LIFETIME';
 
-        const [growthRes, revenueRes, subsRes, unsubsRes] = await Promise.all([
-          fetchWithAuth(API_ROUTES.USER.USERS_GROWTH[endpoint]),
-          fetchWithAuth(API_ROUTES.REVENUE.GROWTH[endpoint]),
-          fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_SUBSCRIPTIONS[endpoint]),
-          fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_UNSUBSCRIPTIONS[endpoint])
-        ]);
+          const [growthRes, revenueRes, subsRes, unsubsRes] = await Promise.all([
+            fetchWithAuth(API_ROUTES.USER.USERS_GROWTH[endpoint]),
+            fetchWithAuth(API_ROUTES.REVENUE.GROWTH[endpoint]),
+            fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_SUBSCRIPTIONS[endpoint]),
+            fetchWithAuth(API_ROUTES.REVENUE.PREMIUM_UNSUBSCRIPTIONS[endpoint])
+          ]);
 
-        const [growth, revenue, subs, unsubs] = await Promise.all([
-          growthRes.json(),
-          revenueRes.json(),
-          subsRes.json(),
-          unsubsRes.json()
-        ]);
+          const [growth, revenue, subs, unsubs] = await Promise.all([
+            growthRes.json(),
+            revenueRes.json(),
+            subsRes.json(),
+            unsubsRes.json()
+          ]);
 
-        const formattedData = (growth || []).map((item: any, index: number) => ({
-          month: item.month,
-          players: item.users || 0,
-          revenue: revenue[index]?.amount || 0,
-          premiumSubscribed: subs[index]?.count || 0,
-          premiumUnsubscribed: unsubs[index]?.count || 0
-        }));
+          const formattedData = (growth || []).map((item: any, index: number) => ({
+            month: item.month,
+            players: item.users || 0,
+            revenue: revenue[index]?.amount || 0,
+            premiumSubscribed: subs[index]?.count || 0,
+            premiumUnsubscribed: unsubs[index]?.count || 0
+          }));
 
-        setMonthlyData(formattedData);
-      } catch (error) {
-        console.error('Error fetching time data:', error);
-        setMonthlyData([]);
+          setMonthlyData(formattedData);
+        } catch (error) {
+          console.error('Error fetching time data:', error);
+          setMonthlyData([]);
+        }
+      } else {
+        // Use dummy data based on timeFrame
+        let filteredData = [...dummyMonthlyData];
+        if (timeFrame === '3months') {
+          filteredData = dummyMonthlyData.slice(-3);
+        } else if (timeFrame === 'year') {
+          filteredData = dummyMonthlyData;
+        }
+        setMonthlyData(filteredData);
       }
     };
     fetchTimeData();
-  }, [timeFrame]);
+  }, [timeFrame, useRealData]);
 
   // Fetch popular items
   useEffect(() => {
@@ -340,6 +362,13 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        <button 
+          onClick={() => setUseRealData(!useRealData)}
+          className="mb-4 px-4 py-2 bg-black text-white rounded"
+        >
+          Toggle {useRealData ? 'Dummy' : 'Real'} Data
+        </button>
       </div>
     </div>
   );
