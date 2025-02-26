@@ -69,7 +69,7 @@ const HomePage = () => {
   }, []);
 
   // Calculate the height for 3 drill items
-  const drillItemHeight = 80; // Adjust this value based on your Drill component's height
+  const drillItemHeight = 140; // Adjust this value based on your Drill component's height
   const drillListHeight = drillItemHeight * 3;
 
   return (

@@ -18,10 +18,56 @@ AVAILABLE_DRILLS = [
 
 # Basketball keywords for validation
 BASKETBALL_KEYWORDS = [
-    'shoot', 'dribble', 'defense', 'layup', 'jump', 'drill', 
-    'practice', 'game', 'basketball', 'nba', 'strech', 'skill', 
-    'training', 'workout', 'coach', 'player', 'team', 'score', 
-    'ball handling', 'crossover', 'pivot', 'footwork', 'conditioning'
+    # Shooting variations
+    'shoot', 'shooting', 'shot', 'shots', 'shooter',
+    '3 point', '3 pointer', '3pt', 'three point', 'three pointer', 'three-pointer',
+    'free throw', 'free-throw', 'freethrow',
+    'jump shot', 'jumpshot', 'jumper',
+    
+    # Dribbling variations
+    'dribble', 'dribbling', 'handles', 'ball handling', 'ball-handling',
+    'crossover', 'cross-over', 'between the legs', 'behind the back',
+    
+    # Defensive terms
+    'defense', 'defensive', 'defend', 'defending',
+    'steal', 'block', 'rebound', 'rebounding',
+    'stance', 'sliding', 'closeout',
+    
+    # Offensive moves
+    'layup', 'lay-up', 'lay up', 'layups',
+    'dunk', 'dunking', 'dunks',
+    'post up', 'post-up', 'post move',
+    'euro step', 'eurostep', 'euro-step',
+    'floater', 'hook shot', 'bank shot',
+    
+    # Physical attributes
+    'jump', 'jumping', 'vertical', 'vertical leap',
+    'speed', 'agility', 'quickness', 'strength',
+    'footwork', 'balance', 'coordination',
+    
+    # Training terms
+    'drill', 'drills', 'practice', 'practicing',
+    'training', 'workout', 'workouts', 'exercise',
+    'conditioning', 'cardio', 'endurance',
+    'warmup', 'warm-up', 'warm up',
+    'stretch', 'stretching', 'flexibility',
+    
+    # Game terms
+    'game', 'games', 'scrimmage', 'pickup', 'pick-up',
+    'basketball', 'hoops', 'ball', 'court',
+    'offense', 'offensive', 'scoring', 'score',
+    
+    # People and organizations
+    'nba', 'ncaa', 'fiba',
+    'coach', 'coaching', 'trainer',
+    'player', 'players', 'teammate',
+    'team', 'teams', 'squad',
+    
+    # Skill development
+    'skill', 'skills', 'technique',
+    'fundamentals', 'basics', 'advanced',
+    'form', 'mechanics', 'rhythm',
+    'improvement', 'progress', 'development'
 ]
 
 # Chatbot prompt template

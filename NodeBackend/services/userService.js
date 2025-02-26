@@ -32,14 +32,33 @@ class UserService {
   }
 
   async loginUser(email, password) {
-    const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new Error('Invalid credentials');
+    try {
+      const user = await User.findOne({ email });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        throw new Error('Invalid credentials');
+      }
+
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+      // Ensure all fields are properly formatted
+      const response = {
+        token: token,
+        user: {
+          id: user._id.toString(),
+          email: user.email,
+          displayName: user.displayName || null
+        }
+      };
+
+      // Validate the response format
+      if (!response.token || !response.user || !response.user.id) {
+        throw new Error('Error creating login response');
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
     }
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-
-    return { token, user: { id: user._id, email: user.email, displayName: user.displayName } };
   }
 
   async resetPassword(email, password) {
@@ -73,6 +92,41 @@ class UserService {
       throw new Error('User not found');
     }
 
+    console.log('Received updates:', updates);
+
+    // Create a clean updates object
+    const cleanUpdates = { ...updates };
+
+    // Remove sensitive and system fields
+    const excludedFields = [
+      'courses',
+      'drills',
+      'achievements',
+      'posts',
+      'comments',
+      'banStatus',
+      'password',
+      'createdAt',
+      'updatedAt',
+      '__v'
+    ];
+    
+    excludedFields.forEach(field => {
+      delete cleanUpdates[field];
+    });
+
+    // Parse JSON strings back to objects
+    ['socialMedia', 'height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
+      if (cleanUpdates[field] && typeof cleanUpdates[field] === 'string') {
+        try {
+          cleanUpdates[field] = JSON.parse(cleanUpdates[field]);
+        } catch (error) {
+          console.error(`Error parsing ${field}:`, error);
+          cleanUpdates[field] = currentUser[field];
+        }
+      }
+    });
+
     if (profilePicture) {
       if (currentUser.profilePicture) {
         const oldPicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', currentUser.profilePicture);
@@ -84,22 +138,71 @@ class UserService {
       const uploadPath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', uniqueFilename);
 
       await profilePicture.mv(uploadPath);
-      updates.profilePicture = uniqueFilename;
+      cleanUpdates.profilePicture = uniqueFilename;
     }
 
+    // Safely parse JSON fields
     ['socialMedia', 'height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
-      if (updates[field]) {
-        updates[field] = JSON.parse(updates[field]);
+      if (cleanUpdates[field]) {
+        console.log(`Processing ${field}:`, {
+          value: cleanUpdates[field],
+          type: typeof cleanUpdates[field]
+        });
+
+        try {
+          // If it's a string and looks like JSON, try to parse it
+          if (typeof cleanUpdates[field] === 'string' && 
+              (cleanUpdates[field].startsWith('{') || cleanUpdates[field].startsWith('['))) {
+            cleanUpdates[field] = JSON.parse(cleanUpdates[field]);
+            console.log(`Successfully parsed ${field}:`, cleanUpdates[field]);
+          } else if (typeof cleanUpdates[field] === 'object') {
+            console.log(`${field} is already an object:`, cleanUpdates[field]);
+          } else {
+            console.log(`${field} is neither JSON string nor object:`, cleanUpdates[field]);
+            // For non-JSON string values, create a default measurement object
+            if (['height', 'weight', 'wingspan', 'verticalJump'].includes(field)) {
+              cleanUpdates[field] = {
+                value: cleanUpdates[field],
+                unit: field === 'weight' ? 'kg' : 'cm'
+              };
+            }
+          }
+        } catch (error) {
+          console.error(`Error processing ${field}:`, error);
+          // If parsing fails, keep the original value
+          cleanUpdates[field] = currentUser[field];
+        }
       }
     });
 
+    // Convert measurements with validation
     ['height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
-      if (updates[field]) {
-        updates[field] = this.convertMeasurement(updates[field], field);
+      if (cleanUpdates[field]) {
+        console.log(`Converting measurement for ${field}:`, cleanUpdates[field]);
+        try {
+          if (typeof cleanUpdates[field] === 'object' && cleanUpdates[field].value !== undefined) {
+            cleanUpdates[field] = this.convertMeasurement(cleanUpdates[field], field);
+            console.log(`Converted ${field}:`, cleanUpdates[field]);
+          } else {
+            console.log(`Invalid measurement format for ${field}`);
+          }
+        } catch (error) {
+          console.error(`Error converting ${field}:`, error);
+          // If conversion fails, keep the original value
+          cleanUpdates[field] = currentUser[field];
+        }
       }
     });
 
-    const user = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true }).select('-password');
+    console.log('Final cleanUpdates:', cleanUpdates);
+
+    // Update user with clean updates
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: cleanUpdates },
+      { new: true, runValidators: true }
+    ).select('-password');
+
     if (!user) {
       throw new Error('User not found');
     }
@@ -108,6 +211,45 @@ class UserService {
   }
 
   convertMeasurement(measurement, field) {
+    // If measurement is null or undefined, return default
+    if (!measurement) {
+      return { value: null, unit: field === 'weight' ? 'kg' : 'cm' };
+    }
+
+    // Ensure measurement is an object
+    if (typeof measurement !== 'object') {
+      console.log(`Invalid measurement format for ${field}:`, measurement);
+      return { value: null, unit: field === 'weight' ? 'kg' : 'cm' };
+    }
+
+    // Create a safe copy
+    const result = { 
+      value: null,
+      unit: measurement.unit || (field === 'weight' ? 'kg' : 'cm')
+    };
+
+    // Handle the value
+    if (measurement.value !== undefined) {
+      // If value is a string, try to convert it to a number
+      if (typeof measurement.value === 'string') {
+        // Remove any non-numeric characters except decimal point
+        const cleanValue = measurement.value.replace(/[^\d.-]/g, '');
+        
+        // Try to parse as float
+        const numValue = parseFloat(cleanValue);
+        
+        // Check if it's a valid number
+        if (!isNaN(numValue)) {
+          result.value = numValue;
+        } else {
+          result.value = null;
+        }
+      } else if (typeof measurement.value === 'number') {
+        result.value = measurement.value;
+      }
+    }
+
+    // Handle unit conversions
     const conversionMap = {
       height: { from: 'ft', to: 'cm', factor: 30.48 },
       weight: { from: 'lbs', to: 'kg', factor: 0.453592 },
@@ -116,14 +258,12 @@ class UserService {
     };
 
     const conversion = conversionMap[field];
-    if (!conversion) return measurement;
-
-    if (measurement.unit === conversion.from) {
-      measurement.value = parseFloat(measurement.value) * conversion.factor;
-      measurement.unit = conversion.to;
+    if (conversion && result.unit === conversion.from && result.value !== null) {
+      result.value = result.value * conversion.factor;
+      result.unit = conversion.to;
     }
 
-    return measurement;
+    return result;
   }
 
   async togglePrivacy(userId) {

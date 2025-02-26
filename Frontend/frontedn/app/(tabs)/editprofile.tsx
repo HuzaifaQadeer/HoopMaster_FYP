@@ -20,6 +20,7 @@ import Achievement from '@/components/custom/achivement';
 import { Image as ExpoImage } from 'expo-image';
 import * as VideoPicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 interface MeasurementValue {
   value: string;
@@ -48,6 +49,18 @@ interface ProfileData {
   aboutMe: string;
   highlightVideo: string | null;
 }
+
+const POSITIONS = [
+  'Point Guard',
+  'Shooting Guard',
+  'Small Forward',
+  'Power Forward',
+  'Center',
+  'Guard',
+  'Forward',
+  'Forward-Center',
+  'Guard-Forward',
+];
 
 const dummyAchievements = [
   { id: 1, title: "MVP 2023", rank: 1 },
@@ -300,18 +313,38 @@ export default function EditProfileScreen() {
         verticalJump: formatMeasurementForSubmit(profileData.verticalJump),
       };
 
-      // Append all profile data except courses and achievements
+      // List of fields that should be excluded from FormData
+      const excludedFields = [
+        'courses',
+        'drills',
+        'achievements',
+        'posts',
+        'comments',
+        'profilePicture',
+        'highlightVideo',
+        'banStatus',
+        'createdAt',
+        'updatedAt',
+        '__v'
+      ];
+      
+      // Append all profile data except excluded fields
       Object.entries(formattedData).forEach(([key, value]) => {
-        if (key === 'courses' || key === 'achievements') return;
+        // Skip excluded fields and null/undefined values
+        if (excludedFields.includes(key) || value === null || value === undefined) return;
 
-        if (key === 'socialMedia' || key === 'height' || key === 'weight' || 
-            key === 'wingspan' || key === 'verticalJump') {
-          formData.append(key, JSON.stringify(value));
-        } else if (value !== null && value !== undefined) {
-          formData.append(key, value.toString());
+        // Handle objects (except banStatus) by converting to JSON string
+        if (typeof value === 'object') {
+          try {
+            formData.append(key, JSON.stringify(value));
+          } catch (error) {
+            console.error(`Error stringifying ${key}:`, error);
+          }
+        } else {
+          formData.append(key, String(value));
         }
       });
-
+      
       const response = await fetch(API_ROUTES.UPDATE_PROFILE, {
         method: 'PUT',
         headers: {
@@ -323,6 +356,7 @@ export default function EditProfileScreen() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Profile update error:', errorData);
         throw new Error(errorData.message || 'Failed to update profile');
       }
 
@@ -354,23 +388,45 @@ export default function EditProfileScreen() {
 
   // Add this helper function to format measurements for submission
   const formatMeasurementForSubmit = (measurement: MeasurementValue) => {
-    if (!measurement || !measurement.value) {
+    if (!measurement) {
       return null;
     }
 
-    // Convert feet/inches to total inches if unit is 'ft'
+    // Create a clean object
+    const result: any = {
+      unit: measurement.unit || 'cm'
+    };
+
+    // Handle value based on unit type
     if (measurement.unit === 'ft' && measurement.feet && measurement.inches) {
-      const totalInches = (parseFloat(measurement.feet) * 12) + parseFloat(measurement.inches);
-      return {
-        value: totalInches,
-        unit: measurement.unit
-      };
+      try {
+        // Convert feet and inches to a number
+        const feet = parseFloat(measurement.feet) || 0;
+        const inches = parseFloat(measurement.inches) || 0;
+        result.value = (feet * 12) + inches;
+      } catch (error) {
+        console.error('Error converting feet/inches:', error);
+        result.value = 0;
+      }
+    } else if (measurement.value) {
+      try {
+        // If value is a string, convert to number
+        if (typeof measurement.value === 'string') {
+          // Remove any non-numeric characters except decimal point
+          const cleanValue = measurement.value.replace(/[^\d.-]/g, '');
+          result.value = parseFloat(cleanValue) || 0;
+        } else {
+          result.value = measurement.value;
+        }
+      } catch (error) {
+        console.error('Error converting measurement value:', error);
+        result.value = 0;
+      }
+    } else {
+      result.value = 0;
     }
 
-    return {
-      value: parseFloat(measurement.value),
-      unit: measurement.unit
-    };
+    return result;
   };
 
   return (
@@ -447,13 +503,19 @@ export default function EditProfileScreen() {
         onMeasurementChange={(value, unit) => handleMeasurementChange('verticalJump', value, unit)}
       />
 
-      <TextInput
-        style={[styles.input, { borderColor: colors.border, color: colors.text }]}
-        placeholder="Position"
-        placeholderTextColor={colors.text}
-        value={profileData?.position}
-        onChangeText={(value) => handleInputChange('position', value)}
-      />
+      <View style={[styles.pickerContainer, { borderColor: colors.border }]}>
+        <Picker
+          selectedValue={profileData?.position}
+          onValueChange={(value) => handleInputChange('position', value)}
+          style={[styles.picker, { color: colors.text }]}
+          dropdownIconColor={colors.text}
+        >
+          <Picker.Item label="Select Position" value="" />
+          {POSITIONS.map((position) => (
+            <Picker.Item key={position} label={position} value={position} />
+          ))}
+        </Picker>
+      </View>
 
       <TextInput
         style={[styles.textArea, { borderColor: colors.border, color: colors.text }]}
@@ -477,42 +539,6 @@ export default function EditProfileScreen() {
         <Text style={[styles.helperText, { color: colors.text }]}>
           Maximum video size: 100MB
         </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Achievements</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[
-            { title: "MVP 2023", rank: 1 },
-            { title: "All-Star 2022", rank: 2 },
-            { title: "Scoring Champion", rank: 3 },
-          ].map((achievement, index) => (
-            <View key={index} style={styles.achievementContainer}>
-              <Achievement title={achievement.title} rank={achievement.rank} />
-              <TouchableOpacity style={styles.removeButton}>
-                <MaterialCommunityIcons name="close" size={24} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Other Achievements</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[
-            { title: "Rookie of the Year", rank: 4 },
-            { title: "3-Point Contest Winner", rank: 5 },
-            { title: "Most Improved Player", rank: 6 },
-          ].map((achievement, index) => (
-            <View key={index} style={styles.achievementContainer}>
-              <Achievement title={achievement.title} rank={achievement.rank} />
-              <TouchableOpacity style={styles.addButton}>
-                <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
       </View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -599,25 +625,15 @@ const styles = StyleSheet.create({
   uploadButtonText: {
     fontSize: 16,
   },
-  achievementContainer: {
-    position: 'relative',
-    marginRight: 10,
+  pickerContainer: {
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    overflow: 'hidden',
   },
-  removeButton: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 12,
-    padding: 4,
-  },
-  addButton: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 12,
-    padding: 4,
+  picker: {
+    width: '100%',
+    height: 40,
   },
   submitButton: {
     padding: 15,

@@ -57,19 +57,59 @@ export default function LoginScreen() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ 
+            email: email.trim(), 
+            password: password 
+          }),
         });
 
-        const data = await response.json();
+        // First check if the response is ok
         if (!response.ok) {
-          throw new Error(data.message);
+          const errorText = await response.text();
+          let errorMessage = 'Login failed';
+          try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.message || errorMessage;
+          } catch (e) {
+            console.error('Error parsing error response:', e);
+          }
+          throw new Error(errorMessage);
         }
 
-        await login(data.token, data.user); // Store the token and user data
+        // Now handle the successful response
+        const text = await response.text();
+        if (!text) {
+          throw new Error('Empty response from server');
+        }
+
+        let data;
+        try {
+          data = JSON.parse(text);
+          console.log('Parsed response:', data); // Debug log
+        } catch (parseError) {
+          console.error('JSON Parse Error:', parseError);
+          console.error('Response text:', text);
+          throw new Error('Unable to parse server response');
+        }
+
+        // Validate the response structure
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid response format');
+        }
+
+        if (!data.token || !data.user || !data.user.id) {
+          console.error('Invalid response structure:', data);
+          throw new Error('Missing required login data');
+        }
+
+        await login(data.token, data.user);
         router.replace('/(tabs)/home');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+        console.error('Login error:', err);
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }

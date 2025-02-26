@@ -5,32 +5,32 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   displayName: { type: String, unique: true, sparse: true },
   userName: { type: String, unique: true, sparse: true },
-  profilePicture: String,
-  highlightVideo: String,
+  profilePicture: { type: String, default: null },
+  highlightVideo: { type: String, default: null },
   socialMedia: {
-    instagram: String,
-    facebook: String,
-    youtube: String,
-    twitter: String
+    instagram: { type: String, default: '' },
+    facebook: { type: String, default: '' },
+    youtube: { type: String, default: '' },
+    twitter: { type: String, default: '' }
   },
   height: {
-    value: Number,
+    value: { type: Number, default: null },
     unit: { type: String, enum: ['cm', 'ft'], default: 'cm' }
   },
   weight: {
-    value: Number,
+    value: { type: Number, default: null },
     unit: { type: String, enum: ['kg', 'lbs'], default: 'kg' }
   },
   wingspan: {
-    value: Number,
+    value: { type: Number, default: null },
     unit: { type: String, enum: ['cm', 'in'], default: 'cm' }
   },
-  position: String,
+  position: { type: String, default: '' },
   verticalJump: {
-    value: Number,
+    value: { type: Number, default: null },
     unit: { type: String, enum: ['cm', 'in'], default: 'cm' }
   },
-  aboutMe: String,
+  aboutMe: { type: String, default: '' },
   isPremium: { type: Boolean, default: false },
   isPrivate: { type: Boolean, default: false },
   
@@ -42,23 +42,34 @@ const userSchema = new mongoose.Schema({
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   
   isEmailVerified: { type: Boolean, default: false },
-  premiumStartDate: Date,
-  premiumExpiryDate: Date,
+  premiumStartDate: { type: Date, default: null },
+  premiumExpiryDate: { type: Date, default: null },
   
   banStatus: {
-    isBanned: { type: Boolean, default: false },
-    banReason: String,
-    banDuration: Number, // in days
-    bannedAt: Date,
-    bannedUntil: Date,
-    bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
-    banHistory: [{
-      reason: String,
-      duration: Number,
-      bannedAt: Date,
-      bannedUntil: Date,
-      bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }
-    }]
+    type: new mongoose.Schema({
+      isBanned: { type: Boolean, default: false },
+      banReason: { type: String, default: '' },
+      banDuration: { type: Number, default: 0 },
+      bannedAt: { type: Date, default: null },
+      bannedUntil: { type: Date, default: null },
+      bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
+      banHistory: [{
+        reason: { type: String, default: '' },
+        duration: { type: Number, default: 0 },
+        bannedAt: { type: Date },
+        bannedUntil: { type: Date },
+        bannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }
+      }]
+    }, { _id: false }),
+    default: () => ({
+      isBanned: false,
+      banReason: '',
+      banDuration: 0,
+      bannedAt: null,
+      bannedUntil: null,
+      bannedBy: null,
+      banHistory: []
+    })
   }
 }, { timestamps: true });
 
