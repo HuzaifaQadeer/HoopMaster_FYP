@@ -10,7 +10,7 @@ const courseSchema = new mongoose.Schema({
   },
   duration: { 
     type: String, 
-    enum: ['1 week', '1 month', '2 months'], 
+    enum: ['2 week', '1 month', '2 months'], 
     required: true 
   },
   frequency: { 
@@ -20,7 +20,6 @@ const courseSchema = new mongoose.Schema({
   },
   thumbnail: String,
   coursedrills: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CourseDrill' }],
-  enrolledUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   price: Number,
   isPremium: { type: Boolean, default: false }
 }, { timestamps: true });
