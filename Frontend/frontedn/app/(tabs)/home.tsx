@@ -26,33 +26,28 @@ const courses = [
 const drills = [
   {
     id: '1',
-    name: 'Free throw',
+    name: 'Basic dribble',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuh27U7yq3pXN9SK58P-cHaS-5QlsawKiDQQ&s'
   },
   {
     id: '2',
-    name: 'Behind the back dribble',
+    name: 'Crossover dribble',
     imageUrl: 'https://i.ytimg.com/vi/9G-TF0_5m8c/maxresdefault.jpg'
   },
   {
     id: '3',
-    name: 'Hesitation dribble',
+    name: 'Between the legs dribble',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtA1tIl3ReZPUGsGZf9OCrMTkp3-6cifUACw&s'
   },
   {
     id: '4',
-    name: 'Cross over dribble',
+    name: 'Behind the back dribble',
     imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg'
   },
   {
     id: '5',
-    name: 'Pivot dribble',
+    name: 'Tween dribble',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1tr2-wSRifi4NcyiAXuW19FserHE9CZIGtw&s'
-  },
-  {
-    id: '6',
-    name: 'Jump shot',
-    imageUrl: 'https://cdn.bleacherreport.net/images_root/slides/photos/000/756/224/109463728_original.jpg?1298906020'
   }
 ];
 
@@ -85,7 +80,7 @@ const HomePage = () => {
             <Course key={course.id} {...course} />
           ))}
         </ScrollView>
-        <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 10 }]}>Practice drills</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 10 }]}>Dribble Practice drills</Text>
         <SearchBar onSearch={handleSearch} />
         <FlatList
           data={filteredDrills}
