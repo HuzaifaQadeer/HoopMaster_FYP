@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-// used email js
+
 const sendEmail = async (options) => {
   console.log('EMAIL_USERNAME:', process.env.EMAIL_USERNAME);
   console.log('EMAIL_APP_PASSWORD:', process.env.EMAIL_APP_PASSWORD ? 'Set' : 'Not set');
