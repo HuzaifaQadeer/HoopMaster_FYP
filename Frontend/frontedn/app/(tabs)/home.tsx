@@ -27,27 +27,27 @@ const drills = [
   {
     id: '1',
     name: 'Basic dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuh27U7yq3pXN9SK58P-cHaS-5QlsawKiDQQ&s'
+    imageUrl: 'https://www.wikihow.com/images/thumb/4/4e/Dribble-a-Basketball-Step-3-Version-3.jpg/550px-nowatermark-Dribble-a-Basketball-Step-3-Version-3.jpg'
   },
   {
     id: '2',
     name: 'Crossover dribble',
-    imageUrl: 'https://i.ytimg.com/vi/9G-TF0_5m8c/maxresdefault.jpg'
+    imageUrl: 'https://static.owayo-cdn.com/newhp/img/magazin/basketballdribblingEN/dribbling-crossover-basketball.jpg'
   },
   {
     id: '3',
     name: 'Between the legs dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtA1tIl3ReZPUGsGZf9OCrMTkp3-6cifUACw&s'
+    imageUrl: 'https://blog.drdishbasketball.com/hs-fs/hubfs/Jefferson%20dribbling.jpg?width=803&height=536&name=Jefferson%20dribbling.jpg'
   },
   {
     id: '4',
     name: 'Behind the back dribble',
-    imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg'
+    imageUrl: 'https://i.ytimg.com/vi/9G-TF0_5m8c/maxresdefault.jpg'
   },
   {
     id: '5',
     name: 'Tween dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1tr2-wSRifi4NcyiAXuW19FserHE9CZIGtw&s'
+    imageUrl: 'https://blog.drdishbasketball.com/hs-fs/hubfs/Jefferson%20dribbling.jpg?width=803&height=536&name=Jefferson%20dribbling.jpg'
   }
 ];
 
