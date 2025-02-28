@@ -8,11 +8,11 @@ AVAILABLE_COURSES = [
 ]
 
 AVAILABLE_DRILLS = [
-    "Basic dribble",
-    "Crossover dribble",
-    "Behind the back dribble",
-    "Tween dribble",
-    "Between the legs dribble",
+    "Form Shooting Close Range",
+    "Corner Three Challenge",
+    "Mid-Range Elbow Shots",
+    "Mikan Drill",
+    "Two-Ball Dribbling",
     "Crossover Series"
 ]
 
