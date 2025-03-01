@@ -26,6 +26,9 @@ export const API_ROUTES = {
   GET_ALL_DRILLS: `${API_BASE_URL}/drills/all`,
   GET_POPULAR_DRILLS: `${API_BASE_URL}/drills/popular`,
   GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
+  // AI Analysis Routes
+  BASIC_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/basic_dribble`,
+  GET_PROCESSED_VIDEO: `${AI_API_URL}/uploads/processed_videos/:filename`,
 };
 
 export default {

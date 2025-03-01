@@ -1,8 +1,18 @@
 from flask import Flask
 import os
+from flask_cors import CORS  # Import CORS
 
 def create_app():
     app = Flask(__name__)
+    
+    # Enable CORS for all routes
+    CORS(app, resources={
+        r"/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "Accept", "Origin"]
+        }
+    })
     
     # Configure paths for uploads with two subfolders
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'uploads', 'original_videos')
