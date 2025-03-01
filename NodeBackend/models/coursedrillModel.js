@@ -14,7 +14,8 @@ const courseDrillSchema = new mongoose.Schema({
     type: String, 
     enum: ['beginner', 'intermediate', 'expert'], 
     required: true 
-  }
+  },
+  videoUrl: { type: String, default: '' } // New field for video URL
 }, { timestamps: true });
 
 module.exports = mongoose.model('CourseDrill', courseDrillSchema);

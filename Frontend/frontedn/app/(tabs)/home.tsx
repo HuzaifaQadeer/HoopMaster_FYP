@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import Header from '../../components/custom/header';
@@ -16,6 +17,8 @@ import Course from '../../components/custom/course';
 import Drill from '../../components/custom/drill';
 import SearchBar from '../../components/custom/searchbar';
 import Chat from '@/components/custom/chat';
+import { router } from 'expo-router';
+import { API_ROUTES } from '@/config/config';
 
 const courses = [
   { id: '1', name: 'Sharpshooter Masterclass', completion: 7, isPremium: true, imageUrl: 'https://proskillsbasketball.com/wp-content/uploads/2019/11/PSB-shooting-the-basket.jpg' },
@@ -23,45 +26,60 @@ const courses = [
   { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Et6jpeaHZnq0f_lagtL3an1yt3mBCX3guA&s' }
 ];
 
-const drills = [
-  {
-    id: '1',
-    name: 'Basic dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuh27U7yq3pXN9SK58P-cHaS-5QlsawKiDQQ&s'
-  },
-  {
-    id: '2',
-    name: 'Crossover dribble',
-    imageUrl: 'https://i.ytimg.com/vi/9G-TF0_5m8c/maxresdefault.jpg'
-  },
-  {
-    id: '3',
-    name: 'Between the legs dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtA1tIl3ReZPUGsGZf9OCrMTkp3-6cifUACw&s'
-  },
-  {
-    id: '4',
-    name: 'Behind the back dribble',
-    imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg'
-  },
-  {
-    id: '5',
-    name: 'Tween dribble',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1tr2-wSRifi4NcyiAXuW19FserHE9CZIGtw&s'
-  }
-];
+// Define the Drill type
+interface Drill {
+  _id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  difficulty: string;
+}
 
+interface DrillProps {
+  name: string;
+  description: string;
+  imageUrl: string;
+  difficulty: string;
+  onPress?: () => void;  // Add onPress prop
+}
 
 const HomePage = () => {
   const { colors } = useTheme();
-  const [filteredDrills, setFilteredDrills] = useState(drills);
+  const [drills, setDrills] = useState<Drill[]>([]);
+  const [filteredDrills, setFilteredDrills] = useState<Drill[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDrills();
+  }, []);
+
+  const fetchDrills = async () => {
+    try {
+      const response = await fetch(API_ROUTES.GET_ALL_DRILLS);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setDrills(data);
+      setFilteredDrills(data);
+    } catch (error) {
+      console.error('Error fetching drills:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearch = useCallback((searchText: string) => {
     const filtered = drills.filter(drill => 
-      drill.name.toLowerCase().includes(searchText.toLowerCase())
+      drill.title.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredDrills(filtered);
-  }, []);
+  }, [drills]);
+
+  const handleDrillPress = (drillId: string) => {
+    console.log('Navigating to drill with ID:', drillId);
+    router.push(`/drill/${drillId}`);
+  };
 
   // Calculate the height for 3 drill items
   const drillItemHeight = 140; // Adjust this value based on your Drill component's height
@@ -82,14 +100,26 @@ const HomePage = () => {
         </ScrollView>
         <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 10 }]}>Dribble Practice drills</Text>
         <SearchBar onSearch={handleSearch} />
-        <FlatList
-          data={filteredDrills}
-          renderItem={({ item }) => <Drill description={''} difficulty={''} {...item} />}
-          keyExtractor={(item) => item.id}
-          keyboardShouldPersistTaps="handled"
-          style={{ height: drillListHeight }}
-          overScrollMode="always"
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+        ) : (
+          <FlatList
+            data={filteredDrills}
+            renderItem={({ item }) => (
+              <Drill
+                name={item.title}
+                imageUrl={item.imageUrl}
+                description={item.description}
+                difficulty={item.difficulty}
+                onPress={() => handleDrillPress(item._id)}
+              />
+            )}
+            keyExtractor={(item) => item._id}
+            keyboardShouldPersistTaps="handled"
+            style={{ height: drillListHeight }}
+            overScrollMode="always"
+          />
+        )}
         <Chat />
       </View>
     </SafeAreaView>
@@ -118,7 +148,9 @@ const styles = StyleSheet.create({
   coursesScrollView: {
     paddingLeft: 10,
   },
-
+  loader: {
+    marginTop: 20,
+  },
 });
 
 export default HomePage;
