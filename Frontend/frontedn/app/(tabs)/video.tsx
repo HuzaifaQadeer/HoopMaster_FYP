@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, CameraView, CameraType, useCameraPermissions }from 'expo-camera';
+import { Camera, CameraType, useCameraPermissions, useMicrophonePermissions, CameraView } from 'expo-camera';
 import { 
   StyleSheet, 
   Text, 
@@ -7,8 +7,7 @@ import {
   View, 
   Button,
   Dimensions,
-  Alert,
-  Platform 
+  Alert
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
@@ -19,9 +18,18 @@ import * as ImagePicker from 'expo-image-picker';
 const COUNTDOWN_DURATION = 5;
 const MAX_RECORDING_DURATION = 30;
 
+// Add these recording options near your other constants
+const RECORDING_OPTIONS = {
+  quality: '720p',
+  maxDuration: MAX_RECORDING_DURATION * 1000, // Convert to milliseconds
+  mute: false,
+  videoStabilizationMode: 'auto'
+};
+
 export default function VideoScreen() {
   const [facing, setFacing] = useState<CameraType>('back');
-  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const [microphonePermission, requestMicrophonePermission] = useMicrophonePermissions();
   const [recording, setRecording] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [videoUri, setVideoUri] = useState<string | null>(null);
@@ -30,15 +38,26 @@ export default function VideoScreen() {
   const [videoDuration, setVideoDuration] = useState(0);
   const [showTrimmer, setShowTrimmer] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
+  const [recordingTimer, setRecordingTimer] = useState<number | null>(null);
   
   const cameraRef = useRef<CameraView>(null);
   const videoRef = useRef<Video>(null);
   const recordingTimeout = useRef<NodeJS.Timeout>();
+  const timerInterval = useRef<NodeJS.Timeout>();
+  const recordStartTime = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
       if (sound) {
         sound.unloadAsync();
+      }
+      
+      // Clean up timers when component unmounts
+      if (recordingTimeout.current) {
+        clearTimeout(recordingTimeout.current);
+      }
+      if (timerInterval.current) {
+        clearInterval(timerInterval.current);
       }
     };
   }, [sound]);
@@ -46,16 +65,27 @@ export default function VideoScreen() {
   useEffect(() => {
     (async () => {
       try {
-        const cameraStatus = await Camera.requestCameraPermissionsAsync();
-        const audioStatus = await Camera.requestMicrophonePermissionsAsync();
+        // Request permissions on component mount
+        if (!cameraPermission?.granted) {
+          const cameraStatus = await requestCameraPermission();
+          if (!cameraStatus.granted) {
+            Alert.alert(
+              "Camera Permission Required",
+              "Camera permission is required to record videos",
+              [{ text: "OK" }]
+            );
+          }
+        }
         
-        if (!cameraStatus.granted || !audioStatus.granted) {
-          Alert.alert(
-            "Permission Required",
-            "Camera and microphone permissions are required to record videos",
-            [{ text: "OK", onPress: requestPermission }]
-          );
-          return;
+        if (!microphonePermission?.granted) {
+          const audioStatus = await requestMicrophonePermission();
+          if (!audioStatus.granted) {
+            Alert.alert(
+              "Microphone Permission Required",
+              "Microphone permission is required to record videos with sound",
+              [{ text: "OK" }]
+            );
+          }
         }
 
         await Audio.setAudioModeAsync({
@@ -69,7 +99,7 @@ export default function VideoScreen() {
         Alert.alert("Setup Error", "Failed to initialize camera and audio. Please restart the app.");
       }
     })();
-  }, []);
+  }, [cameraPermission, microphonePermission]);
 
   const playBeep = async () => {
     try {
@@ -83,7 +113,7 @@ export default function VideoScreen() {
     }
   };
 
-  if (!permission) {
+  if (!cameraPermission) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>Loading camera permissions...</Text>
@@ -91,11 +121,11 @@ export default function VideoScreen() {
     );
   }
 
-  if (!permission.granted) {
+  if (!cameraPermission.granted) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <Button onPress={requestCameraPermission} title="Grant Permission" />
       </View>
     );
   }
@@ -106,11 +136,29 @@ export default function VideoScreen() {
 
   const handleCameraReady = () => {
     setCameraReady(true);
+    console.log("Camera ready event fired");
+  };
+
+  const handleCameraError = (error: any) => {
+    console.error('Camera error:', error);
+    Alert.alert("Camera Error", `An error occurred with the camera: ${error.message || 'Unknown error'}`);
   };
 
   const startCountdown = async () => {
     if (!cameraReady) {
       Alert.alert("Camera Not Ready", "Please wait for the camera to initialize.");
+      return;
+    }
+    
+    if (!cameraPermission?.granted) {
+      Alert.alert("Camera Permission Required", "Please grant camera permission to record.");
+      await requestCameraPermission();
+      return;
+    }
+    
+    if (!microphonePermission?.granted) {
+      Alert.alert("Microphone Permission Required", "Please grant microphone permission to record.");
+      await requestMicrophonePermission();
       return;
     }
     
@@ -120,90 +168,62 @@ export default function VideoScreen() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setCountdown(i - 1);
     }
-    startRecording();
+    await startRecording();
   };
 
   const startRecording = async () => {
-    if (!permission?.granted || !cameraRef.current || !cameraReady) {
+    if (!cameraPermission?.granted || !cameraRef.current || !cameraReady) {
       console.error('Camera permission not granted or camera not ready');
       Alert.alert("Camera Error", "Camera is not ready or permissions are not granted.");
       return;
     }
 
+    if (!microphonePermission?.granted) {
+      console.error('Microphone permission not granted');
+      Alert.alert("Microphone Error", "Microphone permission is required for video recording.");
+      await requestMicrophonePermission();
+      return;
+    }
+
     try {
-      // Small delay to ensure camera is fully ready
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      console.log('Setting recording state...');
       setRecording(true);
       
-      // Configure recording options based on platform
-      const recordingOptions = {
-        maxDuration: MAX_RECORDING_DURATION,
-        maxFileSize: 100 * 1024 * 1024,
-        mute: false,
-      };
+      // Add a small delay after setting recording state
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Start recording
-      const recordingPromise = cameraRef.current.recordAsync(recordingOptions);
+      console.log('Starting actual recording with options:', JSON.stringify(RECORDING_OPTIONS));
+      console.log("before recording");
+      const video = await cameraRef.current.recordAsync(RECORDING_OPTIONS);
+      console.log("after recording");
       
-      // Set timeout to stop recording after MAX_RECORDING_DURATION
-      recordingTimeout.current = setTimeout(async () => {
-        if (recording) {
-          await stopRecording();
-        }
-      }, MAX_RECORDING_DURATION * 1000);
-
-      // Set countdown for last 5 seconds
-      setTimeout(() => {
-        setCountdown(5);
-        const countInterval = setInterval(() => {
-          setCountdown(prev => {
-            if (prev === null || prev <= 1) {
-              clearInterval(countInterval);
-              return null;
-            }
-            playBeep();
-            return prev - 1;
-          });
-        }, 1000);
-      }, 25000);
-
-      // Wait for recording to complete
-      const video = await recordingPromise;
-      
-      if (video && video.uri) {
-        console.log("Recording successful, video URI:", video.uri);
+      console.log("Recording completed, video:", JSON.stringify(video));
+      if (video?.uri) {
         setVideoUri(video.uri);
         setShowTrimmer(true);
       } else {
-        throw new Error("No video URI returned");
+        console.error('No video URI returned');
+        Alert.alert("Recording Issue", "No video data was produced. Please try again.");
       }
-
-    } catch (error) {
-      console.error('Recording failed with error:', error);
-      Alert.alert(
-        "Recording Failed", 
-        "There was an error while recording. Please try again."
-      );
+    } catch (error: any) {
+      console.error('Recording error:', error);
+      Alert.alert("Recording Failed", `Error: ${error.message || 'Unknown error'}`);
+    } finally {
+      console.log('Recording cleanup...');
       setRecording(false);
-      setCountdown(null);
     }
   };
 
   const stopRecording = async () => {
-    if (!permission.granted || !cameraRef.current) return;
-  
+    if (!cameraRef.current || !recording) {
+      return;
+    }
+
     try {
-      setRecording(false);
-      setCountdown(null);
-      if (recordingTimeout.current) {
-        clearTimeout(recordingTimeout.current);
-      }
+      console.log('Stopping recording...');
       await cameraRef.current.stopRecording();
     } catch (error) {
-      console.error('Stop recording failed:', error);
-      setRecording(false);
-      setCountdown(null);
+      console.error('Error stopping recording:', error);
     }
   };
 
@@ -237,6 +257,16 @@ export default function VideoScreen() {
     }
   };
 
+  const handleRecording = async () => {
+    if (recording) {
+      console.log('Handle recording - stopping current recording');
+      await stopRecording();
+    } else {
+      console.log('Handle recording - starting new recording');
+      await startRecording();
+    }
+  };
+
   const renderCamera = () => (
     <View style={styles.cameraContainer}>
       <CameraView 
@@ -244,7 +274,15 @@ export default function VideoScreen() {
         style={styles.camera} 
         facing={facing}
         onCameraReady={handleCameraReady}
+        mode="video"
+        onMountError={handleCameraError}
       >
+        {recordingTimer !== null && (
+          <View style={styles.timerContainer}>
+            <Text style={styles.timerText}>{recordingTimer}s</Text>
+          </View>
+        )}
+        
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={selectVideoFromGallery}>
             <MaterialIcons name="photo-library" size={30} color="white" />
@@ -252,7 +290,7 @@ export default function VideoScreen() {
           
           <TouchableOpacity 
             style={[styles.recordButton, recording && styles.recordingButton]}
-            onPress={recording ? stopRecording : startCountdown}
+            onPress={handleRecording}
             disabled={!cameraReady}
           >
             {countdown !== null && (
@@ -420,5 +458,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+  timerContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  timerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF9500',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
 });
-//test changes
