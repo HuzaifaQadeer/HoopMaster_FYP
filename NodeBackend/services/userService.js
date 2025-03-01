@@ -74,8 +74,17 @@ class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    user.password = hashedPassword;
-    await user.save();
+    
+    // Update only the password field using findOneAndUpdate
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      throw new Error('Failed to update password');
+    }
   }
 
   async getProfile(userId) {
