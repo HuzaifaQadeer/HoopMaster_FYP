@@ -1,19 +1,42 @@
 # Available courses and drills
 AVAILABLE_COURSES = [
-    "Three-Point Mastery",
-    "Mid-Range Maestro",
-    "Layup Master",
-    "Dribbling Fundamentals",
-    "Advanced Handles"
+    "Dribbling Course - Beginner - 2 weeks",
+    "Dribbling Course - Beginner - 1 month",
+    "Dribbling Course - Beginner - 2 months",
+    "Dribbling Course - Intermediate - 2 weeks",
+    "Dribbling Course - Intermediate - 1 month",
+    "Dribbling Course - Intermediate - 2 months",
+    "Dribbling Course - Expert - 2 weeks",
+    "Dribbling Course - Expert - 1 month",
+    "Dribbling Course - Expert - 2 months",
+    "Shooting Course - Beginner - 2 weeks",
+    "Shooting Course - Beginner - 1 month",
+    "Shooting Course - Beginner - 2 months",
+    "Shooting Course - Intermediate - 2 weeks",
+    "Shooting Course - Intermediate - 1 month",
+    "Shooting Course - Intermediate - 2 months",
+    "Shooting Course - Expert - 2 weeks",
+    "Shooting Course - Expert - 1 month",
+    "Shooting Course - Expert - 2 months",
+    "Finishing Course - Beginner - 2 weeks",
+    "Finishing Course - Beginner - 1 month",
+    "Finishing Course - Beginner - 2 months",
+    "Finishing Course - Intermediate - 2 weeks",
+    "Finishing Course - Intermediate - 1 month",
+    "Finishing Course - Intermediate - 2 months",
+    "Finishing Course - Expert - 2 weeks",
+    "Finishing Course - Expert - 1 month",
+    "Finishing Course - Expert - 2 months"
 ]
 
 AVAILABLE_DRILLS = [
-    "Form Shooting Close Range",
-    "Corner Three Challenge",
-    "Mid-Range Elbow Shots",
-    "Mikan Drill",
-    "Two-Ball Dribbling",
-    "Crossover Series"
+    "Basic Dribble",
+    "Cross Over dribble",
+    "Behind the Back dribble",
+    "Between the legs dribble",
+    "Tween Dribble"
+
+    
 ]
 
 # Basketball keywords for validation
@@ -22,70 +45,34 @@ BASKETBALL_KEYWORDS = [
     'shoot', 'shooting', 'shot', 'shots', 'shooter',
     '3 point', '3 pointer', '3pt', 'three point', 'three pointer', 'three-pointer',
     'free throw', 'free-throw', 'freethrow',
-    'jump shot', 'jumpshot', 'jumper',
+    'jump shot', 'jumpshot', 'jumper', "dunk",
+    "vertical jump","three pointer", "finishing", "dribbling", "dribble"
     
-    # Dribbling variations
-    'dribble', 'dribbling', 'handles', 'ball handling', 'ball-handling',
-    'crossover', 'cross-over', 'between the legs', 'behind the back',
-    
-    # Defensive terms
-    'defense', 'defensive', 'defend', 'defending',
-    'steal', 'block', 'rebound', 'rebounding',
-    'stance', 'sliding', 'closeout',
-    
-    # Offensive moves
-    'layup', 'lay-up', 'lay up', 'layups',
-    'dunk', 'dunking', 'dunks',
-    'post up', 'post-up', 'post move',
-    'euro step', 'eurostep', 'euro-step',
-    'floater', 'hook shot', 'bank shot',
-    
-    # Physical attributes
-    'jump', 'jumping', 'vertical', 'vertical leap',
-    'speed', 'agility', 'quickness', 'strength',
-    'footwork', 'balance', 'coordination',
-    
-    # Training terms
-    'drill', 'drills', 'practice', 'practicing',
-    'training', 'workout', 'workouts', 'exercise',
-    'conditioning', 'cardio', 'endurance',
-    'warmup', 'warm-up', 'warm up',
-    'stretch', 'stretching', 'flexibility',
-    
-    # Game terms
-    'game', 'games', 'scrimmage', 'pickup', 'pick-up',
-    'basketball', 'hoops', 'ball', 'court',
-    'offense', 'offensive', 'scoring', 'score',
-    
-    # People and organizations
-    'nba', 'ncaa', 'fiba',
-    'coach', 'coaching', 'trainer',
-    'player', 'players', 'teammate',
-    'team', 'teams', 'squad',
-    
-    # Skill development
-    'skill', 'skills', 'technique',
-    'fundamentals', 'basics', 'advanced',
-    'form', 'mechanics', 'rhythm',
-    'improvement', 'progress', 'development'
 ]
 
 # Chatbot prompt template
-COACH_PROMPT_TEMPLATE = """You are a basketball coach. Direct advice for player's question.
+COACH_PROMPT_TEMPLATE = """You are an expert basketball coach with deep knowledge of training drills and techniques. Direct personalized advice for the player's question.
 
-Player: {height} tall, {vertical_jump} vertical.
-Skills: Form Shooting ({form_shooting_score}%), Corner Threes ({corner_three_score}%)
+Player Profile:
+- Height: {height}
+- Vertical Jump: {vertical_jump}
+- Current Skills:
+  * Form Shooting: {form_shooting_score}%
+  * Corner Threes: {corner_three_score}%
 
 Question: {user_query}
 
-Available Drills:
+System Drills Available:
 {available_drills}
 
-Available Courses:
+Training Courses Available:
 {available_courses}
 
-Provide:
-1. Main focus
-2. 2-3 drills with targets
-3. Timeline
-4. Next course""" 
+Provide a detailed response with:
+1. Main Focus Area: Identify the key skill to improve based on the question
+2. Recommended Drills (3-4 total):
+   - Mix of available system drills and custom drills
+   - For each drill, provide specific instructions and tips
+3. Recommended Course: Select from available courses that best matches their needs
+
+Note: Provide clear, detailed instructions for each drill regardless of whether it's a system drill or custom drill.""" 

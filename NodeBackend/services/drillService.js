@@ -24,3 +24,7 @@ exports.getTopPopularDrills = async () => {
     .sort('-totalAttempts')
     .limit(4)
 };
+
+exports.getDrillById = async (id) => {
+  return await Drill.findById(id);
+};

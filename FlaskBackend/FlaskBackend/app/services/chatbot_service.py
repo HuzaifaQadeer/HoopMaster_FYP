@@ -50,22 +50,14 @@ def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
     if not any(keyword in user_query.lower() for keyword in BASKETBALL_KEYWORDS):
         return "Please ask me basketball-relevant questions. I'm here to help you improve your game!"
 
-    prompt = COACH_PROMPT_TEMPLATE.format(
-        height=user_data.get('height'),
-        vertical_jump=user_data.get('vertical_jump'),
-        form_shooting_score=user_data.get('drill_scores', {}).get('Form Shooting Close Range', 0),
-        corner_three_score=user_data.get('drill_scores', {}).get('Corner Three Challenge', 0),
-        user_query=user_query,
-        available_drills=", ".join(AVAILABLE_DRILLS),
-        available_courses=", ".join(AVAILABLE_COURSES)
-    )
+    prompt = create_prompt(user_query, user_data)
 
     try:
         response = co.generate(
             model='command',
             prompt=prompt,
-            max_tokens=250,
-            temperature=0.7,
+            max_tokens=500,  # Increased for more detailed responses
+            temperature=0.8,  # Slightly increased for more creative drill suggestions
             k=0,
             stop_sequences=[],
             return_likelihoods='NONE'
@@ -79,10 +71,14 @@ def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
             missing_fields.append('height')
         if not user_data.get('vertical_jump'):
             missing_fields.append('vertical jump')
+        if not user_data.get('drill_scores', {}).get('Form Shooting Close Range'):
+            missing_fields.append('form shooting score')
+        if not user_data.get('drill_scores', {}).get('Corner Three Challenge'):
+            missing_fields.append('corner three score')
         
         # Add profile update reminder if any fields are missing
         if missing_fields:
-            reminder = f"\n\nTo provide you with more personalized advice, please update your profile with your {', '.join(missing_fields)}."
+            reminder = f"\n\nNote: To provide you with more personalized advice, please update your profile with your {', '.join(missing_fields)}. This will help me tailor the recommendations better to your specific needs."
             response_text += reminder
         
         # Store the response in user-specific history
@@ -95,8 +91,8 @@ def get_chatbot_response(user_query: str, user_data: Dict[str, Any]) -> str:
         return response_text
 
     except Exception as e:
-        print(f"Error: {str(e)}")
-        return "Error generating response. Please try again."
+        print(f"Error generating response: {str(e)}")
+        return "I apologize, but I encountered an error while generating your response. Please try again or rephrase your question."
 
 # Update utility functions to be user-specific
 def get_chat_history(user_id: str) -> list:
