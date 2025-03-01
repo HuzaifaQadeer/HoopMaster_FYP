@@ -6,7 +6,9 @@ import {
   TouchableOpacity, 
   View, 
   Button,
-  Dimensions 
+  Dimensions,
+  Alert,
+  Platform 
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
@@ -27,6 +29,7 @@ export default function VideoScreen() {
   const [trimValues, setTrimValues] = useState({ start: 0, end: 30 });
   const [videoDuration, setVideoDuration] = useState(0);
   const [showTrimmer, setShowTrimmer] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
   
   const cameraRef = useRef<CameraView>(null);
   const videoRef = useRef<Video>(null);
@@ -42,15 +45,19 @@ export default function VideoScreen() {
 
   useEffect(() => {
     (async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      const audioStatus = await Camera.requestMicrophonePermissionsAsync();
-      
-      if (!cameraStatus.granted || !audioStatus.granted) {
-        console.error('Camera or audio permission not granted');
-        return;
-      }
-
       try {
+        const cameraStatus = await Camera.requestCameraPermissionsAsync();
+        const audioStatus = await Camera.requestMicrophonePermissionsAsync();
+        
+        if (!cameraStatus.granted || !audioStatus.granted) {
+          Alert.alert(
+            "Permission Required",
+            "Camera and microphone permissions are required to record videos",
+            [{ text: "OK", onPress: requestPermission }]
+          );
+          return;
+        }
+
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
@@ -58,21 +65,30 @@ export default function VideoScreen() {
           shouldDuckAndroid: true,
         });
       } catch (error) {
-        console.error('Error setting audio mode:', error);
+        console.error('Error setting up camera and audio:', error);
+        Alert.alert("Setup Error", "Failed to initialize camera and audio. Please restart the app.");
       }
     })();
   }, []);
 
   const playBeep = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/beep.mp3')
-    );
-    setSound(sound);
-    await sound.playAsync();
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/beep.mp3')
+      );
+      setSound(sound);
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Error playing beep sound:', error);
+    }
   };
 
   if (!permission) {
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Loading camera permissions...</Text>
+      </View>
+    );
   }
 
   if (!permission.granted) {
@@ -88,7 +104,16 @@ export default function VideoScreen() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
+  const handleCameraReady = () => {
+    setCameraReady(true);
+  };
+
   const startCountdown = async () => {
+    if (!cameraReady) {
+      Alert.alert("Camera Not Ready", "Please wait for the camera to initialize.");
+      return;
+    }
+    
     setCountdown(COUNTDOWN_DURATION);
     for (let i = COUNTDOWN_DURATION; i > 0; i--) {
       await playBeep();
@@ -99,21 +124,36 @@ export default function VideoScreen() {
   };
 
   const startRecording = async () => {
-    if (!permission?.granted || !cameraRef.current) {
-      console.error('Camera permission not granted or camera ref not ready');
+    if (!permission?.granted || !cameraRef.current || !cameraReady) {
+      console.error('Camera permission not granted or camera not ready');
+      Alert.alert("Camera Error", "Camera is not ready or permissions are not granted.");
       return;
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-
+      // Small delay to ensure camera is fully ready
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setRecording(true);
       
-      const recordingPromise = cameraRef.current.recordAsync({
+      // Configure recording options based on platform
+      const recordingOptions = {
         maxDuration: MAX_RECORDING_DURATION,
         maxFileSize: 100 * 1024 * 1024,
-      });
+        mute: false,
+      };
+      
+      // Start recording
+      const recordingPromise = cameraRef.current.recordAsync(recordingOptions);
+      
+      // Set timeout to stop recording after MAX_RECORDING_DURATION
+      recordingTimeout.current = setTimeout(async () => {
+        if (recording) {
+          await stopRecording();
+        }
+      }, MAX_RECORDING_DURATION * 1000);
 
+      // Set countdown for last 5 seconds
       setTimeout(() => {
         setCountdown(5);
         const countInterval = setInterval(() => {
@@ -128,21 +168,23 @@ export default function VideoScreen() {
         }, 1000);
       }, 25000);
 
+      // Wait for recording to complete
       const video = await recordingPromise;
       
       if (video && video.uri) {
+        console.log("Recording successful, video URI:", video.uri);
         setVideoUri(video.uri);
         setShowTrimmer(true);
+      } else {
+        throw new Error("No video URI returned");
       }
-
-      setTimeout(async () => {
-        if (recording) {
-          await stopRecording();
-        }
-      }, MAX_RECORDING_DURATION * 1000);
 
     } catch (error) {
       console.error('Recording failed with error:', error);
+      Alert.alert(
+        "Recording Failed", 
+        "There was an error while recording. Please try again."
+      );
       setRecording(false);
       setCountdown(null);
     }
@@ -178,40 +220,57 @@ export default function VideoScreen() {
   };
 
   const selectVideoFromGallery = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setVideoUri(result.assets[0].uri);
-      setShowTrimmer(true);
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setVideoUri(result.assets[0].uri);
+        setShowTrimmer(true);
+      }
+    } catch (error) {
+      console.error('Error selecting video from gallery:', error);
+      Alert.alert("Gallery Error", "Failed to select video from gallery.");
     }
   };
 
   const renderCamera = () => (
     <View style={styles.cameraContainer}>
-    <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={selectVideoFromGallery}>
-          <MaterialIcons name="photo-library" size={30} color="white" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.recordButton, recording && styles.recordingButton]}
-          onPress={recording ? stopRecording : startCountdown}
-        >
-          {countdown !== null && (
-            <Text style={styles.countdownText}>{countdown}</Text>
-          )}
-        </TouchableOpacity>
+      <CameraView 
+        ref={cameraRef} 
+        style={styles.camera} 
+        facing={facing}
+        onCameraReady={handleCameraReady}
+      >
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={selectVideoFromGallery}>
+            <MaterialIcons name="photo-library" size={30} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.recordButton, recording && styles.recordingButton]}
+            onPress={recording ? stopRecording : startCountdown}
+            disabled={!cameraReady}
+          >
+            {countdown !== null && (
+              <Text style={styles.countdownText}>{countdown}</Text>
+            )}
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-          <MaterialIcons name="flip-camera-ios" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
-    </CameraView>
+          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+            <MaterialIcons name="flip-camera-ios" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+        
+        {!cameraReady && (
+          <View style={styles.cameraNotReadyOverlay}>
+            <Text style={styles.cameraNotReadyText}>Initializing camera...</Text>
+          </View>
+        )}
+      </CameraView>
     </View>
   );
 
@@ -224,6 +283,8 @@ export default function VideoScreen() {
         useNativeControls
         resizeMode={ResizeMode.CONTAIN}
         onLoad={handleVideoLoad}
+        shouldPlay={true}
+        isLooping={true}
       />
       
       <View style={styles.trimmerControls}>
@@ -244,11 +305,13 @@ export default function VideoScreen() {
       </View>
 
       <View style={styles.actionButtons}>
-        <TouchableOpacity onPress={resetCamera}>
+        <TouchableOpacity style={styles.actionButton} onPress={resetCamera}>
           <MaterialIcons name="close" size={30} color="red" />
+          <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={resetCamera}>
+        <TouchableOpacity style={styles.actionButton} onPress={resetCamera}>
           <MaterialIcons name="check" size={30} color="green" />
+          <Text style={styles.actionButtonText}>Use Video</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -323,8 +386,9 @@ const styles = StyleSheet.create({
   },
   video: {
     width: Dimensions.get('window').width - 40,
-    height: 300,
+    height: Dimensions.get('window').height * 0.6,
     backgroundColor: 'black',
+    borderRadius: 10,
   },
   trimmerControls: {
     marginTop: 20,
@@ -337,5 +401,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
+  },
+  actionButton: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  actionButtonText: {
+    color: 'white',
+    marginTop: 5,
+  },
+  cameraNotReadyOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cameraNotReadyText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
