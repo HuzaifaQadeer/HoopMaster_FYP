@@ -19,6 +19,7 @@ interface DrillDetail {
   imageUrl: string;
   difficulty: string;
   instructions: string;
+  type: string;
 }
 
 export default function DrillPage() {
@@ -34,8 +35,15 @@ export default function DrillPage() {
   console.log('All params:', JSON.stringify(params));
 
   const handleRecordPress = useCallback(() => {
-    router.push('/videoRecordScreen');
-  }, [router]);
+    router.push({
+      pathname: '/videoRecordScreen',
+      params: {
+        drillType: drill?.type || 'basic_dribble',
+        drillId: drill?._id || id,
+        drillName: drill?.title || 'Basketball Drill'
+      }
+    });
+  }, [router, drill, id]);
 
   useEffect(() => {
     console.log('Fetching drill with ID:', id);

@@ -7,13 +7,19 @@ import {
   View, 
   Button,
   Dimensions,
-  Alert
+  Alert,
+  ActivityIndicator,
+  Image,
+  ScrollView
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { API_ROUTES } from '@/config/config';
 
 const COUNTDOWN_DURATION = 5;
 const MAX_RECORDING_DURATION = 30;
@@ -27,6 +33,12 @@ const RECORDING_OPTIONS = {
 };
 
 export default function VideoScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const drillType = params.drillType as string || 'basic_dribble';
+  const drillName = params.drillName as string || 'Basketball Drill';
+  const drillId = params.drillId as string;
+
   const [facing, setFacing] = useState<CameraType>('back');
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [microphonePermission, requestMicrophonePermission] = useMicrophonePermissions();
@@ -40,8 +52,18 @@ export default function VideoScreen() {
   const [cameraReady, setCameraReady] = useState(false);
   const [recordingTimer, setRecordingTimer] = useState<number | null>(null);
   
+  // Add new states for handling analysis results
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [processedVideoUrl, setProcessedVideoUrl] = useState<string | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  
   const cameraRef = useRef<CameraView>(null);
   const videoRef = useRef<Video>(null);
+  const processedVideoRef = useRef<Video>(null);
   const recordingTimeout = useRef<NodeJS.Timeout>();
   const timerInterval = useRef<NodeJS.Timeout>();
   const recordStartTime = useRef<number | null>(null);
@@ -231,6 +253,9 @@ export default function VideoScreen() {
     setVideoUri(null);
     setShowTrimmer(false);
     setTrimValues({ start: 0, end: 30 });
+    setShowResults(false);
+    setAnalysisResult(null);
+    setProcessedVideoUrl(null);
   };
 
   const handleVideoLoad = (status: any) => {
@@ -264,6 +289,137 @@ export default function VideoScreen() {
     } else {
       console.log('Handle recording - starting new recording');
       await startRecording();
+    }
+  };
+
+  // Add new function to submit video for analysis
+  const submitVideoForAnalysis = async () => {
+    if (!videoUri) {
+      Alert.alert("Error", "No video available to submit");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Determine which API endpoint to use based on drill type
+      let apiEndpoint;
+      
+      switch(drillType) {
+        case 'basic_dribble':
+          apiEndpoint = API_ROUTES.BASIC_DRIBBLE_ANALYSIS;
+          break;
+        // Add more cases here as you implement other drill types
+        default:
+          apiEndpoint = API_ROUTES.BASIC_DRIBBLE_ANALYSIS; // Default to basic dribble for now
+          break;
+      }
+
+      // Debug logging for API URL
+      console.log('API_ROUTES object:', JSON.stringify(API_ROUTES));
+      console.log('Using API endpoint:', apiEndpoint);
+      console.log('Drill type:', drillType);
+
+      // Test if the API server is reachable with a simple GET request
+      try {
+        console.log('Testing API server reachability...');
+        const testResponse = await fetch(API_ROUTES.CHATBOT_QUERY.split('/chat')[0], {
+          method: 'GET',
+        });
+        console.log('API server test response status:', testResponse.status);
+      } catch (error) {
+        console.error('Error testing API server:', error);
+      }
+
+      // Create form data and append video file
+      const formData = new FormData();
+      const fileInfo = await FileSystem.getInfoAsync(videoUri);
+      
+      // Get the filename from the URI
+      const uriParts = videoUri.split('/');
+      const fileName = uriParts[uriParts.length - 1];
+      
+      formData.append('video', {
+        uri: videoUri,
+        name: fileName,
+        type: 'video/mp4'
+      } as any);
+
+      console.log(`Submitting video to ${apiEndpoint}...`);
+      console.log('File name:', fileName);
+      
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        // Log response status and headers for debugging
+        console.log('Response status:', response.status);
+        console.log('Response headers:', JSON.stringify(Object.fromEntries([...response.headers.entries()])));
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response body:', errorText);
+          throw new Error(`Server responded with status: ${response.status} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('Analysis result:', result);
+
+        setAnalysisResult(result.analysis);
+        
+        // Extract the filename from the video_url
+        if (result.video_url) {
+          const videoPath = result.video_url;
+          // The video path from server is like '/uploads/processed_videos/filename.mp4'
+          // We need to extract just the filename part
+          const filename = videoPath.split('/').pop();
+          
+          // Add a timestamp to prevent caching issues
+          const timestamp = new Date().getTime();
+          
+          // Construct full URL with the AI_API_URL base and correct path
+          const fullVideoUrl = `${API_ROUTES.GET_PROCESSED_VIDEO.replace(':filename', filename)}?t=${timestamp}`;
+          console.log('Constructed video URL:', fullVideoUrl);
+          
+          // Store full API endpoint for the video
+          setProcessedVideoUrl(fullVideoUrl);
+          
+          // Pre-warm the video URL by making a HEAD request
+          try {
+            fetch(fullVideoUrl, { 
+              method: 'HEAD',
+              headers: {
+                'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+                'Cache-Control': 'no-cache'
+              }
+            }).then(response => {
+              console.log('Pre-warm video HEAD response:', response.status);
+            }).catch(err => {
+              console.warn('Pre-warm request failed:', err);
+            });
+          } catch (e) {
+            console.warn('Error making pre-warm request:', e);
+          }
+        }
+        
+        setShowResults(true);
+        setShowTrimmer(false);
+
+      } catch (error) {
+        console.error('Error submitting video:', error);
+        Alert.alert("Submission Error", `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      } finally {
+        setIsSubmitting(false);
+      }
+
+    } catch (error) {
+      console.error('Error submitting video:', error);
+      Alert.alert("Submission Error", `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -347,17 +503,151 @@ export default function VideoScreen() {
           <MaterialIcons name="close" size={30} color="red" />
           <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={resetCamera}>
+        <TouchableOpacity 
+          style={styles.actionButton} 
+          onPress={submitVideoForAnalysis}
+          disabled={isSubmitting}
+        >
           <MaterialIcons name="check" size={30} color="green" />
-          <Text style={styles.actionButtonText}>Use Video</Text>
+          <Text style={styles.actionButtonText}>Analyze</Text>
         </TouchableOpacity>
       </View>
+
+      {isSubmitting && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#FA8128" />
+          <Text style={styles.loadingText}>Analyzing your technique...</Text>
+        </View>
+      )}
     </View>
+  );
+
+  const renderResults = () => (
+    <ScrollView style={styles.resultsContainer}>
+      <Text style={styles.drillTitle}>{drillName} Analysis</Text>
+      
+      {processedVideoUrl && (
+        <View style={styles.videoContainer}>
+          {isVideoLoading && (
+            <View style={styles.videoLoadingOverlay}>
+              <ActivityIndicator size="large" color="#FA8128" />
+              <Text style={styles.loadingText}>Loading video...</Text>
+            </View>
+          )}
+          {videoError ? (
+            <View style={styles.videoErrorContainer}>
+              <MaterialIcons name="error-outline" size={40} color="red" />
+              <Text style={styles.videoErrorText}>{videoError}</Text>
+              <TouchableOpacity 
+                style={styles.retryButton}
+                onPress={() => {
+                  setVideoError(null);
+                  setIsVideoLoading(true);
+                  
+                  // Create a new Video component instance by forcing a refresh
+                  if (processedVideoUrl) {
+                    const refreshedUrl = `${processedVideoUrl}?timestamp=${new Date().getTime()}`;
+                    setProcessedVideoUrl(null);
+                    // Short delay before setting the new URL to ensure component remounts
+                    setTimeout(() => setProcessedVideoUrl(refreshedUrl), 100);
+                  }
+                }}
+              >
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Video
+              ref={processedVideoRef}
+              source={{ 
+                uri: processedVideoUrl,
+                headers: {
+                  'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+                  'Cache-Control': 'no-cache',
+                  'Access-Control-Allow-Origin': '*'
+                }
+              }}
+              style={styles.processedVideo}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
+              shouldPlay={false}
+              isLooping={false}
+              onPlaybackStatusUpdate={(status) => {
+                // Debug console log of playback status for troubleshooting
+                console.log('Playback status:', JSON.stringify(status));
+                
+                if (!status.isLoaded && 'error' in status) {
+                  console.error('Playback status error:', status.error);
+                  
+                  // Only set error if we're not already in error or loading state
+                  if (!videoError && !isVideoLoading) {
+                    setVideoError(`Playback error: ${status.error}`);
+                  }
+                }
+              }}
+              onReadyForDisplay={() => {
+                console.log('Video is ready for display');
+                setIsVideoLoading(false);
+                // Now that video is ready, we can play it
+                processedVideoRef.current?.playAsync();
+              }}
+              onLoadStart={() => {
+                console.log('Video loading started from URL:', processedVideoUrl);
+                setIsVideoLoading(true);
+              }}
+              onLoad={(status) => {
+                console.log('Video loaded successfully with status:', JSON.stringify(status));
+                setIsVideoLoading(false);
+              }}
+              onError={(error) => {
+                console.error('Video playback error:', error, 'URL:', processedVideoUrl);
+                setVideoError('Failed to load video. Please try again.');
+                setIsVideoLoading(false);
+                
+                // Automatically retry once after a brief delay
+                setTimeout(() => {
+                  if (processedVideoRef.current) {
+                    console.log('Attempting auto-retry of video playback...');
+                    processedVideoRef.current.loadAsync({ 
+                      uri: `${processedVideoUrl}?t=${new Date().getTime()}`,
+                      headers: {
+                        'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+                        'Cache-Control': 'no-store',
+                        'Access-Control-Allow-Origin': '*'
+                      }
+                    });
+                  }
+                }, 2000);
+              }}
+            />
+          )}
+        </View>
+      )}
+      
+      <View style={styles.analysisTextContainer}>
+        <Text style={styles.analysisTitle}>Analysis Results:</Text>
+        <Text style={styles.analysisText}>{analysisResult}</Text>
+      </View>
+      
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.returnButton} onPress={resetCamera}>
+          <MaterialIcons name="replay" size={24} color="white" />
+          <Text style={styles.returnButtonText}>New Recording</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.returnButton} onPress={() => router.back()}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+          <Text style={styles.returnButtonText}>Back to Drill</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 
   return (
     <View style={styles.container}>
-      {videoUri && showTrimmer ? renderTrimmer() : renderCamera()}
+      {showResults ? renderResults() : 
+       videoUri && showTrimmer ? renderTrimmer() : 
+       renderCamera()}
     </View>
   );
 }
@@ -465,7 +755,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     zIndex: 10,
-  }, //timer container
+  },
   timerText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -474,5 +764,111 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 20,
+  },
+  // New styles for results view
+  resultsContainer: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 15,
+  },
+  drillTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  processedVideo: {
+    width: '100%',
+    height: 300,
+    borderRadius: 10,
+    marginVertical: 20,
+  },
+  analysisTextContainer: {
+    backgroundColor: '#1E1E1E',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  analysisTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FA8128',
+    marginBottom: 10,
+  },
+  analysisText: {
+    fontSize: 16,
+    color: 'white',
+    lineHeight: 24,
+  },
+  returnButton: {
+    backgroundColor: '#FA8128',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 25,
+    minWidth: 150,
+  },
+  returnButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 18,
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  videoContainer: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#000',
+    borderRadius: 10,
+    marginVertical: 20,
+    position: 'relative',
+  },
+  videoLoadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  videoErrorContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1E1E1E',
+    borderRadius: 10,
+    padding: 20,
+  },
+  videoErrorText: {
+    color: 'white',
+    textAlign: 'center',
+    marginVertical: 10,
+    fontSize: 16,
+  },
+  retryButton: {
+    backgroundColor: '#FA8128',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
