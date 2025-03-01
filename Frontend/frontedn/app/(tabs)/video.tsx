@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     zIndex: 10,
-  },
+  }, //timer container
   timerText: {
     fontSize: 24,
     fontWeight: 'bold',
