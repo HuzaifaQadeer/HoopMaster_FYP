@@ -56,9 +56,7 @@ COACH_PROMPT_TEMPLATE = """You are an expert basketball coach with deep knowledg
 Player Profile:
 - Height: {height}
 - Vertical Jump: {vertical_jump}
-- Current Skills:
-  * Form Shooting: {form_shooting_score}%
-  * Corner Threes: {corner_three_score}%
+
 
 Question: {user_query}
 
