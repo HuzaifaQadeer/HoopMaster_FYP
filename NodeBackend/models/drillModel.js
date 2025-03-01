@@ -6,6 +6,7 @@ const drillSchema = new mongoose.Schema({
   instructions: { type: String, required: true },
   instructionVideo: String,
   category: String,
+  imageUrl: String,
   attempts: [{ 
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     score: Number,

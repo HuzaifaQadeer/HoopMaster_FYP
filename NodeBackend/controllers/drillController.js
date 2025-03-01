@@ -38,3 +38,15 @@ exports.getTopPopularDrills = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getDrillById = async (req, res) => {
+  try {
+    const drill = await drillService.getDrillById(req.params.id);
+    if (!drill) {
+      return res.status(404).json({ message: 'Drill not found' });
+    }
+    res.json(drill);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

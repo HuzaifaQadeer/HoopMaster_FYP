@@ -23,6 +23,9 @@ export const API_ROUTES = {
   GET_HIGHLIGHT_VIDEO: `${API_BASE_URL}/users/highlightvideo`,
   ADD_HIGHLIGHT_VIDEO: `${API_BASE_URL}/users/highlight-video`,
   CHATBOT_QUERY: `${AI_API_URL}/api/chat`,
+  GET_ALL_DRILLS: `${API_BASE_URL}/drills/all`,
+  GET_POPULAR_DRILLS: `${API_BASE_URL}/drills/popular`,
+  GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
 };
 
 export default {

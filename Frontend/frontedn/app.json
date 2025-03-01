@@ -13,13 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hoopmaster.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hoopmaster.app"
     },
     "web": {
       "bundler": "metro",
@@ -28,20 +30,19 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow HoopMaster to access your camera.",
-          "microphonePermission": "Allow HoopMaster to access your microphone."
-        }
-      ],
       "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "packagerOpts": {
-      "config": "metro.config.js"
-    }
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f267f0d2-f824-4f7e-8c59-05d41354ee97"
+      }
+    },
+    "owner": "aun0"
   }
 }

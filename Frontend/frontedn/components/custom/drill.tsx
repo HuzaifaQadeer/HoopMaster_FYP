@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Link, useRouter} from 'expo-router';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 interface DrillProps {
@@ -8,9 +7,10 @@ interface DrillProps {
   description: string;
   imageUrl: string;
   difficulty: string;
+  onPress?: () => void; 
 }
 
-const Drill: React.FC<DrillProps> = ({ name, imageUrl }) => {
+const Drill: React.FC<DrillProps> = ({ name, imageUrl, onPress }) => {
   const { colors } = useTheme();
   const [imageError, setImageError] = useState(false);
   
@@ -19,8 +19,19 @@ const Drill: React.FC<DrillProps> = ({ name, imageUrl }) => {
     setImageError(true);
   };
 
+  const handlePress = () => {
+    console.log('Drill pressed:', name);
+    if (onPress) {
+      onPress();
+    }
+  };
+
   return (
-    <Link href='/drillMenu' style={styles.drillContainer}>
+    <TouchableOpacity 
+      onPress={handlePress} 
+      style={styles.drillContainer}
+      activeOpacity={0.7}
+    >
       <View style={styles.contentContainer}>
         {!imageError ? (
           <Image 
@@ -41,7 +52,7 @@ const Drill: React.FC<DrillProps> = ({ name, imageUrl }) => {
           <Text style={[styles.drillName, { color: colors.text }]}>{name}</Text>
         </View>
       </View>
-    </Link>
+    </TouchableOpacity>
   );
 };
 
