@@ -51,6 +51,7 @@ export default function VideoScreen() {
   const [showTrimmer, setShowTrimmer] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [recordingTimer, setRecordingTimer] = useState<number | null>(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
   
   // Add new states for handling analysis results
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,6 +61,7 @@ export default function VideoScreen() {
   
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [videoError, setVideoError] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState(0);
   
   const cameraRef = useRef<CameraView>(null);
   const videoRef = useRef<Video>(null);
@@ -67,6 +69,7 @@ export default function VideoScreen() {
   const recordingTimeout = useRef<NodeJS.Timeout>();
   const timerInterval = useRef<NodeJS.Timeout>();
   const recordStartTime = useRef<number | null>(null);
+  const recordingTimerInterval = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     return () => {
@@ -81,8 +84,11 @@ export default function VideoScreen() {
       if (timerInterval.current) {
         clearInterval(timerInterval.current);
       }
+      if (recordingTimerInterval.current) {
+        clearInterval(recordingTimerInterval.current);
+      }
     };
-  }, [sound]);
+  }, [sound, recording]);
 
   useEffect(() => {
     (async () => {
@@ -210,6 +216,24 @@ export default function VideoScreen() {
     try {
       console.log('Setting recording state...');
       setRecording(true);
+      setRecordingDuration(0);
+      
+      // Start the recording timer - FIXED: Set the start time first, then create interval
+      recordStartTime.current = Date.now();
+      console.log('Recording start time set:', recordStartTime.current);
+      
+      // Clear any existing interval first
+      if (recordingTimerInterval.current) {
+        clearInterval(recordingTimerInterval.current);
+      }
+      
+      recordingTimerInterval.current = setInterval(() => {
+        if (recordStartTime.current) {
+          const elapsed = Math.floor((Date.now() - recordStartTime.current) / 1000);
+          console.log('Recording elapsed time:', elapsed);
+          setRecordingDuration(elapsed);
+        }
+      }, 1000);
       
       // Add a small delay after setting recording state
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -233,6 +257,13 @@ export default function VideoScreen() {
     } finally {
       console.log('Recording cleanup...');
       setRecording(false);
+      
+      // FIXED: Make sure to clear the interval when recording stops
+      if (recordingTimerInterval.current) {
+        clearInterval(recordingTimerInterval.current);
+        recordingTimerInterval.current = undefined;
+      }
+      recordStartTime.current = null;
     }
   };
 
@@ -243,6 +274,14 @@ export default function VideoScreen() {
 
     try {
       console.log('Stopping recording...');
+      
+      // Clear the recording timer
+      if (recordingTimerInterval.current) {
+        clearInterval(recordingTimerInterval.current);
+        recordingTimerInterval.current = undefined;
+      }
+      recordStartTime.current = null;
+      
       await cameraRef.current.stopRecording();
     } catch (error) {
       console.error('Error stopping recording:', error);
@@ -292,7 +331,104 @@ export default function VideoScreen() {
     }
   };
 
-  // Add new function to submit video for analysis
+  const downloadAndPlayProcessedVideo = async (videoUrl: string | null) => {
+    try {
+      if (!videoUrl) {
+        throw new Error('Invalid video URL');
+      }
+      
+      // Check if documentDirectory exists
+      if (!FileSystem.documentDirectory) {
+        throw new Error('Document directory is not available');
+      }
+      
+      setIsVideoLoading(true);
+      setDownloadProgress(0);
+      
+      // Extract filename from URL
+      const filename = videoUrl.split('/').pop();
+      
+      // Define where to save the file on the device
+      const localUri = `${FileSystem.documentDirectory}${filename}`;
+      
+      // Check if we've already downloaded this file
+      const fileInfo = await FileSystem.getInfoAsync(localUri);
+      
+      if (!fileInfo.exists) {
+        console.log(`Downloading video from ${videoUrl} to ${localUri}...`);
+        
+        // Download the file with progress tracking
+        const download = await FileSystem.downloadAsync(
+          videoUrl,
+          localUri,
+          { 
+            md5: false, // Set to false for faster downloads
+            headers: {
+              'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
+              'Cache-Control': 'no-cache'
+            }
+          }
+        );
+        
+        if (download.status !== 200) {
+          throw new Error(`Download failed with status ${download.status}`);
+        }
+        
+        console.log('Download complete!');
+      } else {
+        console.log('File already exists, using cached version');
+      }
+      
+      // Update the video source to use the local file
+      setProcessedVideoUrl(localUri);
+      
+      // Clean up old videos
+      await cleanupOldVideos();
+      
+      setIsVideoLoading(false);
+    } catch (error) {
+      console.error('Error downloading video:', error);
+      setVideoError(`Failed to download video: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setIsVideoLoading(false);
+    }
+  };
+
+  // Add function to clean up old videos
+  const cleanupOldVideos = async () => {
+    try {
+      // Check if documentDirectory exists
+      if (!FileSystem.documentDirectory) {
+        console.warn('Document directory is not available');
+        return;
+      }
+      
+      const dirContents = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+      const videoFiles = dirContents.filter(file => file.endsWith('.mp4'));
+      
+      // Get the current filename if we have a processed video URL
+      const currentFilename = processedVideoUrl ? processedVideoUrl.split('/').pop() : null;
+      
+      // Filter out the current video from the list of files to consider for deletion
+      const videosToConsider = currentFilename 
+        ? videoFiles.filter(file => file !== currentFilename)
+        : videoFiles;
+      
+      // Keep only the 5 most recent videos (excluding the current one)
+      if (videosToConsider.length > 5) {
+        // Sort by creation time (you may need to get file info for each)
+        const filesToDelete = videosToConsider.slice(0, videosToConsider.length - 5);
+        
+        for (const file of filesToDelete) {
+          await FileSystem.deleteAsync(`${FileSystem.documentDirectory}${file}`);
+          console.log(`Deleted old video: ${file}`);
+        }
+      }
+    } catch (error) {
+      console.warn('Error cleaning up old videos:', error);
+    }
+  };
+
+  // Modify the submitVideoForAnalysis function
   const submitVideoForAnalysis = async () => {
     if (!videoUri) {
       Alert.alert("Error", "No video available to submit");
@@ -372,38 +508,24 @@ export default function VideoScreen() {
 
         setAnalysisResult(result.analysis);
         
-        // Extract the filename from the video_url
+        // Extract the filename from the video_url and download it
         if (result.video_url) {
           const videoPath = result.video_url;
           // The video path from server is like '/uploads/processed_videos/filename.mp4'
           // We need to extract just the filename part
           const filename = videoPath.split('/').pop();
           
-          // Add a timestamp to prevent caching issues
-          const timestamp = new Date().getTime();
-          
-          // Construct full URL with the AI_API_URL base and correct path
-          const fullVideoUrl = `${API_ROUTES.GET_PROCESSED_VIDEO.replace(':filename', filename)}?t=${timestamp}`;
-          console.log('Constructed video URL:', fullVideoUrl);
-          
-          // Store full API endpoint for the video
-          setProcessedVideoUrl(fullVideoUrl);
-          
-          // Pre-warm the video URL by making a HEAD request
-          try {
-            fetch(fullVideoUrl, { 
-              method: 'HEAD',
-              headers: {
-                'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
-                'Cache-Control': 'no-cache'
-              }
-            }).then(response => {
-              console.log('Pre-warm video HEAD response:', response.status);
-            }).catch(err => {
-              console.warn('Pre-warm request failed:', err);
-            });
-          } catch (e) {
-            console.warn('Error making pre-warm request:', e);
+          if (filename) {
+            // Construct full URL with the API_ROUTES base and immediately download
+            // No need for additional validation or checks
+            const fullVideoUrl = `${API_ROUTES.GET_PROCESSED_VIDEO.replace(':filename', filename)}`;
+            console.log('Downloading from URL:', fullVideoUrl);
+            
+            // Download the video immediately
+            await downloadAndPlayProcessedVideo(fullVideoUrl);
+          } else {
+            console.error('Invalid filename in video_url');
+            setVideoError('Invalid video filename received from server');
           }
         }
         
@@ -420,6 +542,7 @@ export default function VideoScreen() {
     } catch (error) {
       console.error('Error submitting video:', error);
       Alert.alert("Submission Error", `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setIsSubmitting(false);
     }
   };
 
@@ -433,12 +556,6 @@ export default function VideoScreen() {
         mode="video"
         onMountError={handleCameraError}
       >
-        {recordingTimer !== null && (
-          <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>{recordingTimer}s</Text>
-          </View>
-        )}
-        
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={selectVideoFromGallery}>
             <MaterialIcons name="photo-library" size={30} color="white" />
@@ -446,7 +563,7 @@ export default function VideoScreen() {
           
           <TouchableOpacity 
             style={[styles.recordButton, recording && styles.recordingButton]}
-            onPress={handleRecording}
+            onPress={recording ? stopRecording : startCountdown}
             disabled={!cameraReady}
           >
             {countdown !== null && (
@@ -465,6 +582,14 @@ export default function VideoScreen() {
           </View>
         )}
       </CameraView>
+      
+      {/* FIXED: Changed condition to just check recording state */}
+      {recording && (
+        <View style={styles.recordingTimerContainer}>
+          <MaterialIcons name="fiber-manual-record" size={18} color="red" />
+          <Text style={styles.recordingTimerText}>{formatTime(recordingDuration)}</Text>
+        </View>
+      )}
     </View>
   );
 
@@ -531,7 +656,7 @@ export default function VideoScreen() {
           {isVideoLoading && (
             <View style={styles.videoLoadingOverlay}>
               <ActivityIndicator size="large" color="#FA8128" />
-              <Text style={styles.loadingText}>Loading video...</Text>
+              <Text style={styles.loadingText}>Loading video... {downloadProgress > 0 ? `${Math.round(downloadProgress)}%` : ''}</Text>
             </View>
           )}
           {videoError ? (
@@ -544,12 +669,18 @@ export default function VideoScreen() {
                   setVideoError(null);
                   setIsVideoLoading(true);
                   
-                  // Create a new Video component instance by forcing a refresh
+                  // Retry downloading the video
                   if (processedVideoUrl) {
-                    const refreshedUrl = `${processedVideoUrl}?timestamp=${new Date().getTime()}`;
-                    setProcessedVideoUrl(null);
-                    // Short delay before setting the new URL to ensure component remounts
-                    setTimeout(() => setProcessedVideoUrl(refreshedUrl), 100);
+                    // FIX: Properly extract the filename without assuming file:// prefix
+                    const filename = processedVideoUrl.split('/').pop();
+                    if (filename) {
+                      // Simplified URL construction without timestamp
+                      const apiUrl = API_ROUTES.GET_PROCESSED_VIDEO.replace(':filename', filename);
+                      downloadAndPlayProcessedVideo(apiUrl);
+                    } else {
+                      setVideoError('Invalid video filename');
+                      setIsVideoLoading(false);
+                    }
                   }
                 }}
               >
@@ -559,14 +690,7 @@ export default function VideoScreen() {
           ) : (
             <Video
               ref={processedVideoRef}
-              source={{ 
-                uri: processedVideoUrl,
-                headers: {
-                  'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
-                  'Cache-Control': 'no-cache',
-                  'Access-Control-Allow-Origin': '*'
-                }
-              }}
+              source={{ uri: processedVideoUrl }}
               style={styles.processedVideo}
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
@@ -574,15 +698,8 @@ export default function VideoScreen() {
               isLooping={false}
               onPlaybackStatusUpdate={(status) => {
                 // Debug console log of playback status for troubleshooting
-                console.log('Playback status:', JSON.stringify(status));
-                
-                if (!status.isLoaded && 'error' in status) {
-                  console.error('Playback status error:', status.error);
-                  
-                  // Only set error if we're not already in error or loading state
-                  if (!videoError && !isVideoLoading) {
-                    setVideoError(`Playback error: ${status.error}`);
-                  }
+                if (status.isLoaded) {
+                  console.log('Playback status:', status.isPlaying ? 'playing' : 'paused');
                 }
               }}
               onReadyForDisplay={() => {
@@ -592,8 +709,7 @@ export default function VideoScreen() {
                 processedVideoRef.current?.playAsync();
               }}
               onLoadStart={() => {
-                console.log('Video loading started from URL:', processedVideoUrl);
-                setIsVideoLoading(true);
+                console.log('Video loading started from local file:', processedVideoUrl);
               }}
               onLoad={(status) => {
                 console.log('Video loaded successfully with status:', JSON.stringify(status));
@@ -601,23 +717,8 @@ export default function VideoScreen() {
               }}
               onError={(error) => {
                 console.error('Video playback error:', error, 'URL:', processedVideoUrl);
-                setVideoError('Failed to load video. Please try again.');
+                setVideoError('Failed to play video. Please try again.');
                 setIsVideoLoading(false);
-                
-                // Automatically retry once after a brief delay
-                setTimeout(() => {
-                  if (processedVideoRef.current) {
-                    console.log('Attempting auto-retry of video playback...');
-                    processedVideoRef.current.loadAsync({ 
-                      uri: `${processedVideoUrl}?t=${new Date().getTime()}`,
-                      headers: {
-                        'Accept': 'video/mp4,video/*;q=0.9,*/*;q=0.8',
-                        'Cache-Control': 'no-store',
-                        'Access-Control-Allow-Origin': '*'
-                      }
-                    });
-                  }
-                }, 2000);
               }}
             />
           )}
@@ -642,6 +743,13 @@ export default function VideoScreen() {
       </View>
     </ScrollView>
   );
+
+  // Helper function to format time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   return (
     <View style={styles.container}>
@@ -870,5 +978,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  recordingTimerContainer: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  recordingTimerText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
