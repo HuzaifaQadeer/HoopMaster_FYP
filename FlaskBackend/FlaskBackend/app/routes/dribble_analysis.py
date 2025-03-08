@@ -18,7 +18,6 @@ def basic_dribble():
     if video_file.filename == '':
         return jsonify({"error": "Empty filename"}), 400
 
-    # Get configured folder paths
     upload_folder = current_app.config.get('UPLOAD_FOLDER')
     output_folder = current_app.config.get('OUTPUT_FOLDER')
     os.makedirs(upload_folder, exist_ok=True)
@@ -32,13 +31,18 @@ def basic_dribble():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    # Return a URL that points to your custom video-serving endpoint
+    # If processing stopped due to absence of player or ball, no video is generated.
+    if output_video_path is None:
+        return jsonify({
+            "analysis": analysis_text
+        }), 200
+
+    # Otherwise, build the video URL from the processed folder.
     video_url = f"/uploads/processed_videos/{os.path.basename(output_video_path)}"
     return jsonify({
         "analysis": analysis_text,
         "video_url": video_url
     }), 200
-
 
 @dribble_bp.route('/behind_the_back', methods=['POST'])
 def behind_the_back():

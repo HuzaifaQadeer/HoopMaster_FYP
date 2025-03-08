@@ -17,9 +17,11 @@ class BasicDribbleEvaluator:
         self.good_back = 0
         self.good_knees = 0
         self.good_ball = 0
+
+        # Ball fallback variables
         self.last_ball_y = None
         self.last_ball_time = None
-        self.ball_timeout = 1.0  # fallback time (in seconds)
+        self.ball_timeout = 1.0  # up to 1s fallback
 
     def evaluate_frame(self, features, ball_coords):
         self.total_frames += 1
@@ -59,16 +61,27 @@ class BasicDribbleEvaluator:
     def get_final_feedback(self):
         if self.total_frames < 1:
             return ("No frames processed", 0.0)
-        back_pct = 100.0 * self.good_back / self.total_frames
-        knee_pct = 100.0 * self.good_knees / self.total_frames
-        ball_pct = 100.0 * self.good_ball / self.total_frames
+        # Convert good detection percentages to scores out of 10
+        back_score = (self.good_back / self.total_frames) * 10
+        knee_score = (self.good_knees / self.total_frames) * 10
+        ball_score = (self.good_ball / self.total_frames) * 10
+        overall_score = (back_score + knee_score + ball_score) / 3
 
-        final_score = (back_pct + knee_pct + ball_pct) / 3.0
+        feedback_lines = []
+        feedback_lines.append(f"Back Angle: {back_score:.1f}/10")
+        feedback_lines.append(f"Knee Angle: {knee_score:.1f}/10")
+        feedback_lines.append(f"Ball Position: {ball_score:.1f}/10")
+        feedback_lines.append(f"Overall Score: {overall_score:.1f}/10")
 
-        lines = []
-        lines.append(f"Back Angle Good ~{back_pct:.1f}% => " + ("Good" if back_pct >= 70 else "Needs improvement"))
-        lines.append(f"Knee Angle Good ~{knee_pct:.1f}% => " + ("Good" if knee_pct >= 70 else "Needs improvement"))
-        lines.append(f"Ball Below Waist ~{ball_pct:.1f}% => " + ("Good" if ball_pct >= 70 else "Needs improvement"))
+        suggestions = []
+        if back_score < 7:
+            suggestions.append("Improve back posture.")
+        if knee_score < 7:
+            suggestions.append("Focus on knee alignment.")
+        if ball_score < 7:
+            suggestions.append("Keep the ball lower than the waist.")
+        if not suggestions:
+            suggestions.append("Great job! Keep up the good work.")
 
-        feedback = "\n".join(lines)
-        return (feedback, final_score)
+        feedback_text = "\n".join(feedback_lines) + "\nFeedback: " + " ".join(suggestions)
+        return (feedback_text, overall_score)
