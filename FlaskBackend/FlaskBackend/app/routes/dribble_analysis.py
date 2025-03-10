@@ -65,9 +65,14 @@ def behind_the_back():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    if output_video_path is None:
+        return jsonify({
+            "analysis": analysis_text
+        }), 200
+
     return jsonify({
         "analysis": analysis_text,
-        "video_url": f"/static/processed_videos/{os.path.basename(output_video_path)}"
+        "video_location": output_video_path
     }), 200
 
 @dribble_bp.route('/between_the_legs', methods=['POST'])
