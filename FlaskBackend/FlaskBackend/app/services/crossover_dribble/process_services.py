@@ -7,9 +7,6 @@ from app.services.crossover_dribble.feature_extractor import extract_features
 from app.services.crossover_dribble.evaluator import evaluate_frame
 
 def overlay_evaluation(frame, features, results):
-    """
-    Overlay the evaluation results onto the frame.
-    """
     annotated_frame = frame.copy()
     if features and 'pose_landmarks' in features:
         mp_drawing = mp.solutions.drawing_utils
@@ -24,21 +21,12 @@ def overlay_evaluation(frame, features, results):
     y_offset = 30
     for key, value in results.items():
         text = f"{key}: {value}"
-        # If the result contains 'Good' (case-insensitive) assume it's positive.
         color = (0, 255, 0) if 'good' in str(value).lower() else (0, 0, 255)
-        cv2.putText(
-            annotated_frame, text, (10, y_offset),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2
-        )
+        cv2.putText(annotated_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
         y_offset += 30
     return annotated_frame
 
 def compress_video(input_path, output_path):
-    """
-    Compress the video by reducing its bitrate based on the size of the input file.
-    The target size is set to roughly 1/10th of the original file size.
-    The FPS is kept consistent.
-    """
     original_size_bytes = os.path.getsize(input_path)
     original_size_mb = original_size_bytes / (1024 * 1024)
     target_size_mb = original_size_mb / 10
@@ -55,7 +43,7 @@ def compress_video(input_path, output_path):
 
     cmd = [
         "ffmpeg",
-        "-y",  # Overwrite output file if it exists
+        "-y",
         "-i", input_path,
         "-b:v", f"{video_bitrate_k}k",
         "-r", str(fps),
@@ -80,16 +68,17 @@ def process_video_file(video_path, output_folder):
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     out_writer = cv2.VideoWriter(out_path, fourcc, fps_in, (w, h), True)
 
-    # Initialize evaluator state variables for crossover dribble.
+    # Initialize evaluator state.
     switch_times = []
     previous_hand_side = None
     hand_side_history = []
     last_results = {}
     last_features = None
+    last_ball_xy = None
+
     frame_count = 0
-    processing_interval = 5  # Process every 5th frame
-    last_player_time = time.time()
-    last_ball_time = time.time()
+    processing_interval = 5  # Process every 5th frame.
+    last_detection_time = time.time()
     no_detection_reason = None
 
     while True:
@@ -100,22 +89,29 @@ def process_video_file(video_path, output_folder):
         frame_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
 
         if frame_count % processing_interval == 1:
-            features = extract_features(frame)
-            if features is None:
-                # If no features detected and we haven't seen any before,
-                # check if timeout (3 seconds) has been reached.
-                if last_features is None and (time.time() - last_player_time >= 3):
-                    no_detection_reason = "No player detected for 3 seconds. Stopping processing."
+            features, ball_xy = extract_features(frame)
+            # If no pose features or no ball detected, check timeout.
+            if (features is None or ball_xy is None):
+                if (last_features is None or last_ball_xy is None) and (time.time() - last_detection_time >= 3):
+                    no_detection_reason = "No ball or player detected for 3 seconds. Stopping processing."
                     break
+                else:
+                    features = last_features
+                    ball_xy = last_ball_xy
             else:
-                last_player_time = time.time()
+                last_detection_time = time.time()
                 last_features = features
+                last_ball_xy = ball_xy
 
             if features is not None:
-                # Evaluate the frame using the crossover evaluator.
+                # Pass the tuple (features, ball_xy) to evaluator.
                 results, switch_times, previous_hand_side, hand_side_history = evaluate_frame(
-                    features, frame_time, switch_times, previous_hand_side, hand_side_history
+                    (features, ball_xy), frame_time, switch_times, previous_hand_side, hand_side_history
                 )
+                # If evaluator flags no ball detected, break.
+                if results.get("Ball Switch") == "No ball detected":
+                    no_detection_reason = "No ball detected for 3 seconds. Stopping processing."
+                    break
                 last_results = results
             else:
                 results = last_results
@@ -135,11 +131,39 @@ def process_video_file(video_path, output_folder):
             os.remove(out_path)
         return None, "Upload a proper video. No ball or player found."
 
-    # Prepare textual evaluation by joining the final results.
-    evaluation_lines = []
-    for key, value in last_results.items():
-        evaluation_lines.append(f"{key}: {value}")
-    analysis_text = "\n".join(evaluation_lines)
+    # Calculate textual evaluation.
+    body_text = last_results.get("Body Lean", "").strip().lower()
+    foot_text = last_results.get("Foot Placement", "").strip().lower()
+    switch_text = last_results.get("Ball Switch", "").strip().lower()
+
+    body_score = 10 if body_text == "good" else 0
+    foot_score = 10 if foot_text == "good" else 0
+    try:
+        parts = switch_text.split()
+        x_part = parts[1].replace(",", "")  # Expected format "X/15"
+        switch_count = float(x_part.split("/")[0])
+        ball_score = (switch_count / 15) * 10
+    except Exception:
+        ball_score = 0
+
+    overall_score = (body_score + foot_score + ball_score) / 3.0
+
+    feedback_lines = [
+        f"Body Lean: {body_score:.1f}/10",
+        f"Foot Placement: {foot_score:.1f}/10",
+        f"Ball Switch: {ball_score:.1f}/10",
+        f"Overall Score: {overall_score:.1f}/10"
+    ]
+    suggestions = []
+    if body_score < 7:
+        suggestions.append("Improve your body lean posture.")
+    if foot_score < 7:
+        suggestions.append("Adjust knee bend and leg separation for better foot placement.")
+    if ball_score < 7:
+        suggestions.append("Increase your ball switching speed.")
+    if not suggestions:
+        suggestions.append("Great job! Keep up the good work.")
+    evaluation_text = "\n".join(feedback_lines) + "\nFeedback: " + " ".join(suggestions)
 
     # Compress the annotated video.
     compressed_filename = f"{base_name}_annotated_compressed_{int(time.time())}.mp4"
@@ -147,11 +171,10 @@ def process_video_file(video_path, output_folder):
     compress_video(out_path, compressed_out_path)
     print(f"Compressed annotated video saved at: {compressed_out_path}")
 
-    # Delete the larger, uncompressed video file.
     if os.path.exists(out_path):
         os.remove(out_path)
 
-    return compressed_out_path, analysis_text
+    return compressed_out_path, evaluation_text
 
 def analyze_video(input_path, output_folder):
     os.makedirs(output_folder, exist_ok=True)

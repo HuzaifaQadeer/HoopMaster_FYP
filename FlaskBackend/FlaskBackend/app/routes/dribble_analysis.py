@@ -91,10 +91,16 @@ def between_the_legs():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    if output_video_path is None:
+        return jsonify({
+            "analysis": analysis_text
+        }), 200
+
     return jsonify({
         "analysis": analysis_text,
-        "video_url": f"/static/processed_videos/{os.path.basename(output_video_path)}"
+        "video_location": output_video_path
     }), 200
+
 
 @dribble_bp.route('/crossover_dribble', methods=['POST'])
 def crossover_dribble():
@@ -117,9 +123,14 @@ def crossover_dribble():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    if output_video_path is None:
+        return jsonify({
+            "analysis": analysis_text
+        }), 200
+
     return jsonify({
         "analysis": analysis_text,
-        "video_url": f"/static/processed_videos/{os.path.basename(output_video_path)}"
+        "video_location": output_video_path
     }), 200
 
 @dribble_bp.route('/tween_dribble', methods=['POST'])
