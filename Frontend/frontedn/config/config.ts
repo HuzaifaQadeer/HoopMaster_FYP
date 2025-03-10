@@ -28,6 +28,10 @@ export const API_ROUTES = {
   GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
   // AI Analysis Routes
   BASIC_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/basic_dribble`,
+  BEHIND_THE_BACK_ANALYSIS: `${AI_API_URL}/api/dribble/behind_the_back`,
+  BETWEEN_THE_LEGS_ANALYSIS: `${AI_API_URL}/api/dribble/between_the_legs`,
+  CROSSOVER_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/crossover_dribble`,
+  TWEEN_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/tween_dribble`,
   GET_PROCESSED_VIDEO: `${AI_API_URL}/uploads/processed_videos/:filename`,
 };
 
