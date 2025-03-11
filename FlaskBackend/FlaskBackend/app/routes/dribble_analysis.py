@@ -70,9 +70,10 @@ def behind_the_back():
             "analysis": analysis_text
         }), 200
 
+    video_url = f"/uploads/processed_videos/{os.path.basename(output_video_path)}"
     return jsonify({
         "analysis": analysis_text,
-        "video_location": output_video_path
+        "video_url": video_url
     }), 200
 
 @dribble_bp.route('/between_the_legs', methods=['POST'])
@@ -101,11 +102,11 @@ def between_the_legs():
             "analysis": analysis_text
         }), 200
 
+    video_url = f"/uploads/processed_videos/{os.path.basename(output_video_path)}"
     return jsonify({
         "analysis": analysis_text,
-        "video_location": output_video_path
+        "video_url": video_url
     }), 200
-
 
 @dribble_bp.route('/crossover_dribble', methods=['POST'])
 def crossover_dribble():
@@ -133,9 +134,10 @@ def crossover_dribble():
             "analysis": analysis_text
         }), 200
 
+    video_url = f"/uploads/processed_videos/{os.path.basename(output_video_path)}"
     return jsonify({
         "analysis": analysis_text,
-        "video_location": output_video_path
+        "video_url": video_url
     }), 200
 
 @dribble_bp.route('/tween_dribble', methods=['POST'])
@@ -159,7 +161,13 @@ def tween_dribble():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    if output_video_path is None:
+        return jsonify({
+            "analysis": analysis_text
+        }), 200
+
+    video_url = f"/uploads/processed_videos/{os.path.basename(output_video_path)}"
     return jsonify({
         "analysis": analysis_text,
-        "video_url": f"/static/processed_videos/{os.path.basename(output_video_path)}"
+        "video_url": video_url
     }), 200
