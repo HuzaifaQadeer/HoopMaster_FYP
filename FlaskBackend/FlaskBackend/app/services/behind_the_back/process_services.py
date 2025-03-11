@@ -12,7 +12,10 @@ from ultralytics import YOLO
 # ---------------------------
 # Load YOLOv8 basketball detection model.
 # (Assumes the model is in your static folder – adjust path if needed)
-yolo_model = YOLO("yolov8n_basketball.pt")
+# Load YOLO model from your static folder.
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+model_path = os.path.join(base_dir, 'app','static', 'yolov8n_basketball.pt')
+yolo_model = YOLO(model_path)
 # Initialize Mediapipe Pose.
 mp_pose = mp.solutions.pose
 pose_detector = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
