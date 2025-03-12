@@ -1,7 +1,12 @@
+# IMPORTANT: This project requires Python 3.10 or 3.11 due to mediapipe compatibility
+# Current Python version (3.13) is not compatible with mediapipe on macOS ARM64
 Flask
+flask-cors
 requests
 openai
 google-generativeai
+cohere
+python-dotenv
 numpy
 opencv-python
 mediapipe

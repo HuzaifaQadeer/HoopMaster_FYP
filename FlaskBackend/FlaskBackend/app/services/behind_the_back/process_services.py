@@ -35,6 +35,27 @@ def calculate_angle(a, b, c):
     angle = np.degrees(np.arccos(np.clip(cosine_angle, -1.0, 1.0)))
     return angle
 
+def detect_ball(frame):
+    """
+    Detects a basketball in the frame using YOLO.
+    Returns a tuple of (bbox, confidence) where:
+      - bbox is (x, y, width, height) if ball is detected, or None
+      - confidence is the detection confidence, or None
+    """
+    results = yolo_model.predict(frame, conf=0.35, verbose=False)[0]
+    
+    for box in results.boxes:
+        cls_id = int(box.cls)
+        class_name = yolo_model.names[cls_id]
+        if class_name == 'ball':
+            confidence = float(box.conf)
+            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+            x, y = int(x1), int(y1)
+            w, h = int(x2 - x1), int(y2 - y1)
+            return ((x, y, w, h), confidence)
+    
+    return (None, None)
+
 def compress_video(input_path, output_path):
     """
     Compress the video by reducing its bitrate so that the target file size is roughly 1/10th of the original.
@@ -213,8 +234,11 @@ def process_behind_back_dribble(video_path, output_video_path):
         feedback_lines.append("Feedback: " + " ".join(suggestions))
         final_feedback = "\n".join(feedback_lines)
 
+    # Fix the base_name variable by extracting it from the output_video_path
+    base_name = os.path.splitext(os.path.basename(output_video_path))[0]
+    
     # Compress the annotated video.
-    compressed_filename = f"{base_name}_annotated_compressed_{int(time.time())}.mp4"
+    compressed_filename = f"{base_name}_compressed_{int(time.time())}.mp4"
     compressed_out_path = os.path.join(os.path.dirname(output_video_path), compressed_filename)
     compress_video(output_video_path, compressed_out_path)
     print("Final Analysis:")
