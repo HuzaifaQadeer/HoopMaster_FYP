@@ -1,0 +1,27 @@
+# Python
+*.pyc
+__pycache__/
+.pytest_cache/
+**/venv/
+**/venv_py310/
+
+# YOLOv5 folder
+FlaskBackend/FlaskBackend/app/services/shot_analyzer/yoolo_v5/
+
+# Environment and IDE
+.env
+.idea/
+.expo/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Temporary files
+temp.jpg 
