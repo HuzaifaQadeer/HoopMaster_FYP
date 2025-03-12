@@ -441,49 +441,56 @@ export default function VideoScreen() {
       // Determine which API endpoint to use based on exact drill titles from the database
       let apiEndpoint;
       
-      // Match exact drill titles from the database
-      switch(drillName) {
-        case "Basic Dribbling":
-          apiEndpoint = API_ROUTES.BASIC_DRIBBLE_ANALYSIS;
-          console.log('Using basic dribble analysis endpoint');
-          break;
-        case "Behind the Back Dribble":
-          apiEndpoint = API_ROUTES.BEHIND_THE_BACK_ANALYSIS;
-          console.log('Using behind the back analysis endpoint');
-          break;
-        case "Between the Legs":
-          apiEndpoint = API_ROUTES.BETWEEN_THE_LEGS_ANALYSIS;
-          console.log('Using between the legs analysis endpoint');
-          break;
-        case "Crossover Dribble":
-          apiEndpoint = API_ROUTES.CROSSOVER_DRIBBLE_ANALYSIS;
-          console.log('Using crossover dribble analysis endpoint');
-          break;
-        case "Tween Dribble":
-          apiEndpoint = API_ROUTES.TWEEN_DRIBBLE_ANALYSIS;
-          console.log('Using tween dribble analysis endpoint');
-          break;
-        default:
-          // If the drill name doesn't match exactly, fall back to keyword matching
-          const drillNameLower = drillName.toLowerCase();
-          if (drillNameLower.includes('behind the back') || drillNameLower.includes('behind-the-back')) {
-            apiEndpoint = API_ROUTES.BEHIND_THE_BACK_ANALYSIS;
-            console.log('Using behind the back analysis endpoint (keyword match)');
-          } else if (drillNameLower.includes('between the legs') || drillNameLower.includes('between-the-legs')) {
-            apiEndpoint = API_ROUTES.BETWEEN_THE_LEGS_ANALYSIS;
-            console.log('Using between the legs analysis endpoint (keyword match)');
-          } else if (drillNameLower.includes('crossover')) {
-            apiEndpoint = API_ROUTES.CROSSOVER_DRIBBLE_ANALYSIS;
-            console.log('Using crossover dribble analysis endpoint (keyword match)');
-          } else if (drillNameLower.includes('tween')) {
-            apiEndpoint = API_ROUTES.TWEEN_DRIBBLE_ANALYSIS;
-            console.log('Using tween dribble analysis endpoint (keyword match)');
-          } else {
-            // Default to basic dribble if no match is found
+      // Check if we're using default values (no drill was selected)
+      // This happens when user navigates directly to the video screen from navbar
+      if (!params.drillType || drillType === 'basic_dribble' && drillName === 'Basketball Drill') {
+        apiEndpoint = API_ROUTES.PRACTICE_ANALYSIS;
+        console.log('Using practice analysis endpoint (no specific drill selected)');
+      } else {
+        // Match exact drill titles from the database
+        switch(drillName) {
+          case "Basic Dribbling":
             apiEndpoint = API_ROUTES.BASIC_DRIBBLE_ANALYSIS;
-            console.log('Using basic dribble analysis endpoint (default)');
-          }
-          break;
+            console.log('Using basic dribble analysis endpoint');
+            break;
+          case "Behind the Back Dribble":
+            apiEndpoint = API_ROUTES.BEHIND_THE_BACK_ANALYSIS;
+            console.log('Using behind the back analysis endpoint');
+            break;
+          case "Between the Legs":
+            apiEndpoint = API_ROUTES.BETWEEN_THE_LEGS_ANALYSIS;
+            console.log('Using between the legs analysis endpoint');
+            break;
+          case "Crossover Dribble":
+            apiEndpoint = API_ROUTES.CROSSOVER_DRIBBLE_ANALYSIS;
+            console.log('Using crossover dribble analysis endpoint');
+            break;
+          case "Tween Dribble":
+            apiEndpoint = API_ROUTES.TWEEN_DRIBBLE_ANALYSIS;
+            console.log('Using tween dribble analysis endpoint');
+            break;
+          default:
+            // If the drill name doesn't match exactly, fall back to keyword matching
+            const drillNameLower = drillName.toLowerCase();
+            if (drillNameLower.includes('behind the back') || drillNameLower.includes('behind-the-back')) {
+              apiEndpoint = API_ROUTES.BEHIND_THE_BACK_ANALYSIS;
+              console.log('Using behind the back analysis endpoint (keyword match)');
+            } else if (drillNameLower.includes('between the legs') || drillNameLower.includes('between-the-legs')) {
+              apiEndpoint = API_ROUTES.BETWEEN_THE_LEGS_ANALYSIS;
+              console.log('Using between the legs analysis endpoint (keyword match)');
+            } else if (drillNameLower.includes('crossover')) {
+              apiEndpoint = API_ROUTES.CROSSOVER_DRIBBLE_ANALYSIS;
+              console.log('Using crossover dribble analysis endpoint (keyword match)');
+            } else if (drillNameLower.includes('tween')) {
+              apiEndpoint = API_ROUTES.TWEEN_DRIBBLE_ANALYSIS;
+              console.log('Using tween dribble analysis endpoint (keyword match)');
+            } else {
+              // Default to basic dribble if no match is found
+              apiEndpoint = API_ROUTES.BASIC_DRIBBLE_ANALYSIS;
+              console.log('Using basic dribble analysis endpoint (default)');
+            }
+            break;
+        }
       }
 
       // Debug logging for API URL

@@ -32,6 +32,7 @@ export const API_ROUTES = {
   BETWEEN_THE_LEGS_ANALYSIS: `${AI_API_URL}/api/dribble/between_the_legs`,
   CROSSOVER_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/crossover_dribble`,
   TWEEN_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/tween_dribble`,
+  PRACTICE_ANALYSIS: `${AI_API_URL}/api/practice/analyze`,
   GET_PROCESSED_VIDEO: `${AI_API_URL}/uploads/processed_videos/:filename`,
 };
 
