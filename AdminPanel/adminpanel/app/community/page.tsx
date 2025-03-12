@@ -76,6 +76,7 @@ const Community: React.FC = () => {
         throw new Error(`Failed to fetch posts: ${postsRes.status}`);
       }
       const postsData = await postsRes.json();
+      console.log('Fetched posts data:', postsData);
 
       // Fetch reports
       const reportsRes = await fetchWithAuth(API_ROUTES.REPORT.GET_ALL);
@@ -83,54 +84,83 @@ const Community: React.FC = () => {
         throw new Error(`Failed to fetch reports: ${reportsRes.status}`);
       }
       const reportsData = await reportsRes.json();
+      console.log('Fetched reports data:', reportsData);
 
-      // Transform posts data
-      setPosts(postsData.map((post: any) => ({
-        id: post.id || '',
-        content: post.content || '',
-        status: post.status || 'unknown',
-        date: post.date ? new Date(post.date).toLocaleDateString() : 'Unknown Date',
-        author: post.author || 'Unknown User',
-        user: {
-          id: post.user?.id || '',
-          displayName: post.user?.displayName || '',
-          email: post.user?.email || '',
-          profilePicture: post.user?.profilePicture || null
-        }
-      })));
+      // Safely transform posts data
+      if (Array.isArray(postsData)) {
+        const validPosts = postsData.filter(post => post != null);
+        setPosts(validPosts.map((post: any) => ({
+          id: post.id || post._id || '',
+          content: post.content || '',
+          status: post.status || 'unknown',
+          date: post.date ? new Date(post.date).toLocaleDateString() : 'Unknown Date',
+          author: post.author || 'Unknown User',
+          user: {
+            id: post.user?.id || post.user?._id || '',
+            displayName: post.user?.displayName || 'Unknown User',
+            email: post.user?.email || '',
+            profilePicture: post.user?.profilePicture || null
+          }
+        })));
+      } else {
+        console.error('Expected posts data to be an array but got:', typeof postsData);
+        setPosts([]);
+      }
 
-      // Transform reports data
-      setReports(reportsData.map((report: any) => ({
-        id: report._id,
-        adminAction: report.adminAction ? {
-          admin: {
-            _id: report.adminAction.admin._id,
-            email: report.adminAction.admin.email,
-            name: report.adminAction.admin.name
-          },
-          action: report.adminAction.action,
-          date: new Date(report.adminAction.date).toLocaleDateString(),
-          notes: report.adminAction.notes
-        } : undefined,
-        reporter: {
-          _id: report.reporter._id,
-          email: report.reporter.email,
-          displayName: report.reporter.displayName
-        },
-        reported: {
-          _id: report.reported._id,
-          email: report.reported.email,
-          displayName: report.reported.displayName
-        },
-        contentType: report.contentType,
-        contentId: report.contentId,
-        reason: report.reason,
-        comment: report.comment,
-        resolved: report.resolved,
-        status: report.status,
-        date: new Date(report.createdAt).toLocaleDateString(),
-        reportedContent: report.contentDetails?.content || report.contentDetails?.text || ''
-      })));
+      // Safely transform reports data
+      if (Array.isArray(reportsData)) {
+        const validReports = reportsData.filter(report => report != null && report._id != null);
+        setReports(validReports.map((report: any) => {
+          // Safely access nested properties
+          const adminAction = report.adminAction && report.adminAction.admin ? {
+            admin: {
+              _id: report.adminAction.admin._id || '',
+              email: report.adminAction.admin.email || '',
+              name: report.adminAction.admin.name || ''
+            },
+            action: report.adminAction.action || '',
+            date: report.adminAction.date ? new Date(report.adminAction.date).toLocaleDateString() : 'Unknown Date',
+            notes: report.adminAction.notes || ''
+          } : undefined;
+
+          const reporter = report.reporter ? {
+            _id: report.reporter._id || '',
+            email: report.reporter.email || '',
+            displayName: report.reporter.displayName || 'Unknown User'
+          } : {
+            _id: '',
+            email: '',
+            displayName: 'Unknown User'
+          };
+
+          const reported = report.reported ? {
+            _id: report.reported._id || '',
+            email: report.reported.email || '',
+            displayName: report.reported.displayName || 'Unknown User'
+          } : {
+            _id: '',
+            email: '',
+            displayName: 'Unknown User'
+          };
+
+          return {
+            id: report._id,
+            adminAction,
+            reporter,
+            reported,
+            contentType: report.contentType || 'post',
+            contentId: report.contentId || '',
+            reason: report.reason || '',
+            comment: report.comment || '',
+            resolved: !!report.resolved,
+            status: report.status || 'pending',
+            date: report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'Unknown Date'
+          };
+        }));
+      } else {
+        console.error('Expected reports data to be an array but got:', typeof reportsData);
+        setReports([]);
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load data';
       setError(errorMessage);
@@ -223,37 +253,41 @@ const Community: React.FC = () => {
         {/* Player Reports */}
         <div className="bg-white text-black p-4 rounded-lg shadow-lg">
           <h3 className="font-semibold mb-2">Player Reports</h3>
-          <ul>
-            {reports.map((report) => (
-              <li 
-                key={report.id} 
-                className="border-2 border-gray-300 rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleReportClick(report)}
-              >
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <p className="font-medium">Reporter: {report.reporter.displayName}</p>
-                    <small className="text-gray-600 font-bold">Date: {report.date}</small>
-                  </div>
-                  <p><span className="font-medium">Reported Player:</span> {report.reported.displayName}</p>
-                  <p><span className="font-medium">Status:</span> {report.status}</p>
-                  {report.adminAction && (
-                    <div className="bg-blue-50 p-2 rounded-md border border-blue-200">
-                      <p className="text-sm text-blue-600 font-medium">Admin Action:</p>
-                      <p>Action: {report.adminAction.action}</p>
-                      <p>Notes: {report.adminAction.notes}</p>
-                      <p>Date: {report.adminAction.date}</p>
+          {reports.length > 0 ? (
+            <ul>
+              {reports.map((report) => (
+                <li 
+                  key={report.id} 
+                  className="border-2 border-gray-300 rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                  onClick={() => handleReportClick(report)}
+                >
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <p className="font-medium">Reporter: {report.reporter?.displayName || 'Unknown'}</p>
+                      <small className="text-gray-600 font-bold">Date: {report.date || 'Unknown'}</small>
                     </div>
-                  )}
-                  <p><span className="font-medium">Reason:</span> {report.reason}</p>
-                  <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
-                    <p className="text-sm text-gray-600 font-medium">Reporter's Comment:</p>
-                    <p>"{report.comment}"</p>
+                    <p><span className="font-medium">Reported Player:</span> {report.reported?.displayName || 'Unknown'}</p>
+                    <p><span className="font-medium">Status:</span> {report.status || 'Unknown'}</p>
+                    {report.adminAction && (
+                      <div className="bg-blue-50 p-2 rounded-md border border-blue-200">
+                        <p className="text-sm text-blue-600 font-medium">Admin Action:</p>
+                        <p>Action: {report.adminAction.action || 'Unknown'}</p>
+                        <p>Notes: {report.adminAction.notes || 'None'}</p>
+                        <p>Date: {report.adminAction.date || 'Unknown'}</p>
+                      </div>
+                    )}
+                    <p><span className="font-medium">Reason:</span> {report.reason || 'Not specified'}</p>
+                    <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                      <p className="text-sm text-gray-600 font-medium">Reporter's Comment:</p>
+                      <p>"{report.comment || 'No comment provided'}"</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No reports found.</p>
+          )}
         </div>
       </div>
     </div>
