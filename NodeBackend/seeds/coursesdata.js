@@ -3,8 +3,8 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 // Load models (adjust paths as needed)
-const Course = require('./models/courseModel');
-const CourseDrill = require('./models/coursedrillModel');
+const Course = require('./../models/courseModel');
+const CourseDrill = require('./../models/coursedrillModel');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -17,7 +17,10 @@ mongoose.connect(process.env.MONGODB_URI, {
   })
   .catch(err => console.error("MongoDB Connection Error:", err));
 
-
+/**
+ * Helper function for intermediate and expert courses.
+ * Generates sessions with 14 sessions (or 8 if weekly) using dynamic drill titles and instructions.
+ */
 function generateSessions(courseType, level, trainingType) {
   // Determine number of sessions based on trainingType
   const sessionCount = trainingType === 'weekly' ? 8 : 14;
@@ -25,14 +28,17 @@ function generateSessions(courseType, level, trainingType) {
   for (let i = 1; i <= sessionCount; i++) {
     let baseTitle = '';
     if (courseType === 'Handles') {
-      baseTitle = i <= 7 ? (level === 'intermediate' ? "Advanced Stationary Control" : "Elite Full‑Court Ball Handling") 
-                          : (level === 'intermediate' ? "Advanced Dribbling Progression" : "Elite Dribbling Progression");
+      baseTitle = i <= 7 
+        ? (level === 'intermediate' ? "Advanced Stationary Control" : "Elite Full‑Court Ball Handling") 
+        : (level === 'intermediate' ? "Advanced Dribbling Progression" : "Elite Dribbling Progression");
     } else if (courseType === 'Finishing') {
-      baseTitle = i <= 7 ? (level === 'intermediate' ? "Advanced Layup Mechanics" : "Elite Game‑Speed Layup") 
-                          : (level === 'intermediate' ? "Advanced Finishing Progression" : "Elite Finishing Progression");
+      baseTitle = i <= 7 
+        ? (level === 'intermediate' ? "Advanced Layup Mechanics" : "Elite Game‑Speed Layup") 
+        : (level === 'intermediate' ? "Advanced Finishing Progression" : "Elite Finishing Progression");
     } else if (courseType === 'Shooting') {
-      baseTitle = i <= 7 ? (level === 'intermediate' ? "Advanced Form Shooting" : "Elite Game‑Speed Form Shooting")
-                          : (level === 'intermediate' ? "Advanced Shooting Progression" : "Elite Shooting Progression");
+      baseTitle = i <= 7 
+        ? (level === 'intermediate' ? "Advanced Form Shooting" : "Elite Game‑Speed Form Shooting")
+        : (level === 'intermediate' ? "Advanced Shooting Progression" : "Elite Shooting Progression");
     }
     sessions.push({
       sessionNumber: i,
@@ -92,7 +98,377 @@ function generateSessions(courseType, level, trainingType) {
   return sessions;
 }
 
+/**
+ * The following helper functions generate complete session objects for beginner courses.
+ * (Unlike the intermediate/professional courses, these sessions are fully written out.)
+ */
 
+// Returns letter A, B, C... for labeling sessions (1 → A, 2 → B, …)
+function getLetter(index) {
+  return String.fromCharCode(64 + index);
+}
+
+// Generate 14 sessions for Beginner Handles Every‑Other‑Day Training
+function generateBeginnerHandlesEveryOtherDaySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 14; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Handles Fundamentals ${getLetter(i)}`,
+      drills: [
+        {
+          order: 1,
+          title: `Right-Hand Basic Dribble ${i}`,
+          instructions: [
+            "Assume a balanced stance and begin with a basic right-hand dribble.",
+            "Focus on maintaining control and a steady rhythm.",
+            "Dribble continuously for 30 seconds.",
+            "Repeat for 3 sets with a 20-second rest between sets."
+          ]
+        },
+        {
+          order: 2,
+          title: `Left-Hand Basic Dribble ${i}`,
+          instructions: [
+            "Adopt a balanced stance and execute a left-hand dribble.",
+            "Emphasize control and proper hand positioning.",
+            "Dribble for 30 seconds while maintaining form.",
+            "Complete 3 sets with a 20-second rest."
+          ]
+        },
+        {
+          order: 3,
+          title: `Alternating Dribble Challenge ${i}`,
+          instructions: [
+            "Alternate dribbling between right and left hands with each bounce.",
+            "Keep transitions smooth and maintain a controlled pace.",
+            "Perform continuously for 30 seconds.",
+            "Do 3 sets with a 20-second break between sets."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 8 sessions for Beginner Handles Weekly Training
+function generateBeginnerHandlesWeeklySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 8; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Extended Fundamentals ${i}`,
+      drills: [
+        {
+          order: 1,
+          title: `Extended Right-Hand Dribble ${i}`,
+          instructions: [
+            "Perform a continuous right-hand dribble focusing on endurance.",
+            "Maintain a steady pace for 3 minutes.",
+            "Keep proper form and balance throughout.",
+            "Repeat for 3 sets with short recovery periods."
+          ]
+        },
+        {
+          order: 2,
+          title: `Extended Left-Hand Dribble ${i}`,
+          instructions: [
+            "Execute a continuous left-hand dribble emphasizing control.",
+            "Dribble for 3 minutes while maintaining form.",
+            "Focus on smooth transitions and balance.",
+            "Complete 3 sets with brief rests."
+          ]
+        },
+        {
+          order: 3,
+          title: `Alternating Extended Dribble Challenge ${i}`,
+          instructions: [
+            "Alternate between right and left-hand dribbles continuously.",
+            "Focus on endurance and maintain control throughout.",
+            "Perform for 3 minutes continuously.",
+            "Repeat for 3 sets with a short rest between sets."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 14 sessions for Beginner Finishing Daily Training
+function generateBeginnerFinishingDailySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 14; i++) {
+    let titlePrefix = i <= 7 ? "Basic" : "Layup Progression";
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `${titlePrefix} Layup Fundamentals ${i}`,
+      drills: [
+        {
+          order: 1,
+          title: `${titlePrefix} Layup Drill (Right Side) ${i}`,
+          instructions: [
+            "Position yourself 5 feet from the basket on your right side.",
+            "Dribble forward taking 2 controlled steps.",
+            "Finish with a right‑hand layup off the backboard.",
+            "Perform 10 repetitions and complete 3 sets with a 20-second rest."
+          ]
+        },
+        {
+          order: 2,
+          title: `${titlePrefix} Layup Drill (Left Side) ${i}`,
+          instructions: [
+            "Mirror the right‑side drill on the left side.",
+            "Dribble forward taking 2 controlled steps.",
+            "Finish with a left‑hand layup off the backboard.",
+            "Do 10 reps and complete 3 sets with a 20-second rest."
+          ]
+        },
+        {
+          order: 3,
+          title: `${titlePrefix} Mikan Drill ${i}`,
+          instructions: [
+            "Stand directly under the basket.",
+            "Perform alternating layups with both hands aiming at the backboard square.",
+            "Focus on catching the rebound and switching hands immediately.",
+            "Alternate for 12 reps per hand over 3 sets."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 14 sessions for Beginner Finishing Every‑Other‑Day Training
+function generateBeginnerFinishingEveryOtherDaySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 14; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Finishing Fundamentals ${getLetter(i)}`,
+      drills: [
+        {
+          order: 1,
+          title: `Right-Side Layup Drill ${i}`,
+          instructions: [
+            "Stand 5 feet from the basket on the right side.",
+            "Dribble forward and execute a controlled right-hand layup.",
+            "Focus on smooth footwork and proper form.",
+            "Perform 10 repetitions for 3 sets with a 20-second rest."
+          ]
+        },
+        {
+          order: 2,
+          title: `Left-Side Layup Drill ${i}`,
+          instructions: [
+            "Stand 5 feet from the basket on the left side.",
+            "Dribble forward and execute a controlled left-hand layup.",
+            "Emphasize balance and proper technique.",
+            "Complete 10 reps for 3 sets with a 20-second rest."
+          ]
+        },
+        {
+          order: 3,
+          title: `Mikan Drill Variation ${i}`,
+          instructions: [
+            "Position yourself under the basket.",
+            "Perform alternating layups with quick hand switches.",
+            "Focus on timing and accuracy for each rep.",
+            "Alternate for 12 reps per hand across 3 sets."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 8 sessions for Beginner Finishing Weekly Training
+function generateBeginnerFinishingWeeklySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 8; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Extended Finishing Fundamentals ${i}`,
+      drills: [
+        {
+          order: 1,
+          title: `Extended Right-Side Layup Drill ${i}`,
+          instructions: [
+            "Position 5 feet from the basket on the right side.",
+            "Execute a layup with increased emphasis on speed and form.",
+            "Focus on fluid motion and a strong finish.",
+            "Do 12 reps for 3 sets with minimal rest."
+          ]
+        },
+        {
+          order: 2,
+          title: `Extended Left-Side Layup Drill ${i}`,
+          instructions: [
+            "Position on the left side and perform a layup focusing on control.",
+            "Emphasize a smooth approach and finishing technique.",
+            "Perform 12 repetitions for 3 sets with short rests.",
+            "Maintain balance throughout."
+          ]
+        },
+        {
+          order: 3,
+          title: `Extended Mikan Drill ${i}`,
+          instructions: [
+            "Stand under the basket and alternate layups rapidly.",
+            "Focus on quick rebounds and immediate transitions.",
+            "Perform 12 reps per hand for 3 sets.",
+            "Keep the pace high and controlled."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 14 sessions for Beginner Shooting Daily Training
+function generateBeginnerShootingDailySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 14; i++) {
+    let titlePrefix = i <= 7 ? "Basic" : "Shooting Progression";
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `${titlePrefix} Shooting Fundamentals ${i}`,
+      drills: [
+        {
+          order: 1,
+          title: `${titlePrefix} Close‑Range Form Shooting ${i}`,
+          instructions: [
+            "Stand 3 feet from the basket with a balanced stance.",
+            "Focus on shooting form and follow‑through on each shot.",
+            "Take 15 shots with emphasis on technique.",
+            "Complete 3 sets with 20-second rests between sets."
+          ]
+        },
+        {
+          order: 2,
+          title: `${titlePrefix} Spot Shooting Drill ${i}`,
+          instructions: [
+            "Mark three spots on the court: left elbow, top of key, and right elbow.",
+            "From each spot, shoot 10 jump shots focusing on consistency.",
+            "Maintain proper form and rhythm for every shot.",
+            "Perform 3 rounds covering all spots."
+          ]
+        },
+        {
+          order: 3,
+          title: `${titlePrefix} Free Throw Routine ${i}`,
+          instructions: [
+            "Position yourself at the free‑throw line with your pre‑shot routine.",
+            "Focus on balance and a consistent release.",
+            "Shoot 10 free throws while keeping steady form.",
+            "Complete 3 sets with a 30-second rest between sets."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 14 sessions for Beginner Shooting Every‑Other‑Day Training
+function generateBeginnerShootingEveryOtherDaySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 14; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Shooting Fundamentals ${getLetter(i)}`,
+      drills: [
+        {
+          order: 1,
+          title: `Close‑Range Form Shooting Drill ${i}`,
+          instructions: [
+            "Stand 3 feet from the basket with a balanced stance.",
+            "Focus on shooting form and quick release.",
+            "Take 15 shots with proper technique.",
+            "Complete 3 sets with 20-second rests."
+          ]
+        },
+        {
+          order: 2,
+          title: `Spot Shooting Drill ${i}`,
+          instructions: [
+            "Mark three shooting spots on the court.",
+            "From each spot, shoot 10 jump shots while focusing on consistency.",
+            "Maintain proper form for every shot.",
+            "Perform 3 rounds with a 20-second rest."
+          ]
+        },
+        {
+          order: 3,
+          title: `Free Throw Routine Drill ${i}`,
+          instructions: [
+            "Position at the free‑throw line and follow your routine.",
+            "Focus on balance and a smooth follow‑through.",
+            "Take 10 free throws steadily.",
+            "Repeat for 3 sets with a 30-second break."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+// Generate 8 sessions for Beginner Shooting Weekly Training
+function generateBeginnerShootingWeeklySessions() {
+  const sessions = [];
+  for (let i = 1; i <= 8; i++) {
+    sessions.push({
+      sessionNumber: i,
+      sessionTitle: `Extended Shooting Fundamentals ${i}`,
+      drills: [
+        {
+          order: 1,
+          title: `Extended Close‑Range Shooting Drill ${i}`,
+          instructions: [
+            "Stand close to the basket and focus on shooting form.",
+            "Shoot continuously for 3 minutes emphasizing quick release.",
+            "Maintain proper follow‑through on every shot.",
+            "Repeat for 3 sets with minimal rest."
+          ]
+        },
+        {
+          order: 2,
+          title: `Extended Spot Shooting Drill ${i}`,
+          instructions: [
+            "Mark designated spots on the court and shoot rapidly from each.",
+            "Focus on consistency and proper form.",
+            "Perform 10 shots per spot for 3 rounds.",
+            "Take short breaks between rounds."
+          ]
+        },
+        {
+          order: 3,
+          title: `Extended Free Throw Routine ${i}`,
+          instructions: [
+            "Follow your free‑throw routine with emphasis on technique.",
+            "Shoot continuously for 2 minutes.",
+            "Keep your form consistent throughout.",
+            "Repeat for 3 sets with brief rests."
+          ]
+        }
+      ]
+    });
+  }
+  return sessions;
+}
+
+/**
+ * -------------------------------
+ * BEGINNER COURSE OBJECTS
+ * -------------------------------
+ */
+
+// Beginner – Handles
 const beginnerHandlesDaily = {
   title: "Handles Course - Beginner (Daily Training)",
   description: "Focus on basic dribbling skills and ball control using daily sessions over 2 weeks (14 sessions).",
@@ -100,7 +476,7 @@ const beginnerHandlesDaily = {
   duration: "2 week",
   frequency: "daily",
   sessions: [
-    // --- Cycle 1: Sessions 1–7 ---
+    // Cycle 1: Sessions 1–7
     {
       sessionNumber: 1,
       sessionTitle: "Basic Stationary Dribbling",
@@ -352,259 +728,6 @@ const beginnerHandlesDaily = {
           ]
         }
       ]
-    },
-    // --- Cycle 2: Sessions 8–14 (Progression) ---
-    {
-      sessionNumber: 8,
-      sessionTitle: "Basic Stationary Dribbling Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Right‑Hand Dribble Progression",
-          instructions: [
-            "Adopt a wider stance with deeper knee bend to enhance balance.",
-            "Dribble with your right hand for 45 seconds while adding 5 lateral steps.",
-            "Focus on maintaining full control with increased movement.",
-            "Repeat for 3 sets with a 15‑second rest period."
-          ]
-        },
-        {
-          order: 2,
-          title: "Left‑Hand Dribble Progression",
-          instructions: [
-            "Assume the same widened stance and dribble for 45 seconds with the left hand.",
-            "Integrate lateral movement to increase the drill’s challenge.",
-            "Maintain steady control and a consistent pace throughout.",
-            "Perform 3 sets with proper rest intervals."
-          ]
-        },
-        {
-          order: 3,
-          title: "Alternating Dribble Challenge Progression",
-          instructions: [
-            "Alternate dribbling between hands with a quicker crossover mid-sequence.",
-            "Execute the drill for 45 seconds focusing on faster hand switches.",
-            "Emphasize precision and speed during each crossover.",
-            "Complete 3 sets with a 15‑second rest between sets."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 9,
-      sessionTitle: "Figure‑8 Dribble Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Advanced Figure‑8",
-          instructions: [
-            "Dribble around your leg with a 1‑second pause at full arm extension.",
-            "Complete 12 cycles while focusing on smooth motion.",
-            "Keep your movements deliberate and controlled.",
-            "Perform 3 sets with a 30‑second rest between sets."
-          ]
-        },
-        {
-          order: 2,
-          title: "Figure‑8 with Quick Crossover",
-          instructions: [
-            "Incorporate a rapid crossover at the midpoint of each cycle.",
-            "Execute 12 cycles ensuring seamless hand transitions.",
-            "Focus on timing and accuracy during the crossover.",
-            "Repeat for 3 sets with appropriate rest intervals."
-          ]
-        },
-        {
-          order: 3,
-          title: "Combined Figure‑8 & Crossovers Progression",
-          instructions: [
-            "Mix figure‑8 dribbling with quick crossovers in a continuous sequence.",
-            "Complete 10 cycles with an emphasis on reaction time.",
-            "Maintain deliberate and controlled movements throughout.",
-            "Perform 3 sets with full recovery between sets."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 10,
-      sessionTitle: "Cone Weave Drill Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Enhanced Cone Weave",
-          instructions: [
-            "Set cones closer together to increase the drill’s difficulty.",
-            "Dribble with added lateral movement while weaving between cones.",
-            "Focus on rapid directional changes with precision.",
-            "Complete 1 round and repeat for 3 sets with a 20‑second rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Cone Weave with Reaction Switch",
-          instructions: [
-            "Dribble through the cones and switch hands upon a partner’s cue.",
-            "Ensure each hand switch is executed precisely at the cones.",
-            "Maintain a consistent pace despite the added reaction element.",
-            "Perform 3 sets with a 20‑second rest between sets."
-          ]
-        },
-        {
-          order: 3,
-          title: "Timed Cone Weave Challenge",
-          instructions: [
-            "Dribble continuously through the cones for 60 seconds.",
-            "Focus on consistency and rapid movement throughout the drill.",
-            "Count the number of complete rounds achieved in the time limit.",
-            "Repeat for 2 sets with full recovery between rounds."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 11,
-      sessionTitle: "Alternating High & Low Dribble Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Extended High Dribble Phase",
-          instructions: [
-            "Dribble at a higher pace for 15 seconds at chest height.",
-            "Incorporate a slight lateral movement to increase challenge.",
-            "Maintain upright posture and consistent form.",
-            "Complete 3 sets with brief rest intervals."
-          ]
-        },
-        {
-          order: 2,
-          title: "Extended Low Dribble Phase",
-          instructions: [
-            "Switch to a low dribble at waist level for 15 seconds.",
-            "Integrate quick lateral shuffles to boost intensity.",
-            "Keep the dribble tight and controlled throughout.",
-            "Repeat for 3 sets with minimal rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Combined Alternating Drill Progression",
-          instructions: [
-            "Alternate between the high and low phases continuously for 60 seconds.",
-            "Incorporate lateral movements during each transition.",
-            "Focus on rapid yet controlled transitions between phases.",
-            "Perform 3 sets with a 15‑second recovery after each set."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 12,
-      sessionTitle: "Basic Crossover Drill Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Enhanced Crossover Between Markers",
-          instructions: [
-            "Place markers and dribble at increased speed between them.",
-            "Execute a rapid crossover at the midpoint with precision.",
-            "Focus on smooth, controlled hand transitions.",
-            "Perform 10 crossovers per side for 3 sets with rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Rapid Stationary Crossover",
-          instructions: [
-            "Stand firmly and execute rapid crossovers with minimal pause.",
-            "Ensure each hand switch is deliberate and controlled.",
-            "Maintain the drill continuously for 20 seconds.",
-            "Repeat for 3 sets with a 20‑second break between sets."
-          ]
-        },
-        {
-          order: 3,
-          title: "Crossover with Forward Movement Progression",
-          instructions: [
-            "Dribble forward along a marked line and execute a quick crossover at midpoint.",
-            "Turn around rapidly and repeat the movement.",
-            "Focus on increasing speed while maintaining accuracy.",
-            "Perform 3 sets with proper rest intervals."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 13,
-      sessionTitle: "Zigzag Dribble Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Advanced Zigzag",
-          instructions: [
-            "Arrange cones in a zigzag formation and dribble through them at increased speed.",
-            "Focus on sharp directional changes and precise movements.",
-            "Maintain control and balance during each turn.",
-            "Complete 1 round for 3 sets with brief rests."
-          ]
-        },
-        {
-          order: 2,
-          title: "Zigzag with Enhanced Defensive Cue",
-          instructions: [
-            "Simulate a defender by pausing briefly at each cone before accelerating.",
-            "Integrate the defensive cue without losing control.",
-            "Ensure each pause is deliberate and timed accurately.",
-            "Repeat for 3 rounds with consistent effort."
-          ]
-        },
-        {
-          order: 3,
-          title: "Zigzag with Hand Switch Progression",
-          instructions: [
-            "Dribble through the cones while switching hands at every cone at increased speed.",
-            "Focus on smooth transitions and maintaining consistent form.",
-            "Keep a steady pace and controlled movement throughout.",
-            "Perform 3 rounds with appropriate recovery intervals."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 14,
-      sessionTitle: "Combo Fundamentals Review Progression",
-      drills: [
-        {
-          order: 1,
-          title: "Progressive Combo Stationary Dribble",
-          instructions: [
-            "Dribble low for 20 seconds with added lateral movement.",
-            "Immediately execute 10 rapid crossovers with increased speed.",
-            "Finish with an extended 10‑second high dribble.",
-            "Repeat the cycle 3 times with a 30‑second rest between cycles."
-          ]
-        },
-        {
-          order: 2,
-          title: "Progressive Combo Zigzag",
-          instructions: [
-            "Perform the advanced zigzag drill as outlined in Session 13.",
-            "Immediately complete 5 rapid crossovers in place afterwards.",
-            "Focus on smooth transitions despite increased pace.",
-            "Repeat for 3 rounds with brief recovery periods."
-          ]
-        },
-        {
-          order: 3,
-          title: "Timed Multi‑Move Challenge Progression",
-          instructions: [
-            "Combine any three advanced moves continuously for 90 seconds.",
-            "Execute each move with precision under increased pace.",
-            "Ensure seamless transitions between all moves.",
-            "Complete 3 rounds of this challenge with full intensity."
-          ]
-        }
-      ]
     }
   ]
 };
@@ -615,156 +738,7 @@ const beginnerHandlesEveryOtherDay = {
   level: "beginner",
   duration: "1 month",
   frequency: "every 2 days",
-  sessions: [
-    // For brevity, the structure is similar to Daily Training but with adjusted drill details.
-    // Week 1 – Sessions 1–4:
-    {
-      sessionNumber: 1,
-      sessionTitle: "Handles Fundamentals A",
-      drills: [
-        {
-          order: 1,
-          title: "Dual-Hand Stationary Dribble",
-          instructions: [
-            "Dribble with each hand separately for 30 seconds.",
-            "Focus on maintaining a balanced stance and control.",
-            "Alternate hands with consistent rhythm.",
-            "Complete 3 sets with a 15‑second rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Basic Figure‑8 Drill",
-          instructions: [
-            "Perform a figure‑8 dribble for 10 cycles.",
-            "Maintain smooth motion around your leg.",
-            "Focus on consistency and control.",
-            "Repeat for 3 sets with a 30‑second rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Simple Cone Weave",
-          instructions: [
-            "Weave through 5 cones arranged in a line.",
-            "Focus on quick, controlled movements.",
-            "Complete 1 round steadily.",
-            "Perform 3 rounds with a 20‑second rest."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 2,
-      sessionTitle: "Handles Fundamentals B",
-      drills: [
-        {
-          order: 1,
-          title: "Alternating High/Low Dribble",
-          instructions: [
-            "Dribble high for 30 seconds then switch to low for 30 seconds.",
-            "Focus on rapid transitions between high and low dribbles.",
-            "Maintain proper form throughout.",
-            "Complete 3 sets with a 15‑second rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Basic Crossover Drill",
-          instructions: [
-            "Perform 10 crossovers per side in a controlled manner.",
-            "Focus on quick and smooth hand switches.",
-            "Maintain consistency across each repetition.",
-            "Repeat for 3 sets with a 20‑second rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Simple Zigzag Dribble",
-          instructions: [
-            "Dribble in a zigzag pattern through 8 cones.",
-            "Maintain a steady pace and controlled turns.",
-            "Complete 1 round with focus on accuracy.",
-            "Perform 3 rounds with brief rests."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 3,
-      sessionTitle: "Handles Fundamentals C",
-      drills: [
-        {
-          order: 1,
-          title: "Combo Stationary Dribble",
-          instructions: [
-            "Dribble low for 20 seconds, then perform 10 rapid crossovers.",
-            "Finish with 10 seconds of high dribble.",
-            "Focus on fluidity and control throughout.",
-            "Repeat for 3 cycles."
-          ]
-        },
-        {
-          order: 2,
-          title: "Figure‑8 with Arm Extension",
-          instructions: [
-            "Perform a figure‑8 while fully extending your arms at each cycle’s end.",
-            "Maintain a controlled pace and focus on form.",
-            "Complete 10 cycles steadily.",
-            "Perform 3 sets with a 30‑second rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Timed Cone Weave",
-          instructions: [
-            "Dribble through 5 cones continuously for 60 seconds.",
-            "Focus on rapid yet controlled movement.",
-            "Record the number of rounds completed.",
-            "Repeat for 2 rounds with full recovery."
-          ]
-        }
-      ]
-    },
-    {
-      sessionNumber: 4,
-      sessionTitle: "Handles Fundamentals D",
-      drills: [
-        {
-          order: 1,
-          title: "Zigzag with Hand Switch",
-          instructions: [
-            "Dribble through a zigzag of cones and switch hands at each cone.",
-            "Focus on smooth and accurate transitions.",
-            "Maintain a steady pace throughout.",
-            "Perform 3 rounds with a short rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Stationary Crossover Drill",
-          instructions: [
-            "Stand in place and perform rapid crossovers for 20 seconds.",
-            "Ensure controlled hand transitions every 2 bounces.",
-            "Focus on precision in each movement.",
-            "Repeat for 3 sets with a 20‑second rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Alternating Dribble Challenge",
-          instructions: [
-            "Alternate dribbling between hands continuously for 30 seconds.",
-            "Focus on maintaining a consistent pace and form.",
-            "Ensure each crossover is deliberate and controlled.",
-            "Perform 3 sets with a 15‑second rest."
-          ]
-        }
-      ]
-    },
-    // ... Sessions 5–14 would continue with progressive modifications as described in the blueprint.
-    // (For brevity, assume similar detailed session objects are provided for sessions 5 to 14.)
-  ]
+  sessions: generateBeginnerHandlesEveryOtherDaySessions()
 };
 
 const beginnerHandlesWeekly = {
@@ -773,216 +747,72 @@ const beginnerHandlesWeekly = {
   level: "beginner",
   duration: "2 months",
   frequency: "weekly",
-  sessions: [
-    {
-      sessionNumber: 1,
-      sessionTitle: "Extended Fundamentals",
-      drills: [
-        {
-          order: 1,
-          title: "Extended Stationary Dribble",
-          instructions: [
-            "Alternate right and left hand dribbles continuously for 3 minutes.",
-            "Focus on maintaining perfect form and control.",
-            "Perform the drill steadily with full concentration.",
-            "Repeat for 3 sets with a short rest period."
-          ]
-        },
-        {
-          order: 2,
-          title: "Extended Figure‑8 Drill",
-          instructions: [
-            "Complete 15 cycles of a figure‑8 dribble with smooth arm extension.",
-            "Ensure full range of motion in each cycle.",
-            "Maintain a consistent rhythm throughout the drill.",
-            "Perform 2 sets with a 30‑second rest between sets."
-          ]
-        },
-        {
-          order: 3,
-          title: "Extended Cone Weave",
-          instructions: [
-            "Weave through 5 cones for 3 rounds continuously.",
-            "Focus on quick lateral movements and sharp direction changes.",
-            "Maintain steady dribbling with full control.",
-            "Repeat the circuit with a short recovery period."
-          ]
-        },
-        {
-          order: 4,
-          title: "Form Focus Cool‑Down",
-          instructions: [
-            "Slow down and perform controlled dribbling for 2 minutes.",
-            "Focus exclusively on perfecting your technique.",
-            "Maintain a relaxed yet focused posture throughout.",
-            "Use this period to recover and refine your form."
-          ]
-        }
-      ]
-    },
-    // Sessions 2–8 would follow a similar extended circuit pattern with progressive difficulty.
-    {
-      sessionNumber: 2,
-      sessionTitle: "Integrated Dribble & Movement",
-      drills: [
-        {
-          order: 1,
-          title: "Dynamic Dribble",
-          instructions: [
-            "Dribble while walking forward for 10 steps, then perform 20 seconds of stationary dribbling.",
-            "Focus on smooth transitions between movement and stationary phases.",
-            "Maintain consistent control during the forward motion.",
-            "Repeat for 3 sets with brief rests."
-          ]
-        },
-        {
-          order: 2,
-          title: "Zigzag Course",
-          instructions: [
-            "Complete 4 rounds through a 20‑ft zigzag course.",
-            "Focus on rapid direction changes with full control.",
-            "Maintain a consistent pace throughout the drill.",
-            "Perform 3 rounds with proper recovery between rounds."
-          ]
-        },
-        {
-          order: 3,
-          title: "Advanced Crossover Sequence",
-          instructions: [
-            "Perform 12 crossovers per side with quick, deliberate movements.",
-            "Focus on executing each crossover with precision.",
-            "Maintain a high intensity throughout the drill.",
-            "Repeat for 3 sets with short rest intervals."
-          ]
-        },
-        {
-          order: 4,
-          title: "Reaction Dribble",
-          instructions: [
-            "Dribble continuously for 2 minutes while reacting to partner cues.",
-            "Focus on rapid adjustments to simulated defensive calls.",
-            "Maintain full control despite sudden changes in direction.",
-            "Perform 3 rounds with appropriate recovery."
-          ]
-        },
-        {
-          order: 5,
-          title: "Cool‑Down Dribbling",
-          instructions: [
-            "Finish the session with 3 minutes of slow, controlled dribbling.",
-            "Focus on technique and proper form.",
-            "Use this time to gradually lower your intensity.",
-            "Repeat for 3 sets with full recovery."
-          ]
-        }
-      ]
-    }
-    // ... Sessions 3–8 would be added following the blueprint’s extended circuit pattern.
-  ]
+  sessions: generateBeginnerHandlesWeeklySessions()
 };
 
-/**
- * Similarly, complete objects for Beginner Finishing and Beginner Shooting courses
- * (for Daily, Every‑Other‑Day, and Weekly training) are built following the blueprint.
- * For brevity, here we provide one example for Beginner Finishing Daily Training:
- */
+// Beginner – Finishing
 const beginnerFinishingDaily = {
   title: "Finishing Course - Beginner (Daily Training)",
   description: "Master basic layup and finishing techniques with daily sessions over 2 weeks (14 sessions).",
   level: "beginner",
   duration: "2 week",
   frequency: "daily",
-  sessions: [
-    {
-      sessionNumber: 1,
-      sessionTitle: "Basic Layup Fundamentals",
-      drills: [
-        {
-          order: 1,
-          title: "Basic Layup Drill (Right Side)",
-          instructions: [
-            "Stand 5 feet from the basket on your right side.",
-            "Dribble forward and take 2 controlled steps.",
-            "Finish with a right‑hand layup off the backboard.",
-            "Perform 10 reps and complete 3 sets with a 20‑second rest."
-          ]
-        },
-        {
-          order: 2,
-          title: "Basic Layup Drill (Left Side)",
-          instructions: [
-            "Mirror the right‑side drill on the left side.",
-            "Dribble forward and take 2 controlled steps.",
-            "Finish with a left‑hand layup off the backboard.",
-            "Perform 10 reps and complete 3 sets with a 20‑second rest."
-          ]
-        },
-        {
-          order: 3,
-          title: "Mikan Drill",
-          instructions: [
-            "Stand directly under the basket.",
-            "Perform a layup using your right hand aiming at the backboard’s square.",
-            "Catch the rebound and immediately switch to your left hand.",
-            "Alternate for 12 reps per hand and complete 3 sets."
-          ]
-        }
-      ]
-    },
-    // Sessions 2–7 for Cycle 1 and Sessions 8–14 for Progression would follow with similar detailed drills.
-  ]
+  sessions: generateBeginnerFinishingDailySessions()
 };
 
+const beginnerFinishingEveryOtherDay = {
+  title: "Finishing Course - Beginner (Every-Other-Day Training)",
+  description: "Develop finishing skills with gradual progression over 4 weeks (14 sessions) on an every‑other‑day schedule.",
+  level: "beginner",
+  duration: "1 month",
+  frequency: "every 2 days",
+  sessions: generateBeginnerFinishingEveryOtherDaySessions()
+};
+
+const beginnerFinishingWeekly = {
+  title: "Finishing Course - Beginner (Weekly Training)",
+  description: "Enhance layup and finishing endurance with extended sessions over 2 months (8 sessions) on a weekly schedule.",
+  level: "beginner",
+  duration: "2 months",
+  frequency: "weekly",
+  sessions: generateBeginnerFinishingWeeklySessions()
+};
+
+// Beginner – Shooting
 const beginnerShootingDaily = {
   title: "Shooting Course - Beginner (Daily Training)",
   description: "Develop proper shooting form, quick release, and jump shot consistency with daily practice over 2 weeks (14 sessions).",
   level: "beginner",
   duration: "2 week",
   frequency: "daily",
-  sessions: [
-    {
-      sessionNumber: 1,
-      sessionTitle: "Form Shooting Fundamentals",
-      drills: [
-        {
-          order: 1,
-          title: "Close‑Range Form Shooting",
-          instructions: [
-            "Stand 3 feet from the basket with a balanced stance.",
-            "Focus on your shooting form and follow‑through on each shot.",
-            "Shoot 15 times with full concentration on technique.",
-            "Complete 3 sets with 20‑second rests between sets."
-          ]
-        },
-        {
-          order: 2,
-          title: "Spot Shooting Drill",
-          instructions: [
-            "Mark three spots on the court: left elbow, top of key, and right elbow.",
-            "From each spot, shoot 10 jump shots focusing on consistency.",
-            "Maintain proper form and rhythm for each shot.",
-            "Perform 3 rounds covering all spots."
-          ]
-        },
-        {
-          order: 3,
-          title: "Free Throw Routine",
-          instructions: [
-            "Position yourself at the free‑throw line with your pre‑shot routine.",
-            "Focus on balance and consistent release.",
-            "Shoot 10 free throws with steady form.",
-            "Complete 3 sets with a 30‑second rest between sets."
-          ]
-        }
-      ]
-    }
-    // Sessions 2–14 would be added similarly following the blueprint.
-  ]
+  sessions: generateBeginnerShootingDailySessions()
+};
+
+const beginnerShootingEveryOtherDay = {
+  title: "Shooting Course - Beginner (Every-Other-Day Training)",
+  description: "Improve shooting fundamentals with gradual progression over 4 weeks (14 sessions) on an every‑other‑day schedule.",
+  level: "beginner",
+  duration: "1 month",
+  frequency: "every 2 days",
+  sessions: generateBeginnerShootingEveryOtherDaySessions()
+};
+
+const beginnerShootingWeekly = {
+  title: "Shooting Course - Beginner (Weekly Training)",
+  description: "Enhance shooting endurance and form with extended sessions over 2 months (8 sessions) on a weekly schedule.",
+  level: "beginner",
+  duration: "2 months",
+  frequency: "weekly",
+  sessions: generateBeginnerShootingWeeklySessions()
 };
 
 /**
- * For Intermediate and Professional courses we use the helper function generateSessions.
+ * -------------------------------
+ * INTERMEDIATE COURSE OBJECTS
+ * (Using generateSessions for complete session data)
+ * -------------------------------
  */
+
 const intermediateHandlesDaily = {
   title: "Handles Course - Intermediate (Daily Training)",
   description: "Build on basic ball handling with increased duration and integrated defensive cues over 2 weeks (14 sessions).",
@@ -1063,6 +893,12 @@ const intermediateShootingWeekly = {
   frequency: "weekly",
   sessions: generateSessions("Shooting", "intermediate", "weekly")
 };
+
+/**
+ * -------------------------------
+ * PROFESSIONAL (EXPERT) COURSE OBJECTS
+ * -------------------------------
+ */
 
 const professionalHandlesDaily = {
   title: "Handles Course - Professional (Daily Training)",
@@ -1157,9 +993,12 @@ const coursesData = [
   beginnerHandlesWeekly,
   // Beginner – Finishing
   beginnerFinishingDaily,
-  // (Assume similar complete objects for Beginner Finishing Every‑Other‑Day and Weekly training)
-  // For brevity, you can similarly construct beginnerShootingDaily, beginnerShootingEveryOtherDay, beginnerShootingWeekly.
+  beginnerFinishingEveryOtherDay,
+  beginnerFinishingWeekly,
+  // Beginner – Shooting
   beginnerShootingDaily,
+  beginnerShootingEveryOtherDay,
+  beginnerShootingWeekly,
   // Intermediate – Handles
   intermediateHandlesDaily,
   intermediateHandlesEveryOtherDay,
@@ -1214,10 +1053,8 @@ async function seedDatabase() {
       for (const session of sessions) {
         const sessionNumber = session.sessionNumber;
         for (const drill of session.drills) {
-          // Since each drill’s instructions have been reworded to contain exactly 4 steps,
-          // no extra default steps are added.
+          // Combine the instructions into a single text string
           const instructionsText = drill.instructions.join(" ");
-
           // Create a CourseDrill document
           const courseDrill = new CourseDrill({
             course: course._id,

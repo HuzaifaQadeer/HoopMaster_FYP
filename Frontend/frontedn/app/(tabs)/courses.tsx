@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -9,41 +9,39 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import SearchBar from '../../components/custom/searchbar';
+import { router } from 'expo-router';
+import { API_ROUTES } from '@/config/config';
 
-const coursesList = [
+// Main course types
+const courseTypes = [
   { 
     id: '1', 
-    name: 'Increase vertical jump', 
-    imageUrl: 'https://proskillsbasketball.com/wp-content/uploads/2019/11/PSB-shooting-the-basket.jpg'
+    name: 'Handles', 
+    imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg',
+    description: 'Master your ball handling skills with professional training drills'
   },
   { 
     id: '2', 
-    name: 'Correct shooting form', 
-    imageUrl: 'https://www.vice.com/wp-content/uploads/sites/2/2018/12/1544458332692-h_54758643.jpeg?w=1024'
+    name: 'Shooting', 
+    imageUrl: 'https://proskillsbasketball.com/wp-content/uploads/2019/11/PSB-shooting-the-basket.jpg',
+    description: 'Perfect your shooting technique from any position on the court'
   },
   { 
     id: '3', 
-    name: 'Handles Masterclass', 
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Et6jpeaHZnq0f_lagtL3an1yt3mBCX3guA&s'
-  },
-  { 
-    id: '4', 
-    name: 'Basic layup package', 
-    imageUrl: 'https://www.stack.com/wp-content/uploads/2012/08/ballhandling-629x417.jpg'
-  },
-  { 
-    id: '5', 
-    name: 'Advance full court plays', 
-    imageUrl: 'https://cdn.bleacherreport.net/images_root/slides/photos/000/756/224/109463728_original.jpg?1298906020'
+    name: 'Finishing', 
+    imageUrl: 'https://www.vice.com/wp-content/uploads/sites/2/2018/12/1544458332692-h_54758643.jpeg?w=1024',
+    description: 'Learn advanced layups and finishing moves around the rim'
   }
 ];
 
-const CourseCard = ({ name, imageUrl }: { name: string, imageUrl: string }) => (
-  <TouchableOpacity style={styles.courseCard}>
+const CourseCard = ({ name, imageUrl, description, onPress }: 
+  { name: string, imageUrl: string, description: string, onPress: () => void }) => (
+  <TouchableOpacity style={styles.courseCard} onPress={onPress}>
     <ImageBackground
       source={{ uri: imageUrl }}
       style={styles.courseBackground}
@@ -51,6 +49,7 @@ const CourseCard = ({ name, imageUrl }: { name: string, imageUrl: string }) => (
     >
       <View style={styles.courseTitleContainer}>
         <Text style={styles.courseTitle}>{name}</Text>
+        <Text style={styles.courseDescription}>{description}</Text>
       </View>
     </ImageBackground>
   </TouchableOpacity>
@@ -58,13 +57,22 @@ const CourseCard = ({ name, imageUrl }: { name: string, imageUrl: string }) => (
 
 const CoursesPage = () => {
   const { colors } = useTheme();
-  const [filteredCourses, setFilteredCourses] = useState(coursesList);
+  const [filteredCourses, setFilteredCourses] = useState(courseTypes);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = (searchText: string) => {
-    const filtered = coursesList.filter(course => 
+    const filtered = courseTypes.filter(course => 
       course.name.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredCourses(filtered);
+  };
+
+  const handleCoursePress = (courseType: string) => {
+    // Navigate to course selection screen with the selected course type
+    router.push({
+      pathname: '/course-selection',
+      params: { courseType }
+    });
   };
 
   return (
@@ -73,11 +81,22 @@ const CoursesPage = () => {
       <View style={styles.content}>
         <Text style={[styles.title, { color: colors.text }]}>Training courses</Text>
         <SearchBar onSearch={handleSearch} />
-        <ScrollView style={styles.coursesContainer}>
-          {filteredCourses.map((course) => (
-            <CourseCard key={course.id} {...course} />
-          ))}
-        </ScrollView>
+        
+        {isLoading ? (
+          <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+        ) : (
+          <ScrollView style={styles.coursesContainer}>
+            {filteredCourses.map((course) => (
+              <CourseCard 
+                key={course.id} 
+                name={course.name} 
+                imageUrl={course.imageUrl} 
+                description={course.description}
+                onPress={() => handleCoursePress(course.name)}
+              />
+            ))}
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -102,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   courseCard: {
-    height: 140,
+    height: 180,
     marginBottom: 16,
     borderRadius: 16,
     overflow: 'hidden',
@@ -115,13 +134,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   courseTitleContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 16,
   },
   courseTitle: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
+  },
+  courseDescription: {
+    color: 'white',
+    fontSize: 14,
+    marginTop: 4,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

@@ -26,6 +26,21 @@ export const API_ROUTES = {
   GET_ALL_DRILLS: `${API_BASE_URL}/drills/all`,
   GET_POPULAR_DRILLS: `${API_BASE_URL}/drills/popular`,
   GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
+  
+  // Course Routes
+  GET_ALL_COURSES: `${API_BASE_URL}/courses/all`,
+  GET_POPULAR_COURSES: `${API_BASE_URL}/courses/popular`,
+  GET_COURSE_BY_ID: `${API_BASE_URL}/courses/:id`,
+  GET_COURSES_BY_TYPE: `${API_BASE_URL}/courses/type/:type`,
+  GET_COURSES_BY_PARAMETERS: `${API_BASE_URL}/courses/parameters`,
+  GET_USER_COURSES: `${API_BASE_URL}/courses/user/courses`,
+  REGISTER_FOR_COURSE: `${API_BASE_URL}/courses/register`,
+  ABANDON_COURSE: `${API_BASE_URL}/courses/abandon/:courseId`,
+  GET_COURSE_DRILLS: `${API_BASE_URL}/courses/:courseId/drills`,
+  GET_COURSE_SESSION_DRILLS: `${API_BASE_URL}/courses/:courseId/session/:sessionNumber`,
+  GET_COURSE_PROGRESS: `${API_BASE_URL}/courses/:courseId/progress`,
+  UPDATE_COURSE_SESSION_PROGRESS: `${API_BASE_URL}/courses/:courseId/progress/:sessionNumber`,
+  
   // AI Analysis Routes
   BASIC_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/basic_dribble`,
   BEHIND_THE_BACK_ANALYSIS: `${AI_API_URL}/api/dribble/behind_the_back`,
