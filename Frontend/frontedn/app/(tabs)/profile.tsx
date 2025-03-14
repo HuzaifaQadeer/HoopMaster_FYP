@@ -52,6 +52,18 @@ interface CourseType {
   progress?: number;
 }
 
+interface Achievement {
+  _id: string;
+  title: string;
+  description?: string;
+  position: number;
+  challenge: {
+    _id: string;
+    title: string;
+  };
+  awardedAt: string;
+}
+
 const UserProfileScreen: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -67,10 +79,13 @@ const UserProfileScreen: React.FC = () => {
   const [userCourses, setUserCourses] = useState<CourseType[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [loadingAchievements, setLoadingAchievements] = useState(true);
 
   useEffect(() => {
     fetchUserProfile();
     fetchUserCourses();
+    fetchUserAchievements();
     checkLoginStatus();
   }, [refresh]);
 
@@ -238,6 +253,34 @@ const UserProfileScreen: React.FC = () => {
     }
   };
 
+  const fetchUserAchievements = async () => {
+    try {
+      setLoadingAchievements(true);
+      const token = await getToken();
+      if (!token) {
+        setLoadingAchievements(false);
+        return;
+      }
+
+      const response = await fetch(API_ROUTES.GET_USER_ACHIEVEMENTS, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user achievements');
+      }
+
+      const achievementsData = await response.json();
+      setAchievements(achievementsData);
+    } catch (error) {
+      console.error('Error fetching user achievements:', error);
+    } finally {
+      setLoadingAchievements(false);
+    }
+  };
+
   const togglePrivacy = async () => {
     try {
       const token = await getToken();
@@ -287,13 +330,6 @@ const UserProfileScreen: React.FC = () => {
     }
   };
 
-  // achievementData.ts
-
-const achievementData = [
-  { id: 1, title: "Community challange#1", rank: 1 },
-  { id: 2, title: "Community challange#1", rank: 7 },
-];
-
   const captureAndShare = async () => {
     try {
       setShowOptions(false);
@@ -342,7 +378,6 @@ const achievementData = [
     </View>
   );
 
-
   const renderHighlights = () => (
     <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
       <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Highlights</Text>
@@ -364,11 +399,39 @@ const achievementData = [
     </View>
   );
 
-  // Use focus effect to refresh user courses when the screen comes into focus
+  const renderAchievements = () => (
+    <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+      <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Achievements</Text>
+      
+      {loadingAchievements ? (
+        <ActivityIndicator size="small" color={theme.colors.primary} style={styles.loader} />
+      ) : achievements.length > 0 ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {achievements.map((achievement) => (
+            <Achievement 
+              key={achievement._id} 
+              id={achievement._id}
+              title={achievement.title}
+              description={achievement.description}
+              position={achievement.position}
+              challenge={achievement.challenge}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <Text style={[styles.noItemsText, { color: theme.colors.text }]}>
+          You haven't earned any achievements yet. Participate in community challenges to earn achievements!
+        </Text>
+      )}
+    </View>
+  );
+
+  // Use focus effect to refresh user courses and achievements when the screen comes into focus
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
         fetchUserCourses();
+        fetchUserAchievements();
       }
     }, [isLoggedIn])
   );
@@ -446,8 +509,6 @@ const achievementData = [
           </View>
         </View>
         
-
-
         {renderHighlights()}
 
         <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
@@ -533,15 +594,7 @@ const achievementData = [
           )}
         </View>
         
-        
-        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Achievements</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {achievementData.map((data) => (
-              <Achievement key={data.id} {...data} />
-            ))}
-          </ScrollView>
-        </View>
+        {renderAchievements()}
       </View>
     </ScrollView>
   );
@@ -693,6 +746,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   noCoursesText: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  loader: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  noItemsText: {
     fontSize: 14,
     textAlign: 'center',
   },

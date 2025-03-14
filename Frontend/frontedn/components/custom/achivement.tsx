@@ -1,83 +1,86 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface AchievementProps {
+  id: string;
   title: string;
-  rank: number;
+  description?: string;
+  position: number;
+  challenge?: {
+    _id: string;
+    title: string;
+  };
 }
- 
-const Achievement: React.FC<AchievementProps> = ({ title, rank }) => {
-  const { colors } = useTheme();
 
-  const getBadgeIcon = (): 'medal-outline' | undefined => {
-    if (rank <= 3) return 'medal-outline';
-    return undefined;
+const Achievement = ({ title, position, description }: AchievementProps) => {
+  // Get medal color based on position
+  const getMedalColor = () => {
+    switch (position) {
+      case 1:
+        return '#FFD700'; // Gold
+      case 2:
+        return '#C0C0C0'; // Silver
+      case 3:
+        return '#CD7F32'; // Bronze
+      default:
+        return '#555555'; // Dark gray for other positions
+    }
   };
 
-  const getBadgeColor = () => {
-    if (rank === 1) return '#FFD700'; // Gold
-    if (rank === 2) return '#C0C0C0'; // Silver
-    if (rank === 3) return '#CD7F32'; // Bronze
-    return colors.text;
+  // Get position text
+  const getPositionText = () => {
+    switch (position) {
+      case 1:
+        return '1st';
+      case 2:
+        return '2nd';
+      case 3:
+        return '3rd';
+      default:
+        return `${position}th`;
+    }
   };
-
-  const getOrdinal = (n: number) => {
-    const s = ['th', 'st', 'nd', 'rd'];
-    const v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-  };
-
-  const badgeIcon = getBadgeIcon();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.card }]}>
-      <View style={styles.rankContainer}>
-        <Text style={[styles.rankText, { color: colors.text }]}>{getOrdinal(rank)}</Text>
-        {badgeIcon && (
-          <MaterialCommunityIcons
-            name={badgeIcon}
-            size={24}
-            color={getBadgeColor()}
-            style={styles.badgeIcon}
-          />
-        )}
+    <View style={styles.container}>
+      <View style={[styles.medalCircle, { backgroundColor: getMedalColor() }]}>
+        <Text style={styles.positionText}>{getPositionText()}</Text>
       </View>
-      <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-        {title}
-      </Text>
+      <Text style={styles.title}>{title}</Text>
+      {description && <Text style={styles.description}>{description}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
+    margin: 10,
     width: 120,
-    height: 120,
-    borderRadius: 8,
-    padding: 10,
-    justifyContent: 'space-between',
-    marginRight: 10,
   },
-  rankContainer: {
-    flex: 1,
+  medalCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 8,
   },
-  rankText: {
-    fontSize: 24,
+  positionText: {
+    color: 'white',
     fontWeight: 'bold',
-  },
-  badgeIcon: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
+    fontSize: 18,
   },
   title: {
-    fontSize: 14,
-    fontWeight: 'bold',
     textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  description: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#666',
   },
 });
 

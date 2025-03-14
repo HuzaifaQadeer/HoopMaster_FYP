@@ -1,30 +1,154 @@
-const commentService = require('../services/commentService');
+const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 
-exports.addComment = async (req, res) => {
+// Create a new comment
+exports.createComment = async (req, res) => {
   try {
-    const { postId, content } = req.body;
-    const comment = await commentService.addComment(req.user.id, postId, content);
+    const { content, postId, userId } = req.body;
+    
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: 'Comment content is required' });
+    }
+    
+    // Verify post exists and is not deleted
+    const post = await Post.findOne({ _id: postId, isDeleted: false });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found or has been deleted' });
+    }
+    
+    // Check if user can comment on this post (public or owned by user)
+    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to comment on this post' });
+    }
+    
+    // Create and save the comment
+    const comment = new Comment({
+      content: content.trim(),
+      postId,
+      userId: req.user._id
+    });
+    
+    await comment.save();
+    
+    // Increment the comment count on the post
+    post.commentCount += 1;
+    await post.save();
+    
+    // Populate user data before sending response
+    await comment.populate('userId', 'displayName username profilePicture');
+    
     res.status(201).json(comment);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error creating comment:', error);
+    res.status(500).json({ message: 'Error creating comment' });
   }
 };
 
-exports.getComment = async (req, res) => {
+// Update a comment
+exports.updateComment = async (req, res) => {
   try {
-    const comment = await commentService.getComment(req.params.id);
-    res.json(comment);
+    const { content } = req.body;
+    
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: 'Comment content is required' });
+    }
+    
+    const comment = await Comment.findById(req.params.id);
+    
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    
+    // Check if user is the author or admin
+    if (comment.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to update this comment' });
+    }
+    
+    // Update comment
+    comment.content = content.trim();
+    await comment.save();
+    
+    // Populate user data before sending response
+    await comment.populate('userId', 'displayName username profilePicture');
+    
+    res.status(200).json(comment);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    console.error('Error updating comment:', error);
+    res.status(500).json({ message: 'Error updating comment' });
   }
 };
 
+// Delete a comment
 exports.deleteComment = async (req, res) => {
   try {
-    const result = await commentService.deleteComment(req.params.id, req.user.id);
-    res.json(result);
+    const comment = await Comment.findById(req.params.id);
+    
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    
+    // Check if user is the author, post owner, or admin
+    const isCommentAuthor = comment.userId.toString() === req.user._id.toString();
+    
+    // If not the comment author, check if they are the post owner
+    let isPostOwner = false;
+    
+    if (!isCommentAuthor) {
+      const post = await Post.findById(comment.postId);
+      isPostOwner = post && post.userId.toString() === req.user._id.toString();
+    }
+    
+    // If not comment author, post owner or admin, reject
+    if (!isCommentAuthor && !isPostOwner && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to delete this comment' });
+    }
+    
+    // Soft delete
+    comment.isDeleted = true;
+    await comment.save();
+    
+    // Decrement the comment count on the post
+    const post = await Post.findById(comment.postId);
+    if (post) {
+      post.commentCount = Math.max(0, post.commentCount - 1);
+      await post.save();
+    }
+    
+    res.status(200).json({ message: 'Comment deleted successfully' });
   } catch (error) {
-    res.status(error.message.includes('Not authorized') ? 403 : 400)
-      .json({ message: error.message });
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ message: 'Error deleting comment' });
+  }
+};
+
+// Get a specific comment
+exports.getComment = async (req, res) => {
+  try {
+    const comment = await Comment.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    }).populate('userId', 'displayName username profilePicture');
+    
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    
+    // Check if user can view the associated post
+    const post = await Post.findById(comment.postId);
+    
+    if (!post || post.isDeleted) {
+      return res.status(404).json({ message: 'Associated post not found or deleted' });
+    }
+    
+    // Check permissions for private posts
+    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to view this comment' });
+    }
+    
+    res.status(200).json(comment);
+  } catch (error) {
+    console.error('Error getting comment:', error);
+    res.status(500).json({ message: 'Error retrieving comment' });
   }
 };

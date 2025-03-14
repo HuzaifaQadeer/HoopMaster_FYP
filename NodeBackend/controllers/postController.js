@@ -1,52 +1,329 @@
-const postService = require('../services/postService');
+const Post = require('../models/Post');
+const User = require('../models/User');
+const Comment = require('../models/Comment');
+const fs = require('fs');
+const path = require('path');
 
-exports.createPost = async (req, res) => {
-  try {
-    const { content, isPrivate, userId } = req.body;
-    const media = req.files?.media;
-    const post = await postService.createPost(userId, content, media, isPrivate);
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+// Helper function to format post data
+const formatPostData = async (post, userId = null) => {
+  // Populate user data
+  await post.populate('userId', 'displayName username profilePicture');
+  
+  const formattedPost = post.toObject({ virtuals: true });
+  
+  // Add additional fields if user ID is provided
+  if (userId) {
+    formattedPost.isLiked = post.isLikedBy(userId);
   }
+  
+  return formattedPost;
 };
 
+// Get all posts
 exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await postService.getAllPosts();
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ 
-      message: 'Error fetching posts',
-      error: error.message 
+    const { limit = 20, page = 1, userId } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Base query excludes deleted posts
+    const query = { isDeleted: false };
+    
+    // If userId provided, filter by user
+    if (userId) {
+      query.userId = userId;
+    }
+    
+    // If not an admin, only show public posts or posts by the authenticated user
+    if (!req.user.isAdmin) {
+      query.$or = [
+        { isPrivate: false },
+        { userId: req.user._id }
+      ];
+    }
+    
+    const posts = await Post.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    // Format each post
+    const formattedPosts = await Promise.all(
+      posts.map(post => formatPostData(post, req.user._id))
+    );
+    
+    // Get total count for pagination
+    const total = await Post.countDocuments(query);
+    
+    res.status(200).json({
+      posts: formattedPosts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / parseInt(limit))
+      }
     });
+  } catch (error) {
+    console.error('Error getting posts:', error);
+    res.status(500).json({ message: 'Error retrieving posts' });
   }
 };
 
+// Get single post
 exports.getPost = async (req, res) => {
   try {
-    const post = await postService.getPost(req.params.id);
-    res.json(post);
+    const post = await Post.findOne({ 
+      _id: req.params.id,
+      isDeleted: false
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user can view this post (public or owned by user)
+    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to view this post' });
+    }
+    
+    const formattedPost = await formatPostData(post, req.user._id);
+    res.status(200).json(formattedPost);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    console.error('Error getting post:', error);
+    res.status(500).json({ message: 'Error retrieving post' });
   }
 };
 
-exports.getPostComments = async (req, res) => {
+// Create new post
+exports.createPost = async (req, res) => {
   try {
-    const comments = await postService.getPostComments(req.params.id);
-    res.json(comments);
+    const { content, isPrivate } = req.body;
+    const userId = req.user._id;
+    
+    if (!content && !req.file) {
+      return res.status(400).json({ message: 'Post must contain text or media' });
+    }
+    
+    const postData = {
+      content: content || '',
+      userId,
+      isPrivate: isPrivate === 'true' || isPrivate === true
+    };
+    
+    // Handle media upload if present
+    if (req.file) {
+      try {
+        // Determine media type based on file mimetype
+        const isImage = req.file.mimetype.startsWith('image');
+        const isVideo = req.file.mimetype.startsWith('video');
+        
+        if (!isImage && !isVideo) {
+          return res.status(400).json({ message: 'Invalid file type' });
+        }
+        
+        // Store file path relative to uploads directory
+        const mediaType = isImage ? 'image' : 'video';
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const relativePath = req.file.path.split('uploads')[1].replace(/\\/g, '/');
+        const mediaUrl = `${baseUrl}/uploads${relativePath}`;
+        
+        // Add media data to post
+        postData.mediaUrl = mediaUrl;
+        postData.mediaType = mediaType;
+        postData.hasMedia = true;
+      } catch (uploadError) {
+        console.error('Error processing media:', uploadError);
+        // Clean up temp file if exists
+        if (req.file.path && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+        return res.status(500).json({ message: 'Error processing media' });
+      }
+    }
+    
+    // Create and save post
+    const post = new Post(postData);
+    await post.save();
+    
+    const formattedPost = await formatPostData(post, userId);
+    res.status(201).json(formattedPost);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error creating post:', error);
+    // Clean up temp file if exists
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    res.status(500).json({ message: 'Error creating post' });
   }
 };
 
+// Update post
+exports.updatePost = async (req, res) => {
+  try {
+    const { content, isPrivate } = req.body;
+    
+    const post = await Post.findById(req.params.id);
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user is the author
+    if (post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to update this post' });
+    }
+    
+    // Update fields
+    if (content !== undefined) post.content = content;
+    if (isPrivate !== undefined) post.isPrivate = isPrivate === 'true' || isPrivate === true;
+    
+    await post.save();
+    
+    const formattedPost = await formatPostData(post, req.user._id);
+    res.status(200).json(formattedPost);
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ message: 'Error updating post' });
+  }
+};
+
+// Delete post
 exports.deletePost = async (req, res) => {
   try {
-    const result = await postService.deletePost(req.params.id, req.user.id);
-    res.json(result);
+    const post = await Post.findById(req.params.id);
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user is the author or an admin
+    if (post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to delete this post' });
+    }
+    
+    // If post has media, delete the file
+    if (post.hasMedia && post.mediaUrl) {
+      try {
+        // Extract the file path from the URL
+        const urlParts = post.mediaUrl.split('/uploads');
+        if (urlParts.length > 1) {
+          const relativePath = urlParts[1];
+          const filePath = path.join(__dirname, '../uploads', relativePath);
+          
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        }
+      } catch (deleteError) {
+        console.error('Error deleting media file:', deleteError);
+        // Continue with post deletion even if file deletion fails
+      }
+    }
+    
+    // Soft delete
+    post.isDeleted = true;
+    await post.save();
+    
+    // Also mark all comments as deleted
+    await Comment.updateMany(
+      { postId: post._id },
+      { isDeleted: true }
+    );
+    
+    res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
-    res.status(error.message.includes('Not authorized') ? 403 : 400)
-      .json({ message: error.message });
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: 'Error deleting post' });
+  }
+};
+
+// Like/unlike a post
+exports.toggleLike = async (req, res) => {
+  try {
+    const post = await Post.findOne({ 
+      _id: req.params.id,
+      isDeleted: false 
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Toggle like
+    const isLiked = post.toggleLike(req.user._id);
+    await post.save();
+    
+    res.status(200).json({ 
+      message: isLiked ? 'Post liked' : 'Post unliked',
+      isLiked,
+      likeCount: post.likes.length
+    });
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    res.status(500).json({ message: 'Error processing like' });
+  }
+};
+
+// Get post comments
+exports.getPostComments = async (req, res) => {
+  try {
+    const { limit = 50, page = 1 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const post = await Post.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user can view this post (public or owned by user)
+    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to view this post' });
+    }
+    
+    const comments = await Comment.find({
+      postId: req.params.id,
+      isDeleted: false
+    })
+      .populate('userId', 'displayName username profilePicture')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    res.status(500).json({ message: 'Error retrieving comments' });
+  }
+};
+
+// Get post media
+exports.getPostMedia = async (req, res) => {
+  try {
+    const post = await Post.findOne({
+      _id: req.params.id,
+      isDeleted: false,
+      hasMedia: true
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post or media not found' });
+    }
+    
+    // Check if user can view this post (public or owned by user)
+    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'You do not have permission to view this media' });
+    }
+    
+    // Return the media URL
+    res.status(200).json({ 
+      mediaUrl: post.mediaUrl,
+      mediaType: post.mediaType
+    });
+  } catch (error) {
+    console.error('Error getting post media:', error);
+    res.status(500).json({ message: 'Error retrieving media' });
   }
 };

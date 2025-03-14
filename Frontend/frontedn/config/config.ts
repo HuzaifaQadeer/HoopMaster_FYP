@@ -26,6 +26,21 @@ export const API_ROUTES = {
   GET_ALL_DRILLS: `${API_BASE_URL}/drills/all`,
   GET_POPULAR_DRILLS: `${API_BASE_URL}/drills/popular`,
   GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
+
+  GET_ACTIVE_CHALLENGES: `${API_BASE_URL}/api/challenges/active`,
+  GET_CHALLENGE_BY_ID: `${API_BASE_URL}/api/challenges/:id`,
+  
+  // Challenge attempt routes
+  CREATE_CHALLENGE_ATTEMPT: `${API_BASE_URL}/api/attempts/:challengeId`,
+  GET_CHALLENGE_ATTEMPTS: `${API_BASE_URL}/api/attempts/challenge/:challengeId`,
+  GET_USER_ATTEMPT: `${API_BASE_URL}/api/attempts/user/:challengeId`,
+  VOTE_ON_ATTEMPT: `${API_BASE_URL}/api/attempts/vote/:attemptId`,
+  
+  // Achievement routes
+  GET_USER_ACHIEVEMENTS: `${API_BASE_URL}/api/achievements/user`,
+  
+  // Video routes for challenges
+  GET_CHALLENGE_VIDEO: `${API_BASE_URL}/uploads/challenges/:filename`,
   
   // Course Routes
   GET_ALL_COURSES: `${API_BASE_URL}/courses/all`,
@@ -40,6 +55,26 @@ export const API_ROUTES = {
   GET_COURSE_SESSION_DRILLS: `${API_BASE_URL}/courses/:courseId/session/:sessionNumber`,
   GET_COURSE_PROGRESS: `${API_BASE_URL}/courses/:courseId/progress`,
   UPDATE_COURSE_SESSION_PROGRESS: `${API_BASE_URL}/courses/:courseId/progress/:sessionNumber`,
+  
+  // Post routes
+  GET_ALL_POSTS: `${API_BASE_URL}/posts/all`,
+  CREATE_POST: `${API_BASE_URL}/posts/create`,
+  GET_POST: `${API_BASE_URL}/posts/:id`,
+  DELETE_POST: `${API_BASE_URL}/posts/:id`,
+  LIKE_POST: `${API_BASE_URL}/posts/like`,
+  GET_POST_COMMENTS: `${API_BASE_URL}/posts/:id/comments`,
+  GET_POST_MEDIA: `${API_BASE_URL}/uploads/posts`,
+  
+  // Comment routes
+  CREATE_COMMENT: `${API_BASE_URL}/comments/create`,
+  DELETE_COMMENT: `${API_BASE_URL}/comments/:id`,
+  
+  // Report routes
+  CREATE_REPORT: `${API_BASE_URL}/reports/create`,
+  
+  // User profile & ban routes
+  GET_USER_PROFILE: `${API_BASE_URL}/users/:userId`,
+  CHECK_BAN_STATUS: `${API_BASE_URL}/users/ban-status`,
   
   // AI Analysis Routes
   BASIC_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/basic_dribble`,

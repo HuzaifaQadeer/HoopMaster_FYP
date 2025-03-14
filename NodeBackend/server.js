@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
+const path = require('path');
 const fileUpload = require('express-fileupload');
 
 
@@ -16,6 +16,10 @@ const reportRoutes = require('./routes/reportRoutes');
 const premiumRoutes = require('./routes/premiumRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
+
+// Import the cron jobs
+const challengeExpirationCron = require('./cron/challengeExpiration');
+const postCleanupCron = require('./cron/postCleanup');
 
 const app = express();
 app.use(cors({
@@ -32,6 +36,9 @@ connectDB();
 // Middleware
 app.use(express.json());
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/users', userRoutes);
 app.use('/drills', drillRoutes);
@@ -46,4 +53,20 @@ app.use('/revenue', revenueRoutes);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT,() => console.log(`Server running on port ${PORT}`));
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  
+  // Start the cron jobs
+  console.log('Starting cron jobs...');
+  
+  // Start challenge expiration cron job
+  console.log('Starting challenge expiration cron job...');
+  challengeExpirationCron.startCronJob();
+  console.log('Challenge expiration cron job started');
+  
+  // Start post cleanup cron job
+  console.log('Starting post cleanup cron job...');
+  postCleanupCron.startCronJob();
+  console.log('Post cleanup cron job started');
+});
