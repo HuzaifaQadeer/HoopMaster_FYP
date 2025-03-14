@@ -1,6 +1,4 @@
 // Type declarations for external modules
-declare module 'react';
-declare module 'react-native';
 declare module '@expo/vector-icons';
 declare module '@react-navigation/native';
 declare module 'expo-av';
