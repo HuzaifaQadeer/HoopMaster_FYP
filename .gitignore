@@ -9,12 +9,8 @@ __pycache__/
 FlaskBackend/FlaskBackend/app/services/shot_analyzer/yoolo_v5/
 
 # Environment and IDE
-.env
 .idea/
 .expo/
-
-# Node
-node_modules/
 
 # Logs
 *.log
@@ -23,5 +19,17 @@ node_modules/
 .DS_Store
 **/.DS_Store
 
-# Temporary files
-temp.jpg 
+# P4 files
+*.mp4
+
+# Image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.webp
+
