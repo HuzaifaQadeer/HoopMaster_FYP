@@ -1,0 +1,112 @@
+2025-03-11 19:25:39,142 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 19:25:39,142 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 19:25:39,178 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 19:25:53,038 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 19:25:53,044 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 19:26:08,113 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:26:08] "[33mPOST /api/practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 19:28:04,409 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:28:04] "[33mPOST /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:28:10,726 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading
+2025-03-11 19:28:10,728 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading
+2025-03-11 19:28:10,729 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading
+2025-03-11 19:28:33,601 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 19:28:33,601 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 19:28:33,630 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 19:28:48,979 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 19:28:48,985 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 19:28:51,136 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:28:51] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:29:15,662 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:29:15] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:29:20,991 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:29:20] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:29:23,489 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:29:23] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:29:24,796 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:29:24] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:31:48,132 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:31:48] "[33mGET /practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:31:49,688 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:31:49] "[33mGET /practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:31:55,316 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:31:55] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:33:04,474 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 19:33:04,474 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 19:33:04,507 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 19:33:16,865 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 19:33:16,873 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 19:33:28,652 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:33:28] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:33:30,246 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:33:30] "[33mGET /api/practice/health HTTP/1.1[0m" 404 -
+2025-03-11 19:33:34,690 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:33:34] "[33mPOST /api/practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 19:38:14,538 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 19:38:14] "[33mPOST /practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 19:45:35,158 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\run.py', reloading
+2025-03-11 19:45:35,158 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\config.py', reloading
+2025-03-11 19:45:35,160 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\tween_dribble\\process_services.py', reloading
+2025-03-11 19:45:35,186 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\shot_analyzer.py', reloading
+2025-03-11 19:45:35,197 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\Shooting_analysis.py', reloading
+2025-03-11 19:45:35,200 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\process_services.py', reloading
+2025-03-11 19:45:35,200 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\feature_extractor.py', reloading
+2025-03-11 19:45:35,201 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\evaluator.py', reloading
+2025-03-11 19:45:35,202 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\chatbot_service.py', reloading
+2025-03-11 19:45:35,202 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\between_the_legs\\process_services.py', reloading
+2025-03-11 19:45:35,203 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\behind_the_back\\process_services.py', reloading
+2025-03-11 19:45:35,204 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\process_services.py', reloading
+2025-03-11 19:45:35,204 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\feature_extractor.py', reloading
+2025-03-11 19:45:35,205 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\evaluator.py', reloading
+2025-03-11 19:45:35,206 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\videos.py', reloading
+2025-03-11 19:45:35,207 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\dribble_analysis.py', reloading
+2025-03-11 19:45:35,207 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\chatbot.py', reloading
+2025-03-11 19:45:35,208 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\config\\config.py', reloading
+2025-03-11 19:45:35,209 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\config\\chatbot_config.py', reloading
+2025-03-11 20:00:34,563 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 20:00:34,564 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 20:00:34,587 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 20:00:51,111 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 20:00:51,119 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 20:00:51,581 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 20:00:51] "[33mPOST /practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 20:01:10,391 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 20:01:10] "[33mPOST /practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 20:01:35,333 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\__init__.py', reloading
+2025-03-11 20:01:35,334 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\triton.py', reloading
+2025-03-11 20:01:35,334 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\torch_utils.py', reloading
+2025-03-11 20:01:35,335 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\__init__.py', reloading
+2025-03-11 20:01:35,335 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\plots.py', reloading
+2025-03-11 20:01:35,335 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\metrics.py', reloading
+2025-03-11 20:01:35,336 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\loss.py', reloading
+2025-03-11 20:01:35,336 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\general.py', reloading
+2025-03-11 20:01:35,336 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\dataloaders.py', reloading
+2025-03-11 20:01:35,337 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\augmentations.py', reloading
+2025-03-11 20:01:35,337 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\plots.py', reloading
+2025-03-11 20:01:35,337 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\metrics.py', reloading
+2025-03-11 20:01:35,338 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loss.py', reloading
+2025-03-11 20:01:35,338 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\__init__.py', reloading
+2025-03-11 20:01:35,339 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\wandb\\__init__.py', reloading
+2025-03-11 20:01:35,340 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\wandb\\wandb_utils.py', reloading
+2025-03-11 20:01:35,340 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\__init__.py', reloading
+2025-03-11 20:01:35,341 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\hpo.py', reloading
+2025-03-11 20:01:35,342 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\comet_utils.py', reloading
+2025-03-11 20:01:35,343 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\__init__.py', reloading
+2025-03-11 20:01:35,343 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\hpo.py', reloading
+2025-03-11 20:01:35,344 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\clearml_utils.py', reloading
+2025-03-11 20:01:35,344 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\general.py', reloading
+2025-03-11 20:01:35,345 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\flask_rest_api\\restapi.py', reloading
+2025-03-11 20:01:35,345 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\flask_rest_api\\example_request.py', reloading
+2025-03-11 20:01:35,346 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\downloads.py', reloading
+2025-03-11 20:01:35,346 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\dataloaders.py', reloading
+2025-03-11 20:01:35,347 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\callbacks.py', reloading
+2025-03-11 20:01:35,347 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\aws\\__init__.py', reloading
+2025-03-11 20:01:35,347 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\aws\\resume.py', reloading
+2025-03-11 20:01:35,348 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\autobatch.py', reloading
+2025-03-11 20:01:35,348 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\autoanchor.py', reloading
+2025-03-11 20:01:35,348 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\augmentations.py', reloading
+2025-03-11 20:01:35,348 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\activations.py', reloading
+2025-03-11 20:02:11,704 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 20:02:11,705 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 20:02:11,724 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 20:02:22,357 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 20:02:22,364 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 20:02:27,020 - werkzeug - INFO - 127.0.0.1 - - [11/Mar/2025 20:02:27] "[33mPOST /practice/analyze HTTP/1.1[0m" 404 -
+2025-03-11 20:09:35,339 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\__init__.py', reloading
+2025-03-11 20:09:54,378 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-03-11 20:09:54,379 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 20:09:54,402 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-11 20:10:05,145 - werkzeug - WARNING -  * Debugger is active!
+2025-03-11 20:10:05,152 - werkzeug - INFO -  * Debugger PIN: 142-977-791
+2025-03-11 20:22:52,543 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading
+2025-03-11 20:22:52,547 - werkzeug - INFO -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading

@@ -17,14 +17,9 @@ import Course from '../../components/custom/course';
 import Drill from '../../components/custom/drill';
 import SearchBar from '../../components/custom/searchbar';
 import Chat from '@/components/custom/chat';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
-
-const courses = [
-  { id: '1', name: 'Sharpshooter Masterclass', completion: 7, isPremium: true, imageUrl: 'https://proskillsbasketball.com/wp-content/uploads/2019/11/PSB-shooting-the-basket.jpg' },
-  { id: '2', name: 'Handles mastery', completion: 25, isPremium: false, imageUrl: 'https://www.vice.com/wp-content/uploads/sites/2/2018/12/1544458332692-h_54758643.jpeg?w=1024' },
-  { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Et6jpeaHZnq0f_lagtL3an1yt3mBCX3guA&s' }
-];
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the Drill type
 interface Drill {
@@ -35,23 +30,36 @@ interface Drill {
   difficulty: string;
 }
 
-interface DrillProps {
-  name: string;
+interface CourseType {
+  _id: string;
+  title: string;
   description: string;
-  imageUrl: string;
-  difficulty: string;
-  onPress?: () => void;  // Add onPress prop
+  level: string;
+  duration: string;
+  frequency: string;
+  thumbnail: string;
+  isPremium: boolean;
+  progress?: number;
 }
 
 const HomePage = () => {
   const { colors } = useTheme();
   const [drills, setDrills] = useState<Drill[]>([]);
   const [filteredDrills, setFilteredDrills] = useState<Drill[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [userCourses, setUserCourses] = useState<CourseType[]>([]);
+  const [loadingDrills, setLoadingDrills] = useState(true);
+  const [loadingCourses, setLoadingCourses] = useState(true);
 
   useEffect(() => {
     fetchDrills();
   }, []);
+
+  // Use focus effect to refresh user courses when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserCourses();
+    }, [])
+  );
 
   const fetchDrills = async () => {
     try {
@@ -65,7 +73,71 @@ const HomePage = () => {
     } catch (error) {
       console.error('Error fetching drills:', error);
     } finally {
-      setLoading(false);
+      setLoadingDrills(false);
+    }
+  };
+
+  const fetchUserCourses = async () => {
+    try {
+      setLoadingCourses(true);
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        setLoadingCourses(false);
+        return;
+      }
+
+      const response = await fetch(API_ROUTES.GET_USER_COURSES, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user courses');
+      }
+
+      const coursesData = await response.json();
+      
+      // Fetch progress for each course
+      const coursesWithProgress = await Promise.all(
+        coursesData.map(async (course: CourseType) => {
+          try {
+            const progressUrl = API_ROUTES.GET_COURSE_PROGRESS.replace(':courseId', course._id);
+            const progressResponse = await fetch(progressUrl, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (progressResponse.ok) {
+              const progressData = await progressResponse.json();
+              // Handle both old and new API response formats
+              const progressValue = progressData.progress !== undefined 
+                ? progressData.progress 
+                : (typeof progressData === 'number' ? progressData : 0);
+              
+              // Ensure progress is a valid number between 0-100
+              const validProgress = !isNaN(progressValue) 
+                ? Math.min(Math.max(0, progressValue), 100) 
+                : 0;
+              
+              console.log(`Course ${course.title} progress: ${validProgress}%`);
+              return { ...course, progress: validProgress };
+            }
+            console.log(`Failed to fetch progress for course ${course.title}, using 0%`);
+            return { ...course, progress: 0 };
+          } catch (error) {
+            console.error(`Error fetching progress for course ${course.title}:`, error);
+            return { ...course, progress: 0 };
+          }
+        })
+      );
+
+      setUserCourses(coursesWithProgress);
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+    } finally {
+      setLoadingCourses(false);
     }
   };
 
@@ -93,14 +165,38 @@ const HomePage = () => {
       </View>
       <View style={styles.content}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Current Plans</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.coursesScrollView}>
-          {courses.map((course) => (
-            <Course key={course.id} {...course} />
-          ))}
-        </ScrollView>
-        <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 10 }]}>Dribble Practice drills</Text>
+        
+        {loadingCourses ? (
+          <ActivityIndicator size="small" color={colors.primary} style={styles.courseLoader} />
+        ) : userCourses.length > 0 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.coursesScrollView}>
+            {userCourses.map((course) => (
+              <Course 
+                key={course._id} 
+                id={course._id}
+                name={course.title} 
+                completion={course.progress || 0} 
+                isPremium={course.isPremium}
+                imageUrl={course.thumbnail}
+                level={course.level}
+                duration={course.duration}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={[styles.noCourseContainer, { backgroundColor: colors.card }]}>
+            <Text style={[styles.noCourseText, { color: colors.text }]}>
+              You haven't registered for any courses yet. 
+              Check out the Courses tab to find courses.
+            </Text>
+          </View>
+        )}
+        
+        <View style={styles.sectionDivider} />
+        
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Dribble Practice drills</Text>
         <SearchBar onSearch={handleSearch} />
-        {loading ? (
+        {loadingDrills ? (
           <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
         ) : (
           <FlatList
@@ -145,12 +241,29 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginLeft: 10,
   },
+  sectionDivider: {
+    height: 20, // Add space between sections
+  },
   coursesScrollView: {
     paddingLeft: 10,
+  },
+  courseLoader: {
+    height: 150,
+    justifyContent: 'center',
   },
   loader: {
     marginTop: 20,
   },
+  noCourseContainer: {
+    marginHorizontal: 10,
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  noCourseText: {
+    fontSize: 14,
+    textAlign: 'center',
+  }
 });
 
 export default HomePage;

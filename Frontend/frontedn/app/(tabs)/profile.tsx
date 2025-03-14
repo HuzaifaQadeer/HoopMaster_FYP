@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, useColorScheme, ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LightTheme, CustomDarkTheme } from '@/constants/Colors';
@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import Course from '@/components/custom/course';
 import Achievement from '@/components/custom/achivement';
 import SocialIcons from '@/components/custom/renderSocialIcons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
 import { Image as ExpoImage } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
@@ -40,6 +40,18 @@ interface UserProfile {
   highlightVideo?: string;
 }
 
+interface CourseType {
+  _id: string;
+  title: string;
+  description: string;
+  level: string;
+  duration: string;
+  frequency: string;
+  thumbnail: string;
+  isPremium: boolean;
+  progress?: number;
+}
+
 const UserProfileScreen: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -52,9 +64,14 @@ const UserProfileScreen: React.FC = () => {
   const { refresh } = useLocalSearchParams();
   const scrollViewRef = React.useRef<ScrollView>(null);
   const captureViewRef = React.useRef(null);
+  const [userCourses, setUserCourses] = useState<CourseType[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     fetchUserProfile();
+    fetchUserCourses();
+    checkLoginStatus();
   }, [refresh]);
 
   useEffect(() => {
@@ -157,6 +174,70 @@ const UserProfileScreen: React.FC = () => {
     }
   };
 
+  const fetchUserCourses = async () => {
+    try {
+      setLoadingCourses(true);
+      const token = await getToken();
+      if (!token) {
+        setLoadingCourses(false);
+        return;
+      }
+
+      const response = await fetch(API_ROUTES.GET_USER_COURSES, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user courses');
+      }
+
+      const coursesData = await response.json();
+      
+      // Fetch progress for each course
+      const coursesWithProgress = await Promise.all(
+        coursesData.map(async (course: CourseType) => {
+          try {
+            const progressUrl = API_ROUTES.GET_COURSE_PROGRESS.replace(':courseId', course._id);
+            const progressResponse = await fetch(progressUrl, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (progressResponse.ok) {
+              const progressData = await progressResponse.json();
+              // Handle both old and new API response formats
+              const progressValue = progressData.progress !== undefined 
+                ? progressData.progress 
+                : (typeof progressData === 'number' ? progressData : 0);
+              
+              // Ensure progress is a valid number between 0-100
+              const validProgress = !isNaN(progressValue) 
+                ? Math.min(Math.max(0, progressValue), 100) 
+                : 0;
+              
+              console.log(`Profile - Course ${course.title} progress: ${validProgress}%`);
+              return { ...course, progress: validProgress };
+            }
+            console.log(`Failed to fetch progress for course ${course.title}, using 0%`);
+            return { ...course, progress: 0 };
+          } catch (error) {
+            console.error(`Error fetching progress for course ${course.title}:`, error);
+            return { ...course, progress: 0 };
+          }
+        })
+      );
+
+      setUserCourses(coursesWithProgress);
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+    } finally {
+      setLoadingCourses(false);
+    }
+  };
+
   const togglePrivacy = async () => {
     try {
       const token = await getToken();
@@ -196,10 +277,15 @@ const UserProfileScreen: React.FC = () => {
     }
   };
 
-  const courses = [
-    { id: '2', name: 'Handles mastery', completion: 25, isPremium: false, imageUrl: 'https://www.vice.com/wp-content/uploads/sites/2/2018/12/1544458332692-h_54758643.jpeg?w=1024' },
-    { id: '3', name: 'Elite footwork', completion: 99, isPremium: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Et6jpeaHZnq0f_lagtL3an1yt3mBCX3guA&s' }
-  ];
+  const checkLoginStatus = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      setIsLoggedIn(!!token);
+    } catch (error) {
+      console.error('Error checking login status:', error);
+      setIsLoggedIn(false);
+    }
+  };
 
   // achievementData.ts
 
@@ -276,6 +362,15 @@ const achievementData = [
         )}
       </View>
     </View>
+  );
+
+  // Use focus effect to refresh user courses when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        fetchUserCourses();
+      }
+    }, [isLoggedIn])
   );
 
   return (
@@ -408,11 +503,34 @@ const achievementData = [
 
         <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Courses</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {courses.map((course) => (
-              <Course key={course.id} {...course} />
-            ))}
-          </ScrollView>
+          {loadingCourses ? (
+            <ActivityIndicator size="small" color={theme.colors.primary} style={styles.courseLoader} />
+          ) : userCourses.length > 0 ? (
+            <View style={styles.coursesContainer}>
+              {userCourses.map((course) => (
+                <TouchableOpacity 
+                  key={course._id} 
+                  style={styles.courseCard}
+                  onPress={() => router.push(`/course-details?courseId=${course._id}`)}
+                >
+                  <View style={styles.courseInfo}>
+                    <Text style={[styles.courseTitle, { color: theme.colors.text }]}>{course.title}</Text>
+                    <Text style={[styles.courseDescription, { color: theme.colors.text }]}>Level: {course.level}</Text>
+                    <Text style={[styles.courseDescription, { color: theme.colors.text }]}>
+                      Progress: {course.progress || 0}%
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <View style={[styles.noCoursesContainer, { backgroundColor: theme.colors.card }]}>
+              <Text style={[styles.noCoursesText, { color: theme.colors.text }]}>
+                You haven't registered for any courses yet. 
+                Check out the Courses tab to find courses.
+              </Text>
+            </View>
+          )}
         </View>
         
         
@@ -542,6 +660,41 @@ const styles = StyleSheet.create({
   },
   aboutMeText: {
     fontSize: 14,
+  },
+  courseLoader: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  coursesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  courseCard: {
+    width: '50%',
+    padding: 8,
+  },
+  courseInfo: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+  },
+  courseTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  courseDescription: {
+    fontSize: 14,
+  },
+  noCoursesContainer: {
+    marginHorizontal: 20,
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  noCoursesText: {
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 

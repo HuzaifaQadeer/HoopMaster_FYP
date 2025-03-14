@@ -1,0 +1,389 @@
+2025-03-11 20:40:12,279 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:40:12,292 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 0ede0044-998b-4015-8629-44619a29d182 for file 0311.mp4
+2025-03-11 20:40:12,301 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\0ede0044-998b-4015-8629-44619a29d182_0311.mp4
+2025-03-11 20:40:12,303 - app.routes.practice_analysis - INFO - [practice_analysis.py:324] - Job 0ede0044-998b-4015-8629-44619a29d182 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\0ede0044-998b-4015-8629-44619a29d182_0311.mp4
+2025-03-11 20:40:12,304 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 0ede0044-998b-4015-8629-44619a29d182
+2025-03-11 20:40:12,316 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 0ede0044-998b-4015-8629-44619a29d182: Calling analyze_practice_video
+2025-03-11 20:40:49,546 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:40:49,554 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID bed20898-20c0-4e9c-845a-3261c13d33cf for file 0311.mp4
+2025-03-11 20:40:49,562 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\bed20898-20c0-4e9c-845a-3261c13d33cf_0311.mp4
+2025-03-11 20:40:49,562 - app.routes.practice_analysis - INFO - [practice_analysis.py:324] - Job bed20898-20c0-4e9c-845a-3261c13d33cf status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\bed20898-20c0-4e9c-845a-3261c13d33cf_0311.mp4
+2025-03-11 20:40:49,564 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job bed20898-20c0-4e9c-845a-3261c13d33cf
+2025-03-11 20:40:49,571 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job bed20898-20c0-4e9c-845a-3261c13d33cf: Calling analyze_practice_video
+2025-03-11 20:41:16,606 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:41:16,618 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 8a586aea-47fa-48bd-b3ec-8e6c314d8886 for file 0311.mp4
+2025-03-11 20:41:16,626 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a586aea-47fa-48bd-b3ec-8e6c314d8886_0311.mp4
+2025-03-11 20:41:16,627 - app.routes.practice_analysis - INFO - [practice_analysis.py:324] - Job 8a586aea-47fa-48bd-b3ec-8e6c314d8886 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a586aea-47fa-48bd-b3ec-8e6c314d8886_0311.mp4
+2025-03-11 20:41:16,627 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 8a586aea-47fa-48bd-b3ec-8e6c314d8886
+2025-03-11 20:41:16,641 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 8a586aea-47fa-48bd-b3ec-8e6c314d8886: Calling analyze_practice_video
+2025-03-11 20:42:52,082 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:42:52,093 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID ed39a89e-7174-47c2-80dd-36432c4db27b for file 0311.mp4
+2025-03-11 20:42:52,101 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\ed39a89e-7174-47c2-80dd-36432c4db27b_0311.mp4
+2025-03-11 20:42:52,102 - app.routes.practice_analysis - INFO - [practice_analysis.py:324] - Job ed39a89e-7174-47c2-80dd-36432c4db27b status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\ed39a89e-7174-47c2-80dd-36432c4db27b_0311.mp4
+2025-03-11 20:42:52,103 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job ed39a89e-7174-47c2-80dd-36432c4db27b
+2025-03-11 20:42:52,118 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job ed39a89e-7174-47c2-80dd-36432c4db27b: Calling analyze_practice_video
+2025-03-11 20:43:10,568 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job ed39a89e-7174-47c2-80dd-36432c4db27b: Analysis completed in 18.46 seconds
+2025-03-11 20:43:10,568 - app.routes.practice_analysis - WARNING - [practice_analysis.py:230] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\ed39a89e-7174-47c2-80dd-36432c4db27b_0311.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\ed39a89e-7174-47c2-80dd-36432c4db27b_0311.mp4'
+2025-03-11 20:46:07,375 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:46:07,388 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 2c3b366d-3d54-4f7f-9e06-356ae666e37f for file 0311.mp4
+2025-03-11 20:46:07,407 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2c3b366d-3d54-4f7f-9e06-356ae666e37f_0311.mp4
+2025-03-11 20:46:07,408 - app.routes.practice_analysis - INFO - [practice_analysis.py:322] - Job 2c3b366d-3d54-4f7f-9e06-356ae666e37f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2c3b366d-3d54-4f7f-9e06-356ae666e37f_0311.mp4
+2025-03-11 20:46:07,409 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 2c3b366d-3d54-4f7f-9e06-356ae666e37f
+2025-03-11 20:46:07,427 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 2c3b366d-3d54-4f7f-9e06-356ae666e37f: Calling analyze_practice_video
+2025-03-11 20:46:25,255 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job 2c3b366d-3d54-4f7f-9e06-356ae666e37f: Analysis completed in 17.85 seconds
+2025-03-11 20:46:25,257 - app.routes.practice_analysis - WARNING - [practice_analysis.py:217] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2c3b366d-3d54-4f7f-9e06-356ae666e37f_0311.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\2c3b366d-3d54-4f7f-9e06-356ae666e37f_0311.mp4'
+2025-03-11 20:48:02,081 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:48:02,101 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 76059196-809f-458b-b27d-cd4c9e88d5e1 for file 0311.mp4
+2025-03-11 20:48:02,108 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\76059196-809f-458b-b27d-cd4c9e88d5e1_0311.mp4
+2025-03-11 20:48:02,108 - app.routes.practice_analysis - INFO - [practice_analysis.py:322] - Job 76059196-809f-458b-b27d-cd4c9e88d5e1 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\76059196-809f-458b-b27d-cd4c9e88d5e1_0311.mp4
+2025-03-11 20:48:02,110 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 76059196-809f-458b-b27d-cd4c9e88d5e1
+2025-03-11 20:48:02,123 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 76059196-809f-458b-b27d-cd4c9e88d5e1: Calling analyze_practice_video
+2025-03-11 20:48:17,737 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job 76059196-809f-458b-b27d-cd4c9e88d5e1: Analysis completed in 15.63 seconds
+2025-03-11 20:48:17,739 - app.routes.practice_analysis - WARNING - [practice_analysis.py:217] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\76059196-809f-458b-b27d-cd4c9e88d5e1_0311.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\76059196-809f-458b-b27d-cd4c9e88d5e1_0311.mp4'
+2025-03-11 20:55:37,363 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 20:55:37,414 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 6b47549a-cc51-4cd4-a186-5ff8de954976 for file two_score_three_miss.mp4
+2025-03-11 20:55:37,455 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\6b47549a-cc51-4cd4-a186-5ff8de954976_two_score_three_miss.mp4
+2025-03-11 20:55:37,457 - app.routes.practice_analysis - INFO - [practice_analysis.py:322] - Job 6b47549a-cc51-4cd4-a186-5ff8de954976 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\6b47549a-cc51-4cd4-a186-5ff8de954976_two_score_three_miss.mp4
+2025-03-11 20:55:37,458 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 6b47549a-cc51-4cd4-a186-5ff8de954976
+2025-03-11 20:55:37,473 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 6b47549a-cc51-4cd4-a186-5ff8de954976: Calling analyze_practice_video
+2025-03-11 20:56:44,229 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job 6b47549a-cc51-4cd4-a186-5ff8de954976: Analysis completed in 66.77 seconds
+2025-03-11 20:56:44,230 - app.routes.practice_analysis - WARNING - [practice_analysis.py:217] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\6b47549a-cc51-4cd4-a186-5ff8de954976_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\6b47549a-cc51-4cd4-a186-5ff8de954976_two_score_three_miss.mp4'
+2025-03-11 21:01:59,121 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 21:01:59,222 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 4df7e429-7fdc-4c98-9dc1-30991111e7fc for file two_score_three_miss.mp4
+2025-03-11 21:01:59,309 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\4df7e429-7fdc-4c98-9dc1-30991111e7fc_two_score_three_miss.mp4
+2025-03-11 21:01:59,310 - app.routes.practice_analysis - INFO - [practice_analysis.py:328] - Job 4df7e429-7fdc-4c98-9dc1-30991111e7fc status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\4df7e429-7fdc-4c98-9dc1-30991111e7fc_two_score_three_miss.mp4
+2025-03-11 21:01:59,311 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 4df7e429-7fdc-4c98-9dc1-30991111e7fc
+2025-03-11 21:01:59,325 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 4df7e429-7fdc-4c98-9dc1-30991111e7fc: Calling analyze_practice_video
+2025-03-11 21:02:55,550 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job 4df7e429-7fdc-4c98-9dc1-30991111e7fc: Analysis completed in 56.24 seconds
+2025-03-11 21:02:55,550 - app.routes.practice_analysis - WARNING - [practice_analysis.py:217] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\4df7e429-7fdc-4c98-9dc1-30991111e7fc_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\4df7e429-7fdc-4c98-9dc1-30991111e7fc_two_score_three_miss.mp4'
+2025-03-11 21:02:55,552 - app.routes.practice_analysis - INFO - [practice_analysis.py:229] - Returning video URL: http://127.0.0.1:8080/uploads/processed_videos/processed_7373a5af-c09e-416d-b8b4-0fb880d010bc_4df7e429-7fdc-4c98-9dc1-30991111e7fc_two_score_three_miss.mp4
+2025-03-11 21:06:50,079 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 21:06:50,213 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID a720f332-bafd-4d42-8872-d46fc964fd0a for file two_score_three_miss.mp4
+2025-03-11 21:06:50,296 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\a720f332-bafd-4d42-8872-d46fc964fd0a_two_score_three_miss.mp4
+2025-03-11 21:06:50,298 - app.routes.practice_analysis - INFO - [practice_analysis.py:326] - Job a720f332-bafd-4d42-8872-d46fc964fd0a status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\a720f332-bafd-4d42-8872-d46fc964fd0a_two_score_three_miss.mp4
+2025-03-11 21:06:50,298 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job a720f332-bafd-4d42-8872-d46fc964fd0a
+2025-03-11 21:06:50,312 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job a720f332-bafd-4d42-8872-d46fc964fd0a: Calling analyze_practice_video
+2025-03-11 21:14:00,318 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 21:14:00,526 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID c022267a-d1f7-4b66-a3d3-19234a2ca308 for file two_score_three_miss.mp4
+2025-03-11 21:14:00,616 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\c022267a-d1f7-4b66-a3d3-19234a2ca308_two_score_three_miss.mp4
+2025-03-11 21:14:00,617 - app.routes.practice_analysis - INFO - [practice_analysis.py:326] - Job c022267a-d1f7-4b66-a3d3-19234a2ca308 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\c022267a-d1f7-4b66-a3d3-19234a2ca308_two_score_three_miss.mp4
+2025-03-11 21:14:00,618 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job c022267a-d1f7-4b66-a3d3-19234a2ca308
+2025-03-11 21:14:00,630 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job c022267a-d1f7-4b66-a3d3-19234a2ca308: Calling analyze_practice_video
+2025-03-11 21:18:45,405 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 21:18:45,497 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 2f404ae6-adf1-484e-9d05-b1a87826825b for file two_score_three_miss.mp4
+2025-03-11 21:18:45,591 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2f404ae6-adf1-484e-9d05-b1a87826825b_two_score_three_miss.mp4
+2025-03-11 21:18:45,593 - app.routes.practice_analysis - INFO - [practice_analysis.py:326] - Job 2f404ae6-adf1-484e-9d05-b1a87826825b status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2f404ae6-adf1-484e-9d05-b1a87826825b_two_score_three_miss.mp4
+2025-03-11 21:18:45,595 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 2f404ae6-adf1-484e-9d05-b1a87826825b
+2025-03-11 21:18:45,608 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 2f404ae6-adf1-484e-9d05-b1a87826825b: Calling analyze_practice_video
+2025-03-11 21:35:59,403 - app.routes.practice_analysis - INFO - [practice_analysis.py:142] - Received request to /practice/analyze
+2025-03-11 21:35:59,560 - app.routes.practice_analysis - INFO - [practice_analysis.py:156] - Created job ID 35f12c3d-bd15-4da0-ad4e-898a5b832b1a for file two_score_three_miss.mp4
+2025-03-11 21:35:59,655 - app.routes.practice_analysis - INFO - [practice_analysis.py:175] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\35f12c3d-bd15-4da0-ad4e-898a5b832b1a_two_score_three_miss.mp4
+2025-03-11 21:35:59,658 - app.routes.practice_analysis - INFO - [practice_analysis.py:326] - Job 35f12c3d-bd15-4da0-ad4e-898a5b832b1a status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\35f12c3d-bd15-4da0-ad4e-898a5b832b1a_two_score_three_miss.mp4
+2025-03-11 21:35:59,659 - app.routes.practice_analysis - INFO - [practice_analysis.py:191] - Starting synchronous processing for job 35f12c3d-bd15-4da0-ad4e-898a5b832b1a
+2025-03-11 21:35:59,674 - app.routes.practice_analysis - INFO - [practice_analysis.py:203] - Job 35f12c3d-bd15-4da0-ad4e-898a5b832b1a: Calling analyze_practice_video
+2025-03-11 21:37:19,286 - app.routes.practice_analysis - INFO - [practice_analysis.py:209] - Job 35f12c3d-bd15-4da0-ad4e-898a5b832b1a: Analysis completed in 79.63 seconds
+2025-03-11 21:37:19,286 - app.routes.practice_analysis - WARNING - [practice_analysis.py:217] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\35f12c3d-bd15-4da0-ad4e-898a5b832b1a_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\35f12c3d-bd15-4da0-ad4e-898a5b832b1a_two_score_three_miss.mp4'
+2025-03-11 21:37:19,288 - app.routes.practice_analysis - INFO - [practice_analysis.py:228] - Returning video URL: http://127.0.0.1:8080/uploads/processed_videos/processed_1352e57d-64d8-4cac-b369-e0d5001493fb_35f12c3d-bd15-4da0-ad4e-898a5b832b1a_two_score_three_miss.mp4
+2025-03-11 22:02:25,495 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:02:25,576 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID 9b1a460f-65a4-47a9-a8e4-c5b07b40c881 for file two_score_three_miss.mp4
+2025-03-11 22:02:25,641 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\9b1a460f-65a4-47a9-a8e4-c5b07b40c881_two_score_three_miss.mp4
+2025-03-11 22:02:25,642 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job 9b1a460f-65a4-47a9-a8e4-c5b07b40c881 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\9b1a460f-65a4-47a9-a8e4-c5b07b40c881_two_score_three_miss.mp4
+2025-03-11 22:02:25,643 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job 9b1a460f-65a4-47a9-a8e4-c5b07b40c881
+2025-03-11 22:02:25,656 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job 9b1a460f-65a4-47a9-a8e4-c5b07b40c881: Calling analyze_practice_video
+2025-03-11 22:07:24,888 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:07:24,937 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID f43a9146-1428-4b4c-a410-461e29736080 for file two_score_three_miss.mp4
+2025-03-11 22:07:24,952 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\f43a9146-1428-4b4c-a410-461e29736080_two_score_three_miss.mp4
+2025-03-11 22:07:24,954 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job f43a9146-1428-4b4c-a410-461e29736080 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\f43a9146-1428-4b4c-a410-461e29736080_two_score_three_miss.mp4
+2025-03-11 22:07:24,955 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job f43a9146-1428-4b4c-a410-461e29736080
+2025-03-11 22:07:24,962 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job f43a9146-1428-4b4c-a410-461e29736080: Calling analyze_practice_video
+2025-03-11 22:08:49,475 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:08:49,557 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID 62ee1341-6ef7-421c-b076-f70773097fed for file two_score_three_miss.mp4
+2025-03-11 22:08:49,640 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\62ee1341-6ef7-421c-b076-f70773097fed_two_score_three_miss.mp4
+2025-03-11 22:08:49,641 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job 62ee1341-6ef7-421c-b076-f70773097fed status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\62ee1341-6ef7-421c-b076-f70773097fed_two_score_three_miss.mp4
+2025-03-11 22:08:49,642 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job 62ee1341-6ef7-421c-b076-f70773097fed
+2025-03-11 22:08:49,657 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job 62ee1341-6ef7-421c-b076-f70773097fed: Calling analyze_practice_video
+2025-03-11 22:13:19,675 - app.routes.practice_analysis - INFO - [practice_analysis.py:210] - Job 62ee1341-6ef7-421c-b076-f70773097fed: Analysis completed in 270.03 seconds
+2025-03-11 22:13:19,675 - app.routes.practice_analysis - WARNING - [practice_analysis.py:218] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\62ee1341-6ef7-421c-b076-f70773097fed_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\62ee1341-6ef7-421c-b076-f70773097fed_two_score_three_miss.mp4'
+2025-03-11 22:13:19,677 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: http://127.0.0.1:8080/uploads/processed_videos/processed_4469c78e-35cb-4065-9d50-cc315cc8d889_62ee1341-6ef7-421c-b076-f70773097fed_two_score_three_miss.mp4
+2025-03-11 22:21:04,393 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:21:04,461 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID b94f56d2-5883-4c26-8723-9a9442c269db for file two_score_three_miss.mp4
+2025-03-11 22:21:04,477 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\b94f56d2-5883-4c26-8723-9a9442c269db_two_score_three_miss.mp4
+2025-03-11 22:21:04,477 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job b94f56d2-5883-4c26-8723-9a9442c269db status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\b94f56d2-5883-4c26-8723-9a9442c269db_two_score_three_miss.mp4
+2025-03-11 22:21:04,479 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job b94f56d2-5883-4c26-8723-9a9442c269db
+2025-03-11 22:21:04,486 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job b94f56d2-5883-4c26-8723-9a9442c269db: Calling analyze_practice_video
+2025-03-11 22:21:06,317 - app.routes.practice_analysis - ERROR - [practice_analysis.py:245] - Error processing video: Error analyzing practice video: 'numpy.ndarray' object has no attribute 'index'
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 75, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 885, in getVideoStreams
+    b_index = classes[0].index(0)
+AttributeError: 'numpy.ndarray' object has no attribute 'index'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 207, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 132, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: 'numpy.ndarray' object has no attribute 'index'
+2025-03-11 22:24:03,740 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:24:03,822 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID 7e829e8c-b891-4c23-a71d-30b1933c091a for file two_score_three_miss.mp4
+2025-03-11 22:24:03,858 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7e829e8c-b891-4c23-a71d-30b1933c091a_two_score_three_miss.mp4
+2025-03-11 22:24:03,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job 7e829e8c-b891-4c23-a71d-30b1933c091a status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7e829e8c-b891-4c23-a71d-30b1933c091a_two_score_three_miss.mp4
+2025-03-11 22:24:03,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job 7e829e8c-b891-4c23-a71d-30b1933c091a
+2025-03-11 22:24:03,901 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job 7e829e8c-b891-4c23-a71d-30b1933c091a: Calling analyze_practice_video
+2025-03-11 22:28:27,321 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-11 22:28:27,362 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID a2dbabf1-fd8a-4961-a863-8e0e93b3f1da for file two_score_three_miss.mp4
+2025-03-11 22:28:27,414 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\a2dbabf1-fd8a-4961-a863-8e0e93b3f1da_two_score_three_miss.mp4
+2025-03-11 22:28:27,415 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job a2dbabf1-fd8a-4961-a863-8e0e93b3f1da status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\a2dbabf1-fd8a-4961-a863-8e0e93b3f1da_two_score_three_miss.mp4
+2025-03-11 22:28:27,416 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job a2dbabf1-fd8a-4961-a863-8e0e93b3f1da
+2025-03-11 22:28:27,431 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job a2dbabf1-fd8a-4961-a863-8e0e93b3f1da: Calling analyze_practice_video
+2025-03-12 00:00:38,560 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-12 00:00:47,489 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID 29b17cb5-1987-42e6-b0b7-a99845a20716 for file cec2bb9b-cd26-44fd-a41e-2973ef5dfc7c.mp4
+2025-03-12 00:00:47,502 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/29b17cb5-1987-42e6-b0b7-a99845a20716_cec2bb9b-cd26-44fd-a41e-2973ef5dfc7c.mp4
+2025-03-12 00:00:47,502 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job 29b17cb5-1987-42e6-b0b7-a99845a20716 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/29b17cb5-1987-42e6-b0b7-a99845a20716_cec2bb9b-cd26-44fd-a41e-2973ef5dfc7c.mp4
+2025-03-12 00:00:47,503 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job 29b17cb5-1987-42e6-b0b7-a99845a20716
+2025-03-12 00:00:47,503 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job 29b17cb5-1987-42e6-b0b7-a99845a20716: Calling analyze_practice_video
+2025-03-12 00:04:11,542 - app.routes.practice_analysis - INFO - [practice_analysis.py:210] - Job 29b17cb5-1987-42e6-b0b7-a99845a20716: Analysis completed in 204.04 seconds
+2025-03-12 00:04:11,542 - app.routes.practice_analysis - INFO - [practice_analysis.py:216] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/29b17cb5-1987-42e6-b0b7-a99845a20716_cec2bb9b-cd26-44fd-a41e-2973ef5dfc7c.mp4
+2025-03-12 00:04:11,542 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: http://flaskapp.loca.lt/uploads/processed_videos/processed_995e2705-6875-4d49-9580-2fcae0836d9e_29b17cb5-1987-42e6-b0b7-a99845a20716_cec2bb9b-cd26-44fd-a41e-2973ef5dfc7c.mp4
+2025-03-12 00:07:12,674 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-12 00:07:35,734 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID e95f5596-42b0-4460-b36c-e220fd42d6b1 for file 4ba32bbb-7060-4d9b-8ccd-937341c03c21.mp4
+2025-03-12 00:07:35,744 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/e95f5596-42b0-4460-b36c-e220fd42d6b1_4ba32bbb-7060-4d9b-8ccd-937341c03c21.mp4
+2025-03-12 00:07:35,745 - app.routes.practice_analysis - INFO - [practice_analysis.py:336] - Job e95f5596-42b0-4460-b36c-e220fd42d6b1 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/e95f5596-42b0-4460-b36c-e220fd42d6b1_4ba32bbb-7060-4d9b-8ccd-937341c03c21.mp4
+2025-03-12 00:07:35,745 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job e95f5596-42b0-4460-b36c-e220fd42d6b1
+2025-03-12 00:07:35,745 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job e95f5596-42b0-4460-b36c-e220fd42d6b1: Calling analyze_practice_video
+2025-03-12 00:10:44,435 - app.routes.practice_analysis - INFO - [practice_analysis.py:210] - Job e95f5596-42b0-4460-b36c-e220fd42d6b1: Analysis completed in 188.69 seconds
+2025-03-12 00:10:44,435 - app.routes.practice_analysis - INFO - [practice_analysis.py:216] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/e95f5596-42b0-4460-b36c-e220fd42d6b1_4ba32bbb-7060-4d9b-8ccd-937341c03c21.mp4
+2025-03-12 00:10:44,435 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: http://flaskapp.loca.lt/uploads/processed_videos/processed_b93baf11-8fff-4171-b32c-e29068069ff9_e95f5596-42b0-4460-b36c-e220fd42d6b1_4ba32bbb-7060-4d9b-8ccd-937341c03c21.mp4
+2025-03-12 00:18:22,326 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-12 00:18:45,611 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID 858a7c0c-fa13-4007-9db6-d6caa0c345d7 for file 2d8743f6-9bd6-4356-9fab-d76631be70d1.mp4
+2025-03-12 00:18:45,616 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/858a7c0c-fa13-4007-9db6-d6caa0c345d7_2d8743f6-9bd6-4356-9fab-d76631be70d1.mp4
+2025-03-12 00:18:45,616 - app.routes.practice_analysis - INFO - [practice_analysis.py:335] - Job 858a7c0c-fa13-4007-9db6-d6caa0c345d7 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/858a7c0c-fa13-4007-9db6-d6caa0c345d7_2d8743f6-9bd6-4356-9fab-d76631be70d1.mp4
+2025-03-12 00:18:45,616 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job 858a7c0c-fa13-4007-9db6-d6caa0c345d7
+2025-03-12 00:18:45,616 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job 858a7c0c-fa13-4007-9db6-d6caa0c345d7: Calling analyze_practice_video
+2025-03-12 00:21:58,127 - app.routes.practice_analysis - INFO - [practice_analysis.py:210] - Job 858a7c0c-fa13-4007-9db6-d6caa0c345d7: Analysis completed in 192.51 seconds
+2025-03-12 00:21:58,127 - app.routes.practice_analysis - INFO - [practice_analysis.py:216] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/858a7c0c-fa13-4007-9db6-d6caa0c345d7_2d8743f6-9bd6-4356-9fab-d76631be70d1.mp4
+2025-03-12 00:21:58,127 - app.routes.practice_analysis - INFO - [practice_analysis.py:236] - Returning video URL: /uploads/processed_videos/processed_28f2e817-697d-4e12-b18a-af7363877ff0_858a7c0c-fa13-4007-9db6-d6caa0c345d7_2d8743f6-9bd6-4356-9fab-d76631be70d1.mp4
+2025-03-12 00:28:38,625 - app.routes.practice_analysis - INFO - [practice_analysis.py:143] - Received request to /practice/analyze
+2025-03-12 00:28:47,857 - app.routes.practice_analysis - INFO - [practice_analysis.py:157] - Created job ID a792aac3-1605-48a4-ad19-d26a69c6c717 for file two_score_three_miss.mp4
+2025-03-12 00:28:47,868 - app.routes.practice_analysis - INFO - [practice_analysis.py:176] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/a792aac3-1605-48a4-ad19-d26a69c6c717_two_score_three_miss.mp4
+2025-03-12 00:28:47,868 - app.routes.practice_analysis - INFO - [practice_analysis.py:335] - Job a792aac3-1605-48a4-ad19-d26a69c6c717 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/a792aac3-1605-48a4-ad19-d26a69c6c717_two_score_three_miss.mp4
+2025-03-12 00:28:47,868 - app.routes.practice_analysis - INFO - [practice_analysis.py:192] - Starting synchronous processing for job a792aac3-1605-48a4-ad19-d26a69c6c717
+2025-03-12 00:28:47,868 - app.routes.practice_analysis - INFO - [practice_analysis.py:204] - Job a792aac3-1605-48a4-ad19-d26a69c6c717: Calling analyze_practice_video
+2025-03-12 00:34:45,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:210] - Job a792aac3-1605-48a4-ad19-d26a69c6c717: Analysis completed in 357.83 seconds
+2025-03-12 00:34:45,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:216] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/a792aac3-1605-48a4-ad19-d26a69c6c717_two_score_three_miss.mp4
+2025-03-12 00:34:45,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:236] - Returning video URL: /uploads/processed_videos/processed_64a5f704-a869-49c0-a950-e900cf0b3bdb_a792aac3-1605-48a4-ad19-d26a69c6c717_two_score_three_miss.mp4
+2025-03-12 00:48:00,442 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 00:48:15,437 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 991c0778-c7ef-4005-9f0e-f244af225021 for file b465a3b0-e6cd-4a1b-b363-f98ec0b47148.mp4
+2025-03-12 00:48:15,445 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/991c0778-c7ef-4005-9f0e-f244af225021_b465a3b0-e6cd-4a1b-b363-f98ec0b47148.mp4
+2025-03-12 00:48:15,445 - app.routes.practice_analysis - INFO - [practice_analysis.py:392] - Job 991c0778-c7ef-4005-9f0e-f244af225021 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/991c0778-c7ef-4005-9f0e-f244af225021_b465a3b0-e6cd-4a1b-b363-f98ec0b47148.mp4
+2025-03-12 00:48:15,445 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 991c0778-c7ef-4005-9f0e-f244af225021
+2025-03-12 00:48:15,446 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 991c0778-c7ef-4005-9f0e-f244af225021: Calling analyze_practice_video
+2025-03-12 00:51:21,157 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 991c0778-c7ef-4005-9f0e-f244af225021: Analysis completed in 185.71 seconds
+2025-03-12 00:51:21,157 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/991c0778-c7ef-4005-9f0e-f244af225021_b465a3b0-e6cd-4a1b-b363-f98ec0b47148.mp4
+2025-03-12 00:51:21,157 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_8e7a905c-d59e-4a6a-9192-0f1c234fc76e_991c0778-c7ef-4005-9f0e-f244af225021_b465a3b0-e6cd-4a1b-b363-f98ec0b47148.mp4
+2025-03-12 00:51:21,157 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 2583999 bytes
+2025-03-12 00:51:21,158 - app.routes.practice_analysis - INFO - [practice_analysis.py:259] - Response size: 484 bytes
+2025-03-12 00:51:21,158 - app.routes.practice_analysis - INFO - [practice_analysis.py:270] - Sending response to client
+2025-03-12 00:51:21,158 - app.routes.practice_analysis - INFO - [practice_analysis.py:275] - Testing with minimal response first
+2025-03-12 01:00:32,041 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:00:40,855 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 7264728f-fd57-48ac-bfee-e2d8158cf3a7 for file a8c71ee7-734c-48e5-a1ac-daaba5d74b6b.mp4
+2025-03-12 01:00:40,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7264728f-fd57-48ac-bfee-e2d8158cf3a7_a8c71ee7-734c-48e5-a1ac-daaba5d74b6b.mp4
+2025-03-12 01:00:40,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:396] - Job 7264728f-fd57-48ac-bfee-e2d8158cf3a7 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7264728f-fd57-48ac-bfee-e2d8158cf3a7_a8c71ee7-734c-48e5-a1ac-daaba5d74b6b.mp4
+2025-03-12 01:00:40,860 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 7264728f-fd57-48ac-bfee-e2d8158cf3a7
+2025-03-12 01:00:40,860 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 7264728f-fd57-48ac-bfee-e2d8158cf3a7: Calling analyze_practice_video
+2025-03-12 01:00:40,864 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 7264728f-fd57-48ac-bfee-e2d8158cf3a7: Analysis completed in 0.00 seconds
+2025-03-12 01:00:40,864 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7264728f-fd57-48ac-bfee-e2d8158cf3a7_a8c71ee7-734c-48e5-a1ac-daaba5d74b6b.mp4
+2025-03-12 01:00:40,865 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/existing_shot_analysis_1741723240.mp4
+2025-03-12 01:00:40,865 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 2877097 bytes
+2025-03-12 01:00:40,865 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 447 bytes
+2025-03-12 01:00:40,865 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 01:00:40,865 - app.routes.practice_analysis - INFO - [practice_analysis.py:280] - Full response: {"analysis": ["Analysis from existing video", "Total Shots: 5", "Made Shots: 3", "Shooting Percentage: 60.0%", "Release Angles: Min=40.5\u00b0, Avg=45.2\u00b0, Max=52.8\u00b0", "Knee Angles: Min=120.3\u00b0, Avg=135.7\u00b0, Max=150.2\u00b0", "Elbow Angles: Min=85.6\u00b0, Avg=95.3\u00b0, Max=110.8\u00b0", "Average time per shot: 25.4 frames"], "video_url": "/uploads/processed_videos/existing_shot_analysis_1741723240.mp4", "status": "success"}
+2025-03-12 01:03:47,021 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:03:56,824 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID f23c0ef2-95c8-48e3-bcb4-6e749f739726 for file 3020dbd4-c70d-4104-8d91-42f3b7f57c3f.mp4
+2025-03-12 01:03:56,838 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f23c0ef2-95c8-48e3-bcb4-6e749f739726_3020dbd4-c70d-4104-8d91-42f3b7f57c3f.mp4
+2025-03-12 01:03:56,838 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job f23c0ef2-95c8-48e3-bcb4-6e749f739726 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f23c0ef2-95c8-48e3-bcb4-6e749f739726_3020dbd4-c70d-4104-8d91-42f3b7f57c3f.mp4
+2025-03-12 01:03:56,838 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job f23c0ef2-95c8-48e3-bcb4-6e749f739726
+2025-03-12 01:03:56,838 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job f23c0ef2-95c8-48e3-bcb4-6e749f739726: Calling analyze_practice_video
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job f23c0ef2-95c8-48e3-bcb4-6e749f739726: Analysis completed in 25.51 seconds
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f23c0ef2-95c8-48e3-bcb4-6e749f739726_3020dbd4-c70d-4104-8d91-42f3b7f57c3f.mp4
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_17fd59c6-a0f9-4887-a89c-975d2b515c1f_f23c0ef2-95c8-48e3-bcb4-6e749f739726_3020dbd4-c70d-4104-8d91-42f3b7f57c3f.mp4
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 2495343 bytes
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 504 bytes
+2025-03-12 01:04:22,353 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 01:14:40,371 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:14:57,855 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 0215be16-08a8-4fa4-9ce9-61272ba2abf0 for file 8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:14:57,869 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/0215be16-08a8-4fa4-9ce9-61272ba2abf0_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:14:57,870 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 0215be16-08a8-4fa4-9ce9-61272ba2abf0 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/0215be16-08a8-4fa4-9ce9-61272ba2abf0_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:14:57,870 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 0215be16-08a8-4fa4-9ce9-61272ba2abf0
+2025-03-12 01:14:57,870 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 0215be16-08a8-4fa4-9ce9-61272ba2abf0: Calling analyze_practice_video
+2025-03-12 01:14:58,274 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: local variable 'release_ended' referenced before assignment
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 77, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/shot_analyzer.py", line 1296, in getVideoStreams
+    if release_started and not release_ended:
+UnboundLocalError: local variable 'release_ended' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/routes/practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 192, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: local variable 'release_ended' referenced before assignment
+2025-03-12 01:16:16,838 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:16:28,147 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 3f6f35e8-aa6d-4997-abde-64df0a7da9ff for file 8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:16:28,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/3f6f35e8-aa6d-4997-abde-64df0a7da9ff_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:16:28,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 3f6f35e8-aa6d-4997-abde-64df0a7da9ff status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/3f6f35e8-aa6d-4997-abde-64df0a7da9ff_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:16:28,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 3f6f35e8-aa6d-4997-abde-64df0a7da9ff
+2025-03-12 01:16:28,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 3f6f35e8-aa6d-4997-abde-64df0a7da9ff: Calling analyze_practice_video
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 3f6f35e8-aa6d-4997-abde-64df0a7da9ff: Analysis completed in 56.34 seconds
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/3f6f35e8-aa6d-4997-abde-64df0a7da9ff_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_7de0e500-3a80-4c11-b9ae-a9af610c2d90_3f6f35e8-aa6d-4997-abde-64df0a7da9ff_8027cd70-831a-4f80-a0d7-25c5c2889c05.mp4
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 3119779 bytes
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 1199 bytes
+2025-03-12 01:17:24,498 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 01:23:17,267 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:23:33,965 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 3ec06083-97ee-4f92-9f12-19dc8be590da for file e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:23:33,976 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/3ec06083-97ee-4f92-9f12-19dc8be590da_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:23:33,976 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 3ec06083-97ee-4f92-9f12-19dc8be590da status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/3ec06083-97ee-4f92-9f12-19dc8be590da_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:23:33,976 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 3ec06083-97ee-4f92-9f12-19dc8be590da
+2025-03-12 01:23:33,977 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 3ec06083-97ee-4f92-9f12-19dc8be590da: Calling analyze_practice_video
+2025-03-12 01:24:30,059 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: name 'total_frames' is not defined
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 77, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/shot_analyzer.py", line 1253, in getVideoStreams
+    logger.info(f"Processing speed: {total_frames / total_time:.2f} frames per second")
+NameError: name 'total_frames' is not defined. Did you mean: 'total_time'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/routes/practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 192, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: name 'total_frames' is not defined
+2025-03-12 01:25:57,484 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 01:26:02,709 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 30250e8f-791d-47d7-8a8c-a64e7dafa2f2 for file e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:26:02,720 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/30250e8f-791d-47d7-8a8c-a64e7dafa2f2_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:26:02,720 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 30250e8f-791d-47d7-8a8c-a64e7dafa2f2 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/30250e8f-791d-47d7-8a8c-a64e7dafa2f2_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:26:02,721 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 30250e8f-791d-47d7-8a8c-a64e7dafa2f2
+2025-03-12 01:26:02,721 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 30250e8f-791d-47d7-8a8c-a64e7dafa2f2: Calling analyze_practice_video
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 30250e8f-791d-47d7-8a8c-a64e7dafa2f2: Analysis completed in 57.18 seconds
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/30250e8f-791d-47d7-8a8c-a64e7dafa2f2_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_6e229d22-3b53-4a13-a57f-6a68e612c894_30250e8f-791d-47d7-8a8c-a64e7dafa2f2_e0e98bdd-c056-4858-860a-9979dd571b21.mp4
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 3259837 bytes
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 1162 bytes
+2025-03-12 01:26:59,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 09:17:50,040 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 09:18:10,723 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 8d7f0bbe-4e22-4411-8645-9c5546d16579 for file cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:18:10,735 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/8d7f0bbe-4e22-4411-8645-9c5546d16579_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:18:10,735 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8d7f0bbe-4e22-4411-8645-9c5546d16579 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/8d7f0bbe-4e22-4411-8645-9c5546d16579_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:18:10,735 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8d7f0bbe-4e22-4411-8645-9c5546d16579
+2025-03-12 09:18:10,735 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8d7f0bbe-4e22-4411-8645-9c5546d16579: Calling analyze_practice_video
+2025-03-12 09:18:11,824 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: No module named 'yolov5'
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 59, in analyze_practice_video
+    from app.services.shot_analyzer.shot_analyzer import getVideoStreams
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/shot_analyzer.py", line 20, in <module>
+    from yolov5.detect import run  # Import the YOLOv5 run function
+ModuleNotFoundError: No module named 'yolov5'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/routes/practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "/Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/practice_analysis_service.py", line 192, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: No module named 'yolov5'
+2025-03-12 09:23:06,349 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 09:23:42,595 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 7b22a1d8-1f90-4cad-979d-40f2a9b00ec2 for file cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:23:42,613 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7b22a1d8-1f90-4cad-979d-40f2a9b00ec2_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:23:42,614 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 7b22a1d8-1f90-4cad-979d-40f2a9b00ec2 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7b22a1d8-1f90-4cad-979d-40f2a9b00ec2_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:23:42,614 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 7b22a1d8-1f90-4cad-979d-40f2a9b00ec2
+2025-03-12 09:23:42,614 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 7b22a1d8-1f90-4cad-979d-40f2a9b00ec2: Calling analyze_practice_video
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 7b22a1d8-1f90-4cad-979d-40f2a9b00ec2: Analysis completed in 10.39 seconds
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/7b22a1d8-1f90-4cad-979d-40f2a9b00ec2_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_72f84489-10a2-4339-8bc1-3194b2dc2ee6_7b22a1d8-1f90-4cad-979d-40f2a9b00ec2_cbe3f7fb-e945-4def-a78c-878b7de7e959.mp4
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1391680 bytes
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 535 bytes
+2025-03-12 09:23:53,001 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 09:32:09,248 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 09:32:48,386 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 21d19726-62be-414d-b82b-b0ff41f36eaa for file 23ee7fb8-82cf-41d6-9aa3-6c3c8e6df1f8.mp4
+2025-03-12 09:32:48,400 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/21d19726-62be-414d-b82b-b0ff41f36eaa_23ee7fb8-82cf-41d6-9aa3-6c3c8e6df1f8.mp4
+2025-03-12 09:32:48,400 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 21d19726-62be-414d-b82b-b0ff41f36eaa status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/21d19726-62be-414d-b82b-b0ff41f36eaa_23ee7fb8-82cf-41d6-9aa3-6c3c8e6df1f8.mp4
+2025-03-12 09:32:48,400 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 21d19726-62be-414d-b82b-b0ff41f36eaa
+2025-03-12 09:32:48,400 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 21d19726-62be-414d-b82b-b0ff41f36eaa: Calling analyze_practice_video
+2025-03-12 09:33:18,215 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 21d19726-62be-414d-b82b-b0ff41f36eaa: Analysis completed in 29.81 seconds
+2025-03-12 09:33:18,216 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/21d19726-62be-414d-b82b-b0ff41f36eaa_23ee7fb8-82cf-41d6-9aa3-6c3c8e6df1f8.mp4
+2025-03-12 09:33:18,216 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_62e09c32-d330-46d6-8678-e8445ef4ebdc_21d19726-62be-414d-b82b-b0ff41f36eaa_23ee7fb8-82cf-41d6-9aa3-6c3c8e6df1f8.mp4
+2025-03-12 09:33:18,216 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 890252 bytes
+2025-03-12 09:33:18,216 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 1157 bytes
+2025-03-12 09:33:18,216 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 09:41:41,630 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 09:42:19,140 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 308a39e2-b24e-4781-afd1-47435f749ec4 for file 7e316673-c10e-4a94-88b5-1ac360433734.mp4
+2025-03-12 09:42:19,155 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/308a39e2-b24e-4781-afd1-47435f749ec4_7e316673-c10e-4a94-88b5-1ac360433734.mp4
+2025-03-12 09:42:19,156 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 308a39e2-b24e-4781-afd1-47435f749ec4 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/308a39e2-b24e-4781-afd1-47435f749ec4_7e316673-c10e-4a94-88b5-1ac360433734.mp4
+2025-03-12 09:42:19,156 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 308a39e2-b24e-4781-afd1-47435f749ec4
+2025-03-12 09:42:19,156 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 308a39e2-b24e-4781-afd1-47435f749ec4: Calling analyze_practice_video
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 308a39e2-b24e-4781-afd1-47435f749ec4: Analysis completed in 29.70 seconds
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/308a39e2-b24e-4781-afd1-47435f749ec4_7e316673-c10e-4a94-88b5-1ac360433734.mp4
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_5b7a56de-5738-4193-ae85-b17c49b6d052_308a39e2-b24e-4781-afd1-47435f749ec4_7e316673-c10e-4a94-88b5-1ac360433734.mp4
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1547603 bytes
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 876 bytes
+2025-03-12 09:42:48,859 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 09:50:31,120 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 09:50:49,099 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd for file 978e548b-2e28-48e0-a1dc-015df1343039.mp4
+2025-03-12 09:50:49,114 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd_978e548b-2e28-48e0-a1dc-015df1343039.mp4
+2025-03-12 09:50:49,114 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd_978e548b-2e28-48e0-a1dc-015df1343039.mp4
+2025-03-12 09:50:49,115 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd
+2025-03-12 09:50:49,115 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd: Calling analyze_practice_video
+2025-03-12 09:51:05,830 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd: Analysis completed in 16.72 seconds
+2025-03-12 09:51:05,831 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd_978e548b-2e28-48e0-a1dc-015df1343039.mp4
+2025-03-12 09:51:05,831 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_62f3e8fc-ebcc-43c7-ad78-e9ae8a508e4d_f4c60b88-ecef-4ccc-9f3e-272cf1fa34fd_978e548b-2e28-48e0-a1dc-015df1343039.mp4
+2025-03-12 09:51:05,831 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 890252 bytes
+2025-03-12 09:51:05,831 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 886 bytes
+2025-03-12 09:51:05,831 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 10:02:59,575 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 10:03:39,165 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 1960d63b-d11b-4a6a-853f-5b18d4b4dc63 for file 8fa8812a-725f-4080-9936-9dc91b1f5dde.mp4
+2025-03-12 10:03:39,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/1960d63b-d11b-4a6a-853f-5b18d4b4dc63_8fa8812a-725f-4080-9936-9dc91b1f5dde.mp4
+2025-03-12 10:03:39,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 1960d63b-d11b-4a6a-853f-5b18d4b4dc63 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/1960d63b-d11b-4a6a-853f-5b18d4b4dc63_8fa8812a-725f-4080-9936-9dc91b1f5dde.mp4
+2025-03-12 10:03:39,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 1960d63b-d11b-4a6a-853f-5b18d4b4dc63
+2025-03-12 10:03:39,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 1960d63b-d11b-4a6a-853f-5b18d4b4dc63: Calling analyze_practice_video
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 1960d63b-d11b-4a6a-853f-5b18d4b4dc63: Analysis completed in 29.69 seconds
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/1960d63b-d11b-4a6a-853f-5b18d4b4dc63_8fa8812a-725f-4080-9936-9dc91b1f5dde.mp4
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_439e995b-85cf-4708-a344-c64198136a65_1960d63b-d11b-4a6a-853f-5b18d4b4dc63_8fa8812a-725f-4080-9936-9dc91b1f5dde.mp4
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1547603 bytes
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
+2025-03-12 10:04:08,873 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 11:57:39,835 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 11:58:10,916 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 39e38a0b-7693-4c38-9737-9253adaf0eb4 for file 46e7e9c4-e9c6-4963-a1a7-1559492d7c82.mp4
+2025-03-12 11:58:10,922 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/39e38a0b-7693-4c38-9737-9253adaf0eb4_46e7e9c4-e9c6-4963-a1a7-1559492d7c82.mp4
+2025-03-12 11:58:10,922 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 39e38a0b-7693-4c38-9737-9253adaf0eb4 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/39e38a0b-7693-4c38-9737-9253adaf0eb4_46e7e9c4-e9c6-4963-a1a7-1559492d7c82.mp4
+2025-03-12 11:58:10,922 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 39e38a0b-7693-4c38-9737-9253adaf0eb4
+2025-03-12 11:58:10,923 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 39e38a0b-7693-4c38-9737-9253adaf0eb4: Calling analyze_practice_video
+2025-03-12 11:58:26,860 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 39e38a0b-7693-4c38-9737-9253adaf0eb4: Analysis completed in 15.94 seconds
+2025-03-12 11:58:26,860 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/39e38a0b-7693-4c38-9737-9253adaf0eb4_46e7e9c4-e9c6-4963-a1a7-1559492d7c82.mp4
+2025-03-12 11:58:26,861 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_add915ff-24d0-4b7c-9a88-bffb97f77611_39e38a0b-7693-4c38-9737-9253adaf0eb4_46e7e9c4-e9c6-4963-a1a7-1559492d7c82.mp4
+2025-03-12 11:58:26,861 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 890252 bytes
+2025-03-12 11:58:26,861 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
+2025-03-12 11:58:26,861 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-12 13:48:53,839 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-12 13:49:17,928 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 4f560c66-70b5-446d-8046-5e73ec49de87 for file 7156edd4-20ef-4b13-954d-f5352ebb32f7.mp4
+2025-03-12 13:49:17,943 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/4f560c66-70b5-446d-8046-5e73ec49de87_7156edd4-20ef-4b13-954d-f5352ebb32f7.mp4
+2025-03-12 13:49:17,943 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 4f560c66-70b5-446d-8046-5e73ec49de87 status updated to 'processing': Video saved to /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/4f560c66-70b5-446d-8046-5e73ec49de87_7156edd4-20ef-4b13-954d-f5352ebb32f7.mp4
+2025-03-12 13:49:17,943 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 4f560c66-70b5-446d-8046-5e73ec49de87
+2025-03-12 13:49:17,943 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 4f560c66-70b5-446d-8046-5e73ec49de87: Calling analyze_practice_video
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 4f560c66-70b5-446d-8046-5e73ec49de87: Analysis completed in 16.45 seconds
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:217] - Cleaned up temporary file /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/uploads/original_videos/4f560c66-70b5-446d-8046-5e73ec49de87_7156edd4-20ef-4b13-954d-f5352ebb32f7.mp4
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_8f798dc2-3af6-43d1-afd2-cd3883e86cd5_4f560c66-70b5-446d-8046-5e73ec49de87_7156edd4-20ef-4b13-954d-f5352ebb32f7.mp4
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 890252 bytes
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
+2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
