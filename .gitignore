@@ -9,6 +9,7 @@ __pycache__/
 FlaskBackend/FlaskBackend/app/services/shot_analyzer/yoolo_v5/
 
 # Environment and IDE
+.env
 .idea/
 .expo/
 
@@ -243,3 +244,5 @@ yarn-error.log
 .cache/
 **/.cache/
 
+# Temporary files
+temp.jpg
