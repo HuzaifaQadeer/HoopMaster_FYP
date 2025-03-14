@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { 
+import * as React from 'react';
+import {
   View, 
   Text, 
   StyleSheet, 
   Image, 
   ScrollView, 
-  TouchableOpacity, 
+  TouchableOpacity,  
   ActivityIndicator,
   Alert,
   RefreshControl,
@@ -14,14 +14,14 @@ import {
 } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlashList } from '@shopify/flash-list';
 import { TabView, TabBar } from 'react-native-tab-view';
 
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '@/context/AuthContext';
 import PostCard from '@/components/custom/PostCard';
-import Achievement from '@/components/custom/achievement';
+import Achievement from '@/components/custom/achivement';
 import AttemptCard from '@/components/custom/AttemptCard';
 
 // Define interfaces
@@ -105,26 +105,26 @@ export default function UserProfileScreen() {
   const layout = useWindowDimensions();
   
   // State variables
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [attempts, setAttempts] = useState<Attempt[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(false);
-  const [loadingAchievements, setLoadingAchievements] = useState(false);
-  const [loadingAttempts, setLoadingAttempts] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [posts, setPosts] = React.useState<Post[]>([]);
+  const [achievements, setAchievements] = React.useState<Achievement[]>([]);
+  const [attempts, setAttempts] = React.useState<Attempt[]>([]);
+  const [loadingPosts, setLoadingPosts] = React.useState(false);
+  const [loadingAchievements, setLoadingAchievements] = React.useState(false);
+  const [loadingAttempts, setLoadingAttempts] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
   
   // Tab state
-  const [index, setIndex] = useState(0);
-  const [routes] = useState<Tab[]>([
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState<Tab[]>([
     { key: 'posts', title: 'Posts' },
     { key: 'achievements', title: 'Achievements' },
     { key: 'attempts', title: 'Attempts' }
   ]);
   
   // Fetch user profile
-  const fetchUserProfile = useCallback(async () => {
+  const fetchUserProfile = React.useCallback(async () => {
     if (!id || !isAuthenticated) return;
     
     try {
@@ -152,7 +152,7 @@ export default function UserProfileScreen() {
   }, [id, getToken, isAuthenticated]);
   
   // Fetch user posts
-  const fetchUserPosts = useCallback(async () => {
+  const fetchUserPosts = React.useCallback(async () => {
     if (!id || !isAuthenticated) return;
     
     try {
@@ -180,7 +180,7 @@ export default function UserProfileScreen() {
   }, [id, getToken, isAuthenticated]);
   
   // Fetch user achievements
-  const fetchUserAchievements = useCallback(async () => {
+  const fetchUserAchievements = React.useCallback(async () => {
     if (!id || !isAuthenticated) return;
     
     try {
@@ -208,7 +208,7 @@ export default function UserProfileScreen() {
   }, [id, getToken, isAuthenticated]);
   
   // Fetch user challenge attempts
-  const fetchUserAttempts = useCallback(async () => {
+  const fetchUserAttempts = React.useCallback(async () => {
     if (!id || !isAuthenticated) return;
     
     try {
@@ -236,14 +236,14 @@ export default function UserProfileScreen() {
   }, [id, getToken, isAuthenticated]);
   
   // Initial data loading
-  useEffect(() => {
+  React.useEffect(() => {
     if (isAuthenticated) {
       fetchUserProfile();
     }
   }, [fetchUserProfile, isAuthenticated]);
   
   // Load tab data when tab changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user) return;
     
     if (index === 0 && posts.length === 0) {
@@ -256,7 +256,7 @@ export default function UserProfileScreen() {
   }, [index, user, fetchUserPosts, fetchUserAchievements, fetchUserAttempts, posts.length, achievements.length, attempts.length]);
   
   // Handle refresh
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh = React.useCallback(async () => {
     setRefreshing(true);
     
     if (index === 0) {
@@ -271,7 +271,7 @@ export default function UserProfileScreen() {
   }, [index, fetchUserPosts, fetchUserAchievements, fetchUserAttempts]);
   
   // Check if authenticated
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isAuthenticated) {
       Alert.alert(
         'Login Required',
@@ -285,7 +285,7 @@ export default function UserProfileScreen() {
   }, [isAuthenticated, router]);
   
   // Handle like post
-  const handleLikePost = useCallback(async (postId: string) => {
+  const handleLikePost = React.useCallback(async (postId: string) => {
     if (!isAuthenticated) {
       Alert.alert('Login Required', 'You need to be logged in to like posts');
       return;
@@ -308,14 +308,14 @@ export default function UserProfileScreen() {
       
       // Update local state
       setPosts(prevPosts => 
-        prevPosts.map(post => {
+        prevPosts.map((post: Post) => {
           if (post._id === postId) {
             const userLiked = post.likes.includes(currentUser?._id || '');
             return {
               ...post,
               isLiked: !userLiked,
               likes: userLiked 
-                ? post.likes.filter(id => id !== currentUser?._id)
+                ? post.likes.filter((id: string) => id !== currentUser?._id)
                 : [...post.likes, currentUser?._id || '']
             };
           }
@@ -352,7 +352,7 @@ export default function UserProfileScreen() {
     return (
       <FlashList
         data={posts}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Post }) => (
           <PostCard 
             post={item}
             onLike={() => handleLikePost(item._id)}
@@ -405,7 +405,7 @@ export default function UserProfileScreen() {
         }
       >
         <View style={styles.achievementsContainer}>
-          {achievements.map(achievement => (
+          {achievements.map((achievement: Achievement) => (
             <Achievement 
               key={achievement._id}
               title={achievement.title}
@@ -444,7 +444,7 @@ export default function UserProfileScreen() {
     return (
       <FlashList
         data={attempts}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Attempt }) => (
           <AttemptCard
             attempt={item}
             onPress={() => router.push(`/challenge-details/${item.challengeId._id}`)}
@@ -592,7 +592,7 @@ export default function UserProfileScreen() {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
-        renderTabBar={props => (
+        renderTabBar={(props: any) => (
           <TabBar
             {...props}
             style={{ backgroundColor: colors.card }}
