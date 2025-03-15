@@ -44,7 +44,8 @@ export const API_ROUTES = {
   // Course Routes
   COURSE: {
     GET_ALL: `${API_BASE_URL}/courses/all`,
-    GET_POPULAR: `${API_BASE_URL}/courses/popular`
+    GET_POPULAR: `${API_BASE_URL}/courses/popular`,
+    GET_USER_COURSES: `${API_BASE_URL}/courses/user/:userId`
   },
 
   // Challenge Routes
@@ -101,28 +102,44 @@ export const API_ROUTES = {
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   // Get the token using the correct key 'auth_token'
-  const token = localStorage.getItem('auth_token');
+  let token;
+  
+  // Check if we're in a browser environment before accessing localStorage
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('auth_token');
+  }
+
+  // Prepare headers with or without token
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
 
   const defaultOptions: RequestInit = {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      // Add Authorization header if token exists
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
+    headers,
     ...options,
   };
 
-  const response = await fetch(url, defaultOptions);
-  
-  if (response.status === 401) {
-    // Handle unauthorized access
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
+  try {
+    const response = await fetch(url, defaultOptions);
+    
+    // Only handle 401 errors by redirecting if it's clearly an authentication issue
+    // and not just a missing token on initial load
+    if (response.status === 401) {
+      console.error('Unauthorized access - token may be invalid');
+      
+      // Don't automatically redirect - let the component handle it
+      // Just return the response and let the component decide what to do
+      return response;
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
   }
-  
-  return response;
 };
 
 export default API_BASE_URL;

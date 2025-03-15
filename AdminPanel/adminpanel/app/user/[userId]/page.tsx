@@ -12,7 +12,6 @@ interface UserProfile {
   displayName: string;
   userName?: string;
   profilePicture?: string;
-  highlightVideo?: string;
   socialMedia?: {
     instagram?: string;
     facebook?: string;
@@ -38,8 +37,6 @@ interface UserProfile {
   isPremium: boolean;
   isPrivate: boolean;
   courses?: any[];
-  drills?: any[];
-  challenges?: any[];
   achievements?: any[];
   banStatus?: {
     isBanned: boolean;
@@ -48,11 +45,22 @@ interface UserProfile {
   };
 }
 
+interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  level: 'beginner' | 'intermediate' | 'expert';
+  duration: string;
+  frequency: string;
+  isPremium: boolean;
+}
+
 const UserProfile = () => {
   const router = useRouter();
   const params = useParams();
   const { isAuthenticated } = useAuth();
   const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [userCourses, setUserCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,12 +81,27 @@ const UserProfile = () => {
     }
   };
 
+  const fetchUserCourses = async () => {
+    try {
+      const response = await fetchWithAuth(
+        API_ROUTES.COURSE.GET_USER_COURSES.replace(':userId', params.userId as string)
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch user courses');
+      const data = await response.json();
+      setUserCourses(data);
+    } catch (err) {
+      console.error('Failed to load user courses:', err);
+    }
+  };
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
       return;
     }
     fetchUserData();
+    fetchUserCourses();
   }, [params.userId, isAuthenticated]);
 
   const handleBan = async (duration: string) => {
@@ -279,79 +302,38 @@ const UserProfile = () => {
               )}
             </div>
           </div>
-
-          {/* Highlight Video */}
-          {userData?.highlightVideo && (
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-4">Highlight Video</h3>
-              <div className="aspect-video bg-gray-200 rounded-lg">
-                <video 
-                  src={userData.highlightVideo} 
-                  controls 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Courses Progress */}
-        {userData?.courses && userData.courses.length > 0 && (
-          <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-            <h3 className="text-xl font-bold mb-4">Course Progress</h3>
-            <div className="space-y-4">
-              {userData.courses.map(course => (
-                <div key={course._id || course.id} className="border-b pb-4">
-                  <div className="flex justify-between mb-2">
-                    <span className="font-medium">{course.name}</span>
-                    <span>{course.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="bg-blue-600 h-2.5 rounded-full"
-                      style={{ width: `${course.progress}%` }}
-                    ></div>
+        {/* Courses */}
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+          <h3 className="text-xl font-bold mb-4">Courses</h3>
+          {userCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userCourses.map(course => (
+                <div key={course._id} className="border rounded-lg p-4">
+                  <h4 className="font-semibold text-lg mb-2">{course.title}</h4>
+                  <p className="text-gray-600 text-sm mb-2">{course.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                      {course.level}
+                    </span>
+                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                      {course.duration}
+                    </span>
+                    <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
+                      {course.frequency}
+                    </span>
+                    {course.isPremium && (
+                      <span className="px-2 py-1 bg-gold-100 text-gold-800 rounded-full text-xs">
+                        Premium
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Drills and Challenges */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {userData?.drills && userData.drills.length > 0 && (
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-4">Recent Drills</h3>
-              <div className="space-y-4">
-                {userData.drills.map((drill, index) => (
-                  <div key={drill._id || drill.id || `drill-${index}`} className="border-b pb-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{drill.name}</span>
-                      <span className="text-blue-600 font-bold">{drill.score}</span>
-                    </div>
-                    <small className="text-gray-500">{drill.date}</small>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {userData?.challenges && userData.challenges.length > 0 && (
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-4">Community Challenges</h3>
-              <div className="space-y-4">
-                {userData.challenges.map((challenge, index) => (
-                  <div key={challenge._id || challenge.id || `challenge-${index}`} className="border-b pb-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{challenge.name}</span>
-                      <span className="text-green-600 font-bold">Rank: {challenge.rank}</span>
-                    </div>
-                    <p className="text-gray-600">Score: {challenge.score}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          ) : (
+            <p className="text-gray-600">No courses enrolled</p>
           )}
         </div>
       </div>

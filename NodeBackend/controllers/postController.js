@@ -33,22 +33,35 @@ exports.getAllPosts = async (req, res) => {
       query.user = userId;
     }
     
-    // If not an admin, only show public posts or posts by the authenticated user
-    if (!req.user.isAdmin) {
+    // For admin users, show all posts regardless of privacy
+    if (req.user && req.user.isAdmin) {
+      // No additional filters for admins
+    }
+    // For regular authenticated users, show public posts or their own posts
+    else if (req.user) {
       query.$or = [
         { isPrivate: false },
         { user: req.user._id }
       ];
+    } 
+    // For non-authenticated users, only show public posts
+    else {
+      query.isPrivate = false;
     }
     
+    console.log('Post query:', JSON.stringify(query));
+    
     const posts = await Post.find(query)
+      .populate('user', 'displayName username profilePicture')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
     
+    console.log('Found posts:', posts.length);
+    
     // Format each post
     const formattedPosts = await Promise.all(
-      posts.map(post => formatPostData(post, req.user._id))
+      posts.map(post => formatPostData(post, req.user ? req.user._id : null))
     );
     
     // Get total count for pagination
@@ -81,11 +94,14 @@ exports.getPost = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'You do not have permission to view this post' });
+    if (post.isPrivate) {
+      // If post is private, check if user is authenticated and is the owner
+      if (!req.user || post.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: 'You do not have permission to view this post' });
+      }
     }
     
-    const formattedPost = await formatPostData(post, req.user._id);
+    const formattedPost = await formatPostData(post, req.user ? req.user._id : null);
     res.status(200).json(formattedPost);
   } catch (error) {
     console.error('Error getting post:', error);
@@ -170,7 +186,7 @@ exports.updatePost = async (req, res) => {
     }
     
     // Check if user is the author
-    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'You do not have permission to update this post' });
     }
     
@@ -197,8 +213,8 @@ exports.deletePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
     
-    // Check if user is the author or an admin
-    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    // Check if user is the author
+    if (post.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'You do not have permission to delete this post' });
     }
     
@@ -281,8 +297,11 @@ exports.getPostComments = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'You do not have permission to view this post' });
+    if (post.isPrivate) {
+      // If post is private, check if user is authenticated and is the owner
+      if (!req.user || post.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: 'You do not have permission to view this post' });
+      }
     }
     
     const comments = await Comment.find({
@@ -315,8 +334,11 @@ exports.getPostMedia = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'You do not have permission to view this media' });
+    if (post.isPrivate) {
+      // If post is private, check if user is authenticated and is the owner
+      if (!req.user || post.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: 'You do not have permission to view this media' });
+      }
     }
     
     // Return the media URL

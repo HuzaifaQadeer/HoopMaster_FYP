@@ -9,11 +9,12 @@ router.post('/create', protect, checkBan, reportController.createReport);
 
 // Get all reports (admin only)
 router.get('/', protect, reportController.getAllReports);
+router.get('/all', protect, reportController.getAllReports);
 
 // Get a specific report
-router.get('/:id', protect, reportController.getReport);
+router.get('/:reportId', protect, reportController.getReport);
 
-// Update report status (admin only)
-router.put('/:id/status', protect, reportController.updateReportStatus);
+// Resolve report (admin only)
+router.patch('/:reportId/resolve', protect, reportController.resolveReport);
 
 module.exports = router;

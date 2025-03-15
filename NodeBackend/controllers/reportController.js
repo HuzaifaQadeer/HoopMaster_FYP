@@ -72,10 +72,7 @@ exports.createReport = async (req, res) => {
 // Get all reports (admin only)
 exports.getAllReports = async (req, res) => {
   try {
-    // Ensure user is admin
-    if (!req.user.isAdmin) {
-      return res.status(403).json({ message: 'Access denied. Admin privileges required.' });
-    }
+    console.log('Getting all reports, user:', req.user ? `${req.user._id}` : 'not authenticated');
     
     const { status, contentType, page = 1, limit = 20 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -85,6 +82,8 @@ exports.getAllReports = async (req, res) => {
     if (status) query.status = status;
     if (contentType) query.contentType = contentType;
     
+    console.log('Report query:', JSON.stringify(query));
+    
     // Get reports
     const reports = await Report.find(query)
       .populate('reporter', 'displayName username')
@@ -92,11 +91,13 @@ exports.getAllReports = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
+    
+    console.log('Found reports:', reports.length);
       
     // Get total count for pagination
     const total = await Report.countDocuments(query);
     
-    res.status(200).json({
+    return res.status(200).json({
       reports,
       pagination: {
         total,
@@ -110,50 +111,68 @@ exports.getAllReports = async (req, res) => {
   }
 };
 
-// Get report details (admin only)
+// Get report details
 exports.getReport = async (req, res) => {
   try {
-    // Ensure user is admin
-    if (!req.user.isAdmin) {
-      return res.status(403).json({ message: 'Access denied. Admin privileges required.' });
-    }
+    console.log('Getting report details, user:', req.user ? `${req.user._id}` : 'not authenticated');
     
-    const report = await Report.findById(req.params.id)
-      .populate('reporter', 'displayName username profilePicture')
-      .populate('reviewedBy', 'displayName username');
+    const report = await Report.findById(req.params.reportId)
+      .populate('reporter', 'displayName email')
+      .populate('reported', 'displayName email')
+      .populate('adminAction.admin', 'name email');
       
     if (!report) {
       return res.status(404).json({ message: 'Report not found' });
     }
     
     // Get the reported content
-    let reportedContent = null;
+    let content = null;
     if (report.contentType === 'post') {
-      reportedContent = await Post.findById(report.contentId)
-        .populate('user', 'displayName username profilePicture');
+      content = await Post.findById(report.contentId)
+        .populate('user', 'displayName email profilePicture');
     } else if (report.contentType === 'comment') {
-      reportedContent = await Comment.findById(report.contentId)
-        .populate('user', 'displayName username profilePicture');
+      content = await Comment.findById(report.contentId)
+        .populate('user', 'displayName email profilePicture');
     }
     
-    res.status(200).json({
-      report,
-      reportedContent
-    });
+    if (!content) {
+      return res.status(404).json({ message: 'Reported content not found' });
+    }
+
+    const response = {
+      id: report._id,
+      userId: content.user._id,
+      contentId: report.contentId,
+      contentType: report.contentType,
+      reason: report.reason,
+      content: content.content || content.text,
+      date: report.createdAt,
+      media: content.media,
+      reported: {
+        _id: content.user._id,
+        email: content.user.email,
+        displayName: content.user.displayName
+      },
+      reporter: {
+        _id: report.reporter._id,
+        email: report.reporter.email,
+        displayName: report.reporter.displayName
+      },
+      status: report.status,
+      resolved: report.resolved,
+      adminAction: report.adminAction
+    };
+    
+    return res.status(200).json(response);
   } catch (error) {
     console.error('Error getting report:', error);
     res.status(500).json({ message: 'Error retrieving report' });
   }
 };
 
-// Update report status (admin only)
+// Update report status
 exports.updateReportStatus = async (req, res) => {
   try {
-    // Ensure user is admin
-    if (!req.user.isAdmin) {
-      return res.status(403).json({ message: 'Access denied. Admin privileges required.' });
-    }
-    
     const { status, reviewNotes } = req.body;
     
     if (!status) {
@@ -200,5 +219,46 @@ exports.updateReportStatus = async (req, res) => {
   } catch (error) {
     console.error('Error updating report:', error);
     res.status(500).json({ message: 'Error updating report' });
+  }
+};
+
+// Resolve report
+exports.resolveReport = async (req, res) => {
+  try {
+    const { action, notes } = req.body;
+    
+    if (!action) {
+      return res.status(400).json({ message: 'Action is required' });
+    }
+    
+    const report = await Report.findById(req.params.reportId);
+    
+    if (!report) {
+      return res.status(404).json({ message: 'Report not found' });
+    }
+    
+    report.resolved = true;
+    report.status = action;
+    report.adminAction = {
+      admin: req.user._id,
+      action: action,
+      date: new Date(),
+      notes: notes || ''
+    };
+    
+    await report.save();
+    
+    res.status(200).json({
+      message: 'Report resolved successfully',
+      report: {
+        id: report._id,
+        status: report.status,
+        resolved: report.resolved,
+        adminAction: report.adminAction
+      }
+    });
+  } catch (error) {
+    console.error('Error resolving report:', error);
+    res.status(500).json({ message: 'Error resolving report' });
   }
 };

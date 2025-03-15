@@ -7,12 +7,14 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  checkAuthStatus: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,16 +31,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return response;
   };
 
+  // Check authentication status on mount and when token changes
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    setIsAuthenticated(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem('auth_token');
+      setIsAuthenticated(!!token);
+      setIsInitialized(true);
+    };
 
-    if (!token && pathname !== '/login') {
+    // Check auth immediately
+    checkAuth();
+
+    // Set up event listener for storage changes (in case token is removed in another tab)
+    window.addEventListener('storage', checkAuth);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
+  }, []);
+
+  // Handle redirects based on auth status
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const token = localStorage.getItem('auth_token');
+    
+    // Only redirect if we're sure about the authentication state
+    if (!token && pathname !== '/login' && pathname !== '/register') {
       router.push('/login');
     } else if (token && pathname === '/login') {
       router.push('/');
     }
-  }, [pathname]);
+  }, [isInitialized, pathname, router]);
+
+  // Function to check auth status without side effects
+  const checkAuthStatus = () => {
+    const token = localStorage.getItem('auth_token');
+    return !!token;
+  };
 
   const login = async (email: string, password: string) => {
     try {
@@ -73,25 +103,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await router.push('/login');
   };
 
-  // Create a wrapper for fetch that includes token handling
-  const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      options.headers = {
-        ...options.headers,
-        'Authorization': `Bearer ${token}`
-      };
-    }
-
-    const response = await fetch(url, options);
-    return handleApiResponse(response);
-  };
-
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
       login, 
-      logout
+      logout,
+      checkAuthStatus
     }}>
       {children}
     </AuthContext.Provider>

@@ -7,8 +7,8 @@ const { checkBan } = require('../middleware/banMiddleware');
 // Create a new comment (requires auth + not banned)
 router.post('/create', protect, checkBan, commentController.createComment);
 
-// Get a single comment by ID (public + auth if private post)
-router.get('/:id', protect, commentController.getComment);
+// Get a single comment by ID (public)
+router.get('/:id', commentController.getComment);
 
 // Update a comment (requires auth + ownership)
 router.put('/:id', protect, checkBan, commentController.updateComment);

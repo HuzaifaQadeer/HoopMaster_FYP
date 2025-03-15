@@ -17,6 +17,8 @@ const userProfileRoutes = require('./routes/userProfileRoutes');
 const premiumRoutes = require('./routes/premiumRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
+const drillRoutes = require('./routes/drillRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 
 // Import the cron jobs
 const challengeExpirationCron = require('./cron/challengeExpiration');
@@ -52,6 +54,8 @@ app.use('/user-profiles', userProfileRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/admin', adminRoutes);
 app.use('/revenue', revenueRoutes);
+app.use('/drills', drillRoutes);
+app.use('/courses', courseRoutes);
 
 const PORT = process.env.PORT;
 

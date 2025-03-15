@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { API_ROUTES } from "../config/api-endpoints";
 import { fetchWithAuth } from '../config/api-endpoints';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Post {
   id: string;
@@ -54,111 +55,207 @@ interface Report {
 
 const Community: React.FC = () => {
   const router = useRouter();
+  const { isAuthenticated, checkAuthStatus } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<{displayName: string, _id: string}[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
+  // First check if token exists directly
   useEffect(() => {
-    fetchInitialData();
-  }, []);
+    const checkAuth = () => {
+      const isAuth = checkAuthStatus();
+      setAuthChecked(true);
+      
+      if (!isAuth && typeof window !== 'undefined') {
+        setError("You must be logged in to view this page");
+        router.push('/login');
+      }
+    };
+    
+    checkAuth();
+  }, [checkAuthStatus, router]);
+
+  // Then fetch data if authenticated
+  useEffect(() => {
+    if (authChecked && isAuthenticated) {
+      fetchInitialData();
+    }
+  }, [authChecked, isAuthenticated]);
 
   const fetchInitialData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch posts
-      const postsRes = await fetchWithAuth(API_ROUTES.POST.GET_ALL);
-      if (!postsRes.ok) {
-        throw new Error(`Failed to fetch posts: ${postsRes.status}`);
-      }
-      const postsData = await postsRes.json();
-      console.log('Fetched posts data:', postsData);
+      // Fetch posts with proper error handling
+      try {
+        const postsRes = await fetchWithAuth(API_ROUTES.POST.GET_ALL);
+        
+        // Check if response exists and is ok
+        if (!postsRes) {
+          console.error('No response received from posts API');
+          throw new Error('Failed to fetch posts: No response');
+        }
+        
+        if (postsRes.status === 401) {
+          console.error('Unauthorized access to posts API');
+          // Don't redirect here, just set an error message
+          throw new Error('Unauthorized access - please log in again');
+        }
+        
+        if (!postsRes.ok) {
+          console.error(`Failed to fetch posts: ${postsRes.status}`);
+          throw new Error(`Failed to fetch posts: ${postsRes.status}`);
+        }
+        
+        const postsData = await postsRes.json();
+        console.log('Fetched posts data:', postsData);
 
-      // Fetch reports
-      const reportsRes = await fetchWithAuth(API_ROUTES.REPORT.GET_ALL);
-      if (!reportsRes.ok) {
-        throw new Error(`Failed to fetch reports: ${reportsRes.status}`);
+        // Check if postsData is an object with a posts property
+        if (postsData && typeof postsData === 'object' && postsData.posts && Array.isArray(postsData.posts)) {
+          const validPosts = postsData.posts.filter((post: any) => post != null);
+          setPosts(validPosts.map((post: any) => ({
+            id: post.id || post._id || '',
+            content: post.content || '',
+            status: post.status || 'unknown',
+            date: post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown Date',
+            author: post.author || 'Unknown User',
+            user: {
+              id: post.user?.id || post.user?._id || '',
+              displayName: post.user?.displayName || 'Unknown User',
+              email: post.user?.email || '',
+              profilePicture: post.user?.profilePicture || null
+            }
+          })));
+        } else if (Array.isArray(postsData)) {
+          // Handle case where API directly returns an array
+          const validPosts = postsData.filter(post => post != null);
+          setPosts(validPosts.map((post: any) => ({
+            id: post.id || post._id || '',
+            content: post.content || '',
+            status: post.status || 'unknown',
+            date: post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown Date',
+            author: post.author || 'Unknown User',
+            user: {
+              id: post.user?.id || post.user?._id || '',
+              displayName: post.user?.displayName || 'Unknown User',
+              email: post.user?.email || '',
+              profilePicture: post.user?.profilePicture || null
+            }
+          })));
+        } else {
+          console.error('Expected posts data to be an object with posts array or an array but got:', typeof postsData);
+          setPosts([]);
+        }
+      } catch (postError) {
+        console.error('Error fetching posts:', postError);
+        // If it's an auth error, set the error message but don't redirect
+        if (postError instanceof Error && postError.message.includes('Unauthorized')) {
+          setError(postError.message);
+        }
+        // Continue with reports even if posts fail
       }
-      const reportsData = await reportsRes.json();
-      console.log('Fetched reports data:', reportsData);
 
-      // Safely transform posts data
-      if (Array.isArray(postsData)) {
-        const validPosts = postsData.filter(post => post != null);
-        setPosts(validPosts.map((post: any) => ({
-          id: post.id || post._id || '',
-          content: post.content || '',
-          status: post.status || 'unknown',
-          date: post.date ? new Date(post.date).toLocaleDateString() : 'Unknown Date',
-          author: post.author || 'Unknown User',
-          user: {
-            id: post.user?.id || post.user?._id || '',
-            displayName: post.user?.displayName || 'Unknown User',
-            email: post.user?.email || '',
-            profilePicture: post.user?.profilePicture || null
+      // Fetch reports with proper error handling
+      try {
+        const reportsRes = await fetchWithAuth(API_ROUTES.REPORT.GET_ALL);
+        
+        if (!reportsRes) {
+          console.error('No response received from reports API');
+          throw new Error('Failed to fetch reports: No response');
+        }
+        
+        if (reportsRes.status === 401) {
+          console.error('Unauthorized access to reports API');
+          // Don't redirect here, just set an error message
+          throw new Error('Unauthorized access - please log in again');
+        }
+        
+        if (reportsRes.status === 403) {
+          console.log('Access to reports is restricted to admins');
+          // Don't show an error, just set empty reports
+          setReports([]);
+          // Continue with the rest of the page
+          return;
+        }
+        
+        if (!reportsRes.ok) {
+          console.error(`Failed to fetch reports: ${reportsRes.status}`);
+          throw new Error(`Failed to fetch reports: ${reportsRes.status}`);
+        }
+        
+        const reportsData = await reportsRes.json();
+        console.log('Fetched reports data:', reportsData);
+
+        // Check if reportsData is an object with a reports property
+        if (reportsData && typeof reportsData === 'object' && reportsData.reports) {
+          if (Array.isArray(reportsData.reports)) {
+            const validReports = reportsData.reports.filter((report: any) => report != null && report._id != null);
+            setReports(validReports.map((report: any) => {
+              // Safely access nested properties
+              const adminAction = report.adminAction && report.adminAction.admin ? {
+                admin: {
+                  _id: report.adminAction.admin._id || '',
+                  email: report.adminAction.admin.email || '',
+                  name: report.adminAction.admin.name || ''
+                },
+                action: report.adminAction.action || '',
+                date: report.adminAction.date ? new Date(report.adminAction.date).toLocaleDateString() : 'Unknown Date',
+                notes: report.adminAction.notes || ''
+              } : undefined;
+
+              const reporter = report.reporter ? {
+                _id: report.reporter._id || '',
+                email: report.reporter.email || '',
+                displayName: report.reporter.displayName || 'Unknown User'
+              } : {
+                _id: '',
+                email: '',
+                displayName: 'Unknown User'
+              };
+
+              const reported = report.reported ? {
+                _id: report.reported._id || '',
+                email: report.reported.email || '',
+                displayName: report.reported.displayName || 'Unknown User'
+              } : {
+                _id: '',
+                email: '',
+                displayName: 'Unknown User'
+              };
+
+              return {
+                id: report._id,
+                adminAction,
+                reporter,
+                reported,
+                contentType: report.contentType || 'post',
+                contentId: report.contentId || '',
+                reason: report.reason || '',
+                comment: report.comment || '',
+                resolved: !!report.resolved,
+                status: report.status || 'pending',
+                date: report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'Unknown Date'
+              };
+            }));
+          } else {
+            console.error('Expected reports data to be an array but got:', typeof reportsData.reports);
+            setReports([]);
           }
-        })));
-      } else {
-        console.error('Expected posts data to be an array but got:', typeof postsData);
-        setPosts([]);
-      }
-
-      // Safely transform reports data
-      if (Array.isArray(reportsData)) {
-        const validReports = reportsData.filter(report => report != null && report._id != null);
-        setReports(validReports.map((report: any) => {
-          // Safely access nested properties
-          const adminAction = report.adminAction && report.adminAction.admin ? {
-            admin: {
-              _id: report.adminAction.admin._id || '',
-              email: report.adminAction.admin.email || '',
-              name: report.adminAction.admin.name || ''
-            },
-            action: report.adminAction.action || '',
-            date: report.adminAction.date ? new Date(report.adminAction.date).toLocaleDateString() : 'Unknown Date',
-            notes: report.adminAction.notes || ''
-          } : undefined;
-
-          const reporter = report.reporter ? {
-            _id: report.reporter._id || '',
-            email: report.reporter.email || '',
-            displayName: report.reporter.displayName || 'Unknown User'
-          } : {
-            _id: '',
-            email: '',
-            displayName: 'Unknown User'
-          };
-
-          const reported = report.reported ? {
-            _id: report.reported._id || '',
-            email: report.reported.email || '',
-            displayName: report.reported.displayName || 'Unknown User'
-          } : {
-            _id: '',
-            email: '',
-            displayName: 'Unknown User'
-          };
-
-          return {
-            id: report._id,
-            adminAction,
-            reporter,
-            reported,
-            contentType: report.contentType || 'post',
-            contentId: report.contentId || '',
-            reason: report.reason || '',
-            comment: report.comment || '',
-            resolved: !!report.resolved,
-            status: report.status || 'pending',
-            date: report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'Unknown Date'
-          };
-        }));
-      } else {
-        console.error('Expected reports data to be an array but got:', typeof reportsData);
+        } else {
+          console.error('Expected reports data to be an object with reports property but got:', typeof reportsData);
+          setReports([]);
+        }
+      } catch (reportError) {
+        console.error('Error fetching reports:', reportError);
+        // If it's an auth error, set the error message but don't redirect
+        if (reportError instanceof Error && reportError.message.includes('Unauthorized')) {
+          setError(reportError.message);
+        }
         setReports([]);
       }
     } catch (error) {
@@ -172,10 +269,16 @@ const Community: React.FC = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`${API_ROUTES.USER.SEARCH_PLAYERS}?query=${searchQuery}`, {
-        credentials: 'include'
-      });
+      const response = await fetchWithAuth(`${API_ROUTES.USER.SEARCH_PLAYERS}?query=${searchQuery}`);
+      
+      if (response.status === 401) {
+        console.error('Unauthorized access during search');
+        setError('Unauthorized access - please log in again');
+        return;
+      }
+      
       if (!response.ok) throw new Error('Search failed');
+      
       const data = await response.json();
       setSearchResults(data.map((user: any) => ({
         displayName: user.displayName,

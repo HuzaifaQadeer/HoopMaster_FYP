@@ -18,7 +18,7 @@ exports.createComment = async (req, res) => {
     }
     
     // Check if user can comment on this post (public or owned by user)
-    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'You do not have permission to comment on this post' });
     }
     
@@ -60,8 +60,8 @@ exports.updateComment = async (req, res) => {
       return res.status(404).json({ message: 'Comment not found' });
     }
     
-    // Check if user is the author or admin
-    if (comment.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    // Check if user is the author
+    if (comment.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'You do not have permission to update this comment' });
     }
     
@@ -142,8 +142,11 @@ exports.getComment = async (req, res) => {
     }
     
     // Check permissions for private posts
-    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'You do not have permission to view this comment' });
+    if (post.isPrivate) {
+      // If post is private, check if user is authenticated and is the owner or admin
+      if (!req.user || (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin)) {
+        return res.status(403).json({ message: 'You do not have permission to view this comment' });
+      }
     }
     
     res.status(200).json(comment);
