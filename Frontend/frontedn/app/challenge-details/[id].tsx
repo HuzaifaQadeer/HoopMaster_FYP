@@ -18,7 +18,10 @@ import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
 import { API_ROUTES } from '@/config/config';
+import config from '@/config/config';
 import { useAuth } from '../../context/AuthContext';
+
+const API_BASE_URL = config.API_BASE_URL;
 
 // Interfaces for the data
 interface Challenge {
@@ -66,8 +69,19 @@ const AttemptCard = ({
   onLoginPrompt: () => void;
 }) => {
   const { colors } = useTheme();
+  const { getToken } = useAuth();
   const [videoStatus, setVideoStatus] = useState({ isPlaying: false });
+  const [authToken, setAuthToken] = useState<string | null>(null);
   
+  // Fetch authentication token
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+      setAuthToken(token);
+    };
+    fetchToken();
+  }, []);
+
   // Check if the current user has already voted
   const hasUpvoted = attempt.upvotes.includes(userId || '');
   const hasDownvoted = attempt.downvotes.includes(userId || '');
@@ -78,6 +92,42 @@ const AttemptCard = ({
     month: 'short',
     day: 'numeric'
   });
+
+  // Debug video URL
+  useEffect(() => {
+    if (attempt.videoUrl) {
+      const fullUrl = attempt.videoUrl.startsWith('http') 
+        ? attempt.videoUrl 
+        : `${API_BASE_URL}${attempt.videoUrl}`;
+      console.log('Video URL from DB:', attempt.videoUrl);
+      console.log('Full video URL:', fullUrl);
+      console.log('Is absolute URL:', attempt.videoUrl.startsWith('http'));
+      console.log('Auth token:', authToken ? 'Present' : 'Not present');
+      
+      // Test video URL accessibility
+      if (authToken) {
+        fetch(fullUrl, {
+          method: 'HEAD',
+          headers: {
+            'Accept': '*/*',
+            'Origin': API_BASE_URL,
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': `Bearer ${authToken}`
+          }
+        })
+        .then(response => {
+          console.log('Video URL test response:', {
+            status: response.status,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
+          });
+        })
+        .catch(error => {
+          console.error('Video URL test error:', error);
+        });
+      }
+    }
+  }, [attempt.videoUrl, authToken]);
 
   const handleVote = (voteType: 'up' | 'down') => {
     if (!isLoggedIn) {
@@ -117,15 +167,38 @@ const AttemptCard = ({
         </Text>
       </View>
       
-      {attempt.videoUrl && (
+      {attempt.videoUrl && authToken && (
         <View style={styles.videoContainer}>
           <Video
-            source={{ uri: `${API_ROUTES.GET_CHALLENGE_VIDEO.replace(':filename', attempt.videoUrl.split('/').pop() || '')}` }}
+            source={{ 
+              uri: attempt.videoUrl.startsWith('http') 
+                ? attempt.videoUrl 
+                : `${API_BASE_URL}${attempt.videoUrl}`,
+              headers: {
+                'Accept': '*/*',
+                'Origin': API_BASE_URL,
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': `Bearer ${authToken}`
+              }
+            }}
             style={styles.video}
             useNativeControls
             resizeMode={ResizeMode.CONTAIN}
             isLooping
-            onPlaybackStatusUpdate={status => setVideoStatus({ isPlaying: status.isLoaded && status.isPlaying })}
+            shouldPlay={false}
+            onError={(error: { error: string }) => {
+              console.error('Video playback error:', error);
+            }}
+            onLoadStart={() => {
+              console.log('Video load started');
+            }}
+            onLoad={(status: { uri: string }) => {
+              console.log('Video loaded successfully:', status);
+            }}
+            onPlaybackStatusUpdate={(status: any) => {
+              console.log('Video playback status:', status);
+              setVideoStatus({ isPlaying: status.isLoaded && status.isPlaying });
+            }}
           />
         </View>
       )}
@@ -185,6 +258,13 @@ export default function ChallengeDetailsScreen() {
   const [userHasAttempted, setUserHasAttempted] = useState(false);
   
   useEffect(() => {
+    const checkDebugInfo = async () => {
+      console.log('[Debug] Challenge ID:', challengeId);
+      const token = await getToken();
+      console.log('[Debug] Auth token available:', !!token);
+      if (token) console.log('[Debug] Token starts with:', token.substring(0, 10) + '...');
+    };
+    checkDebugInfo();
     fetchChallengeDetails();
     fetchAttempts();
     checkUserAttempt();
@@ -194,16 +274,24 @@ export default function ChallengeDetailsScreen() {
     try {
       if (!challengeId) return;
       
+      console.log('[Debug] Fetching challenge details for ID:', challengeId);
+      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_CHALLENGE_BY_ID.replace(':id', challengeId));
+      
       const response = await fetch(API_ROUTES.GET_CHALLENGE_BY_ID.replace(':id', challengeId));
       
+      console.log('[Debug] Challenge details response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch challenge details');
+        const errorText = await response.text();
+        console.error('[Debug] Error response:', errorText);
+        throw new Error(`Failed to fetch challenge details: ${response.status}`);
       }
       
       const data = await response.json();
+      console.log('[Debug] Received challenge data:', JSON.stringify(data).substring(0, 200) + '...');
       setChallenge(data);
     } catch (error) {
-      console.error('Error fetching challenge details:', error);
+      console.error('[Debug] Error fetching challenge details:', error);
       Alert.alert('Error', 'Failed to load challenge details');
     } finally {
       setLoading(false);
@@ -216,18 +304,46 @@ export default function ChallengeDetailsScreen() {
       if (!challengeId) return;
       
       setAttemptLoading(true);
-      const response = await fetch(
-        API_ROUTES.GET_CHALLENGE_ATTEMPTS.replace(':challengeId', challengeId)
-      );
+      console.log('[Debug] Fetching challenge attempts for ID:', challengeId);
+      
+      const token = await getToken();
+      console.log('[Debug] Token available:', !!token);
+      if (token) {
+        // Check if token format is correct (should start with Bearer)
+        console.log('[Debug] Token format check:', token.substring(0, 10) + '...');
+      }
+      
+      const apiUrl = API_ROUTES.GET_CHALLENGE_ATTEMPTS.replace(':challengeId', challengeId);
+      console.log('[Debug] Using API endpoint:', apiUrl);
+      
+      // Add more detailed headers debugging
+      const headers = { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      console.log('[Debug] Request headers:', JSON.stringify(headers));
+      
+      const response = await fetch(apiUrl, { headers });
+      
+      console.log('[Debug] Attempts response status:', response.status);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch challenge attempts');
+        const errorText = await response.text();
+        console.error('[Debug] Error response:', errorText);
+        throw new Error(`Failed to fetch challenge attempts: ${response.status}`);
       }
       
       const data = await response.json();
-      setAttempts(data);
+      console.log('[Debug] Received attempts data type:', typeof data);
+      console.log('[Debug] Is data array?', Array.isArray(data));
+      console.log('[Debug] Received attempts data, count:', Array.isArray(data) ? data.length : 'not an array');
+      if (Array.isArray(data) && data.length > 0) {
+        console.log('[Debug] First attempt sample:', JSON.stringify(data[0]).substring(0, 200) + '...');
+      }
+      
+      setAttempts(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching challenge attempts:', error);
+      console.error('[Debug] Error fetching challenge attempts:', error);
       Alert.alert('Error', 'Failed to load challenge attempts');
     } finally {
       setAttemptLoading(false);
@@ -238,6 +354,9 @@ export default function ChallengeDetailsScreen() {
     try {
       if (!isAuthenticated || !challengeId) return;
       
+      console.log('[Debug] Checking user attempt for challenge ID:', challengeId);
+      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_USER_ATTEMPT.replace(':challengeId', challengeId));
+      
       const token = await getToken();
       const response = await fetch(
         API_ROUTES.GET_USER_ATTEMPT.replace(':challengeId', challengeId),
@@ -246,13 +365,17 @@ export default function ChallengeDetailsScreen() {
         }
       );
       
+      console.log('[Debug] User attempt check response status:', response.status);
+      
       if (response.status === 200) {
+        console.log('[Debug] User has attempted this challenge');
         setUserHasAttempted(true);
       } else {
+        console.log('[Debug] User has not attempted this challenge');
         setUserHasAttempted(false);
       }
     } catch (error) {
-      console.error('Error checking user attempt:', error);
+      console.error('[Debug] Error checking user attempt:', error);
       setUserHasAttempted(false);
     }
   };
@@ -292,13 +415,30 @@ export default function ChallengeDetailsScreen() {
       return;
     }
     
-    if (userHasAttempted) {
-      Alert.alert('Already Attempted', 'You have already submitted an attempt for this challenge.');
+    if (challenge?.status !== 'active') {
+      Alert.alert('Challenge Not Active', 'This challenge is not currently active.');
       return;
     }
     
-    if (challenge?.status !== 'active') {
-      Alert.alert('Challenge Not Active', 'This challenge is not currently active.');
+    // If user has already attempted, show a confirmation dialog
+    if (userHasAttempted) {
+      Alert.alert(
+        'Replace Existing Attempt',
+        'You have already submitted an attempt for this challenge. Creating a new attempt will replace your previous one. Continue?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Continue', 
+            onPress: () => {
+              // Navigate to attemptchallenge screen for recording a new attempt
+              router.push({
+                pathname: 'attemptchallenge' as any,
+                params: { challengeId }
+              });
+            } 
+          }
+        ]
+      );
       return;
     }
     

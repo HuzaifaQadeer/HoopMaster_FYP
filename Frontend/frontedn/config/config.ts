@@ -27,20 +27,20 @@ export const API_ROUTES = {
   GET_POPULAR_DRILLS: `${API_BASE_URL}/drills/popular`,
   GET_DRILL_BY_ID: `${API_BASE_URL}/drills`,
 
-  GET_ACTIVE_CHALLENGES: `${API_BASE_URL}/api/challenges/active`,
-  GET_CHALLENGE_BY_ID: `${API_BASE_URL}/api/challenges/:id`,
+  GET_ACTIVE_CHALLENGES: `${API_BASE_URL}/challenges/active`,
+  GET_CHALLENGE_BY_ID: `${API_BASE_URL}/challenges/:id`,
   
   // Challenge attempt routes
-  CREATE_CHALLENGE_ATTEMPT: `${API_BASE_URL}/api/attempts/:challengeId`,
-  GET_CHALLENGE_ATTEMPTS: `${API_BASE_URL}/api/attempts/challenge/:challengeId`,
-  GET_USER_ATTEMPT: `${API_BASE_URL}/api/attempts/user/:challengeId`,
-  VOTE_ON_ATTEMPT: `${API_BASE_URL}/api/attempts/vote/:attemptId`,
+  CREATE_CHALLENGE_ATTEMPT: `${API_BASE_URL}/challenge-attempts/:challengeId`,
+  GET_CHALLENGE_ATTEMPTS: `${API_BASE_URL}/challenge-attempts/challenge/:challengeId`,
+  GET_USER_ATTEMPT: `${API_BASE_URL}/challenge-attempts/user/:challengeId`,
+  VOTE_ON_ATTEMPT: `${API_BASE_URL}/challenge-attempts/vote/:attemptId`,
   
   // Achievement routes
-  GET_USER_ACHIEVEMENTS: `${API_BASE_URL}/api/achievements/user`,
+  GET_USER_ACHIEVEMENTS: `${API_BASE_URL}/achievements/user`,
   
   // Video routes for challenges
-  GET_CHALLENGE_VIDEO: `${API_BASE_URL}/uploads/challenges/:filename`,
+  GET_CHALLENGE_VIDEO: `${API_BASE_URL}/challenges/:filename`,
   
   // Course Routes
   GET_ALL_COURSES: `${API_BASE_URL}/courses/all`,
@@ -61,8 +61,8 @@ export const API_ROUTES = {
   CREATE_POST: `${API_BASE_URL}/posts/create`,
   GET_POST: `${API_BASE_URL}/posts/:id`,
   DELETE_POST: `${API_BASE_URL}/posts/:id`,
-  LIKE_POST: `${API_BASE_URL}/posts/like`,
-  GET_POST_COMMENTS: `${API_BASE_URL}/posts/:id/comments`,
+  LIKE_POST: `${API_BASE_URL}/posts/:id/like`,
+  GET_POST_COMMENTS: `${API_BASE_URL}/comments/post/:id`,
   GET_POST_MEDIA: `${API_BASE_URL}/uploads/posts`,
   
   // Comment routes
@@ -73,7 +73,7 @@ export const API_ROUTES = {
   CREATE_REPORT: `${API_BASE_URL}/reports/create`,
   
   // User profile & ban routes
-  GET_USER_PROFILE: `${API_BASE_URL}/users/:userId`,
+  GET_USER_PROFILE: `${API_BASE_URL}/user-profiles/:userId`,
   CHECK_BAN_STATUS: `${API_BASE_URL}/users/ban-status`,
   
   // AI Analysis Routes

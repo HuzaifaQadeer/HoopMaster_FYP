@@ -10,6 +10,9 @@ router.post('/create', protect, checkBan, commentController.createComment);
 // Get a single comment by ID (public)
 router.get('/:id', commentController.getComment);
 
+// Get all comments for a post (public)
+router.get('/post/:postId', commentController.getCommentsByPost);
+
 // Update a comment (requires auth + ownership)
 router.put('/:id', protect, checkBan, commentController.updateComment);
 

@@ -125,26 +125,38 @@ export default function UserProfileScreen() {
   
   // Fetch user profile
   const fetchUserProfile = React.useCallback(async () => {
-    if (!id || !isAuthenticated) return;
+    if (!id) {
+      console.error('[Debug] User profile fetch failed: No ID provided');
+      return;
+    }
     
     try {
       setLoading(true);
       const token = await getToken();
+      console.log('[Debug] User profile fetch - token available:', !!token);
+      console.log('[Debug] User profile fetch - user ID:', id);
+      console.log('[Debug] User profile fetch - API endpoint:', `${API_ROUTES.GET_USER_PROFILE}/${id}`);
+      
+      const headers = { 'Authorization': `Bearer ${token}` };
+      console.log('[Debug] User profile fetch - headers:', JSON.stringify(headers));
       
       const response = await fetch(`${API_ROUTES.GET_USER_PROFILE}/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers
       });
       
+      console.log('[Debug] User profile fetch - response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[Debug] User profile fetch - error response:', errorText);
         throw new Error('Failed to fetch user profile');
       }
       
       const data = await response.json();
+      console.log('[Debug] User profile fetch - data received:', JSON.stringify(data).substring(0, 200) + '...');
       setUser(data);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('[Debug] Error fetching user profile:', error);
       Alert.alert('Error', 'Failed to load user profile');
     } finally {
       setLoading(false);
@@ -237,10 +249,8 @@ export default function UserProfileScreen() {
   
   // Initial data loading
   React.useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserProfile();
-    }
-  }, [fetchUserProfile, isAuthenticated]);
+    fetchUserProfile();
+  }, [fetchUserProfile]);
   
   // Load tab data when tab changes
   React.useEffect(() => {
@@ -272,6 +282,7 @@ export default function UserProfileScreen() {
   
   // Check if authenticated
   React.useEffect(() => {
+    console.log('[Debug] User profile - isAuthenticated:', isAuthenticated);
     if (!isAuthenticated) {
       Alert.alert(
         'Login Required',

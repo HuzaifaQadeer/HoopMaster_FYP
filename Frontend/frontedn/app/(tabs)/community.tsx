@@ -18,6 +18,10 @@ import Header from '../../components/custom/header';
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import config from '@/config/config';
+
+// Add API base URL constant
+const API_BASE_URL = config.API_BASE_URL;
 
 // Interface definitions
 interface Participant {
@@ -98,7 +102,60 @@ const ChallengeCard = ({ challenge, onPress }: { challenge: Challenge, onPress: 
 
 const SocialPost = ({ post, onPress, onLike }: { post: Post, onPress: () => void, onLike: () => void }) => {
   const { colors } = useTheme();
+  const { getToken } = useAuth();
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const formattedTime = formatPostTime(post.date);
+  
+  // Fetch authentication token
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+      setAuthToken(token);
+    };
+    fetchToken();
+  }, []);
+  
+  // Helper function to get the full media URL
+  const getFullMediaUrl = (url: string) => {
+    if (url.startsWith('http')) {
+      return url;
+    }
+    return `${API_BASE_URL}${url}`;
+  };
+  
+  // Debug media URL
+  useEffect(() => {
+    if (post.media?.url) {
+      const fullUrl = getFullMediaUrl(post.media.url);
+      console.log('[Debug Media] Post ID:', post.id);
+      console.log('[Debug Media] Original media URL:', post.media.url);
+      console.log('[Debug Media] Full media URL:', fullUrl);
+      console.log('[Debug Media] Media type:', post.media.type);
+      console.log('[Debug Media] Auth token present:', !!authToken);
+      
+      // Test media URL accessibility
+      if (authToken) {
+        fetch(fullUrl, {
+          method: 'HEAD',
+          headers: {
+            'Accept': '*/*',
+            'Origin': API_BASE_URL,
+            'Authorization': `Bearer ${authToken}`
+          }
+        })
+        .then(response => {
+          console.log('[Debug Media] URL test response:', {
+            status: response.status,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
+          });
+        })
+        .catch(error => {
+          console.error('[Debug Media] URL test error:', error);
+        });
+      }
+    }
+  }, [post.media, authToken]);
   
   return (
     <TouchableOpacity 
@@ -120,19 +177,28 @@ const SocialPost = ({ post, onPress, onLike }: { post: Post, onPress: () => void
       </View>
       <Text style={[styles.postContent, { color: colors.text }]}>{post.content}</Text>
       
-      {post.media && (
+      {post.media?.type && post.media?.url && (
         <View style={styles.mediaContainer}>
           {post.media.type === 'image' ? (
             <Image 
-              source={{ uri: `${API_ROUTES.GET_POST_MEDIA}/${post.media.url}` }} 
+              source={{ 
+                uri: getFullMediaUrl(post.media.url),
+                headers: authToken ? {
+                  'Authorization': `Bearer ${authToken}`
+                } : undefined
+              }} 
               style={styles.postImage}
               resizeMode="cover"
             />
-          ) : (
-            <View style={styles.postVideo}>
+          ) : post.media.type === 'video' ? (
+            <TouchableOpacity 
+              style={styles.postVideo}
+              onPress={onPress}
+            >
               <Ionicons name="play-circle" size={48} color="white" />
-            </View>
-          )}
+              <Text style={styles.videoPlayText}>Tap to play video</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       )}
       
@@ -173,12 +239,22 @@ const CommunityPage = () => {
     fetchPosts();
   }, []);
 
+  // Add debugging for token
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await getToken();
+      console.log('[Debug] Community page - Auth token available:', !!token);
+      if (token) console.log('[Debug] Token starts with:', token.substring(0, 10) + '...');
+    };
+    checkToken();
+  }, []);
+
   const checkBanStatus = async () => {
     try {
       if (!isAuthenticated) return;
       
       const token = await getToken();
-      const response = await fetch(`${API_ROUTES.CHECK_BAN_STATUS}`, {
+      const response = await fetch(API_ROUTES.CHECK_BAN_STATUS, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -209,19 +285,70 @@ const CommunityPage = () => {
   const fetchChallenges = async () => {
     try {
       setLoading(true);
-      const token = await getToken();
-      const response = await fetch(API_ROUTES.GET_ACTIVE_CHALLENGES, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
+      console.log('[Debug] Fetching active challenges');
+      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_ACTIVE_CHALLENGES);
+      
+      const response = await fetch(API_ROUTES.GET_ACTIVE_CHALLENGES);
+      
+      console.log('[Debug] Challenges response status:', response.status);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch challenges');
+        const errorText = await response.text();
+        console.error('[Debug] Error response:', errorText);
+        throw new Error(`Failed to fetch challenges: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('[Debug] Received challenges data, count:', data.length);
+      
+      // The backend might return an array directly or an object with a challenges property
+      // Handle both formats
+      let challengesArray = [];
+      
+      if (Array.isArray(data)) {
+        console.log('Challenge data is an array with', data.length, 'items');
+        challengesArray = data;
+      } else if (data && typeof data === 'object') {
+        if (data.challenges && Array.isArray(data.challenges)) {
+          console.log('Challenge data has challenges array with', data.challenges.length, 'items');
+          challengesArray = data.challenges;
+        } else {
+          console.log('Challenge data is an object but does not have a challenges array');
+          // Try to convert the object to an array if it's not already one
+          challengesArray = Object.values(data).filter(item => 
+            item && typeof item === 'object' && '_id' in (item as Record<string, any>)
+          );
+          console.log('Extracted', challengesArray.length, 'challenges from object');
+        }
       }
       
-      const data = await response.json();
-      setChallenges(data);
+      // Transform and validate challenge data
+      const validChallenges = challengesArray
+        .filter((challenge: any) => challenge && challenge._id)
+        .map((challenge: any) => ({
+          _id: challenge._id,
+          title: challenge.title || 'Unnamed Challenge',
+          description: challenge.description || '',
+          startDate: challenge.startDate || new Date().toISOString(),
+          endDate: challenge.endDate || new Date().toISOString(),
+          participants: Array.isArray(challenge.participants) 
+            ? challenge.participants.map((p: any) => ({
+                _id: p._id || p.id || '',
+                name: p.name || '',
+                displayName: p.displayName || 'Anonymous',
+                profilePicture: p.profilePicture,
+                score: p.score || '0'
+              }))
+            : [],
+          participantCount: challenge.participantCount || (challenge.participants?.length || 0),
+          status: challenge.status || 'active',
+          thumbnail: challenge.thumbnail || ''
+        }));
+      
+      console.log(`Found ${validChallenges.length} valid challenges after processing`);
+      setChallenges(validChallenges);
     } catch (error) {
-      console.error('Error fetching challenges:', error);
+      console.error('[Debug] Error fetching challenges:', error);
       setChallenges([]);
     } finally {
       setLoading(false);
@@ -232,27 +359,54 @@ const CommunityPage = () => {
   const fetchPosts = async () => {
     try {
       setPostsLoading(true);
+      console.log('[Debug] Fetching community posts');
+      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_ALL_POSTS);
+      
       const token = await getToken();
-      
-      const response = await fetch(API_ROUTES.GET_ALL_POSTS, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
       
+      const response = await fetch(`${API_ROUTES.GET_ALL_POSTS}?limit=10`, {
+        headers
+      });
+      
+      console.log('[Debug] Posts response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[Debug] Error response:', errorText);
+        throw new Error(`Failed to fetch posts: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('[Debug] Received posts data, count:', data.posts ? data.posts.length : 0);
+      
+      // Extract posts array from response - the backend returns {posts: [...], pagination: {...}}
+      const postsArray = data.posts || [];
+      
+      if (!Array.isArray(postsArray)) {
+        console.log('Posts data is not an array:', typeof postsArray);
+        throw new Error('Invalid posts data format');
+      }
+      
+      console.log(`Found ${postsArray.length} posts`);
       
       // Transform the data to match our Post interface and check if user has liked each post
-      const transformedPosts = data.map((post: any) => ({
-        id: post.id,
-        content: post.content,
-        date: post.date,
-        author: post.author,
-        user: post.user,
+      const transformedPosts = postsArray.map((post: any) => ({
+        id: post._id || post.id,
+        content: post.content || '',
+        date: post.createdAt || post.date || new Date().toISOString(),
+        author: post.author || '',
+        user: {
+          id: post.user?._id || post.user?.id || '',
+          displayName: post.user?.displayName || 'Unknown User',
+          profilePicture: post.user?.profilePicture || null,
+          email: post.user?.email || ''
+        },
         media: post.media,
-        status: post.status,
+        status: post.status || '',
         likes: post.likes || [],
         liked: post.likes ? post.likes.includes(user?._id) : false
       }));
@@ -264,7 +418,7 @@ const CommunityPage = () => {
       
       setPosts(transformedPosts);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('[Debug] Error fetching posts:', error);
       setPosts([]);
     } finally {
       setPostsLoading(false);
@@ -279,8 +433,14 @@ const CommunityPage = () => {
     }
     
     try {
+      console.log('[Debug] Liking post with ID:', postId);
+      console.log('[Debug] Using API endpoint:', API_ROUTES.LIKE_POST.replace(':id', postId));
+      
       const token = await getToken();
-      const response = await fetch(`${API_ROUTES.LIKE_POST}/${postId}`, {
+      // Replace :id in the URL with the actual postId
+      const likeUrl = API_ROUTES.LIKE_POST.replace(':id', postId);
+      
+      const response = await fetch(likeUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -295,22 +455,31 @@ const CommunityPage = () => {
       // Update local state
       setPosts(posts.map(post => {
         if (post.id === postId) {
-          const currentlyLiked = post.liked || false;
-          // Toggle liked status and update like count
-          const updatedLikes = currentlyLiked
-            ? post.likes?.filter(id => id !== user?._id) || []
-            : [...(post.likes || []), user?._id || ''];
-            
+          // Toggle the liked status
+          const newLikedStatus = !post.liked;
+          
+          // Update the likes array based on the new status
+          let updatedLikes = [...(post.likes || [])];
+          if (newLikedStatus && user?._id) {
+            // Add user ID to likes if not already there
+            if (!updatedLikes.includes(user._id)) {
+              updatedLikes.push(user._id);
+            }
+          } else if (!newLikedStatus && user?._id) {
+            // Remove user ID from likes
+            updatedLikes = updatedLikes.filter(id => id !== user._id);
+          }
+          
           return {
             ...post,
-            liked: !currentlyLiked,
+            liked: newLikedStatus,
             likes: updatedLikes
           };
         }
         return post;
       }));
     } catch (error) {
-      console.error('Error liking post:', error);
+      console.error('[Debug] Error liking post:', error);
     }
   };
 
@@ -380,7 +549,7 @@ const CommunityPage = () => {
           />
         }
       >
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Weekly challenges</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Challenges</Text>
         
         {loading ? (
           <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
@@ -408,9 +577,6 @@ const CommunityPage = () => {
         
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Community Posts</Text>
-          <TouchableOpacity onPress={navigateToCreatePost}>
-            <Ionicons name="add-circle" size={24} color="#FF6B00" />
-          </TouchableOpacity>
         </View>
         
         {postsLoading ? (
@@ -603,6 +769,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  videoPlayText: {
+    color: 'white',
+    marginTop: 8,
+    fontSize: 14,
   },
   postActions: {
     flexDirection: 'row',

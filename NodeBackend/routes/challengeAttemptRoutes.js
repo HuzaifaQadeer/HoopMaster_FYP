@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 // Set up multer storage for challenge videos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '../public/uploads/challenges');
+    const dir = path.join(__dirname, '../../Server/challenges');
     
     // Create directory if it doesn't exist
     if (!fs.existsSync(dir)) {
@@ -41,7 +41,8 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage,
   limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB limit
+    fileSize: 200 * 1024 * 1024, // Increase to 200MB limit
+    fieldSize: 200 * 1024 * 1024, // Add field size limit
   },
   fileFilter: (req, file, cb) => {
     // Accept video files only
@@ -52,6 +53,26 @@ const upload = multer({
     }
   }
 });
+
+// Custom error handler for multer
+const handleMulterError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    console.error('[Debug Backend] Multer error:', err);
+    
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ 
+        message: 'File too large. Maximum size is 200MB.' 
+      });
+    }
+    
+    return res.status(400).json({ 
+      message: `Upload error: ${err.message}` 
+    });
+  }
+  
+  // For non-multer errors, pass to the next middleware
+  next(err);
+};
 
 // Add routes one by one
 router.get('/challenge/:challengeId', protect, (req, res) => {
@@ -70,8 +91,13 @@ router.get('/attempt/:id', protect, (req, res) => {
   challengeAttemptController.getAttemptById(req, res);
 });
 
-router.post('/:challengeId', protect, upload.single('video'), (req, res) => {
-  challengeAttemptController.createAttempt(req, res);
+router.post('/:challengeId', protect, (req, res, next) => {
+  upload.single('video')(req, res, (err) => {
+    if (err) {
+      return handleMulterError(err, req, res, next);
+    }
+    challengeAttemptController.createAttempt(req, res);
+  });
 });
 
 router.post('/vote/:attemptId', protect, (req, res) => {

@@ -22,7 +22,7 @@ interface User {
 interface Post {
   _id: string;
   content: string;
-  userId: User;
+  user: User;
   createdAt: string;
   likes: string[];
   commentCount: number;
@@ -43,14 +43,33 @@ const MAX_CONTENT_LENGTH = 150;
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onPress }) => {
   const { colors } = useTheme();
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<any>(null);
   const [expanded, setExpanded] = useState(false);
+  
+  // Add debug logs for post and like status
+  console.log('[Debug] PostCard - post id:', post._id);
+  console.log('[Debug] PostCard - isLiked:', post.isLiked);
+  console.log('[Debug] PostCard - likes count:', post.likes.length);
   
   // Check if content should be truncated
   const shouldTruncate = post.content.length > MAX_CONTENT_LENGTH;
   
   // Format the date as relative time (e.g., "2 hours ago")
   const formattedDate = moment(post.createdAt).fromNow();
+  
+  // Helper function to safely get user profile picture
+  const getUserProfilePicture = () => {
+    if (!post.user || !post.user.profilePicture) {
+      return "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    }
+    return post.user.profilePicture;
+  };
+  
+  // Helper function to safely get user display name
+  const getUserDisplayName = () => {
+    if (!post.user) return 'Unknown User';
+    return post.user.displayName || post.user.username || 'Unknown User';
+  };
   
   // Render media content if present
   const renderMedia = () => {
@@ -81,6 +100,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onPress }) => {
     return null;
   };
   
+  // Handle like with debugging
+  const handleLike = (e: any) => {
+    console.log('[Debug] PostCard - Like button pressed for post:', post._id);
+    e.stopPropagation();
+    onLike();
+  };
+  
   return (
     <TouchableOpacity 
       style={[styles.container, { backgroundColor: colors.card }]}
@@ -90,15 +116,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onPress }) => {
       {/* Post header */}
       <View style={styles.header}>
         <Image 
-          source={{ 
-            uri: post.userId.profilePicture || 
-              "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-          }} 
+          source={{ uri: getUserProfilePicture() }} 
           style={styles.avatar} 
         />
         <View style={styles.headerInfo}>
           <Text style={[styles.username, { color: colors.text }]}>
-            {post.userId.displayName || post.userId.username}
+            {getUserDisplayName()}
           </Text>
           <View style={styles.metaInfo}>
             <Text style={[styles.timestamp, { color: colors.text }]}>
@@ -143,10 +166,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onPress }) => {
       <View style={styles.stats}>
         <TouchableOpacity 
           style={styles.statItem}
-          onPress={(e) => {
-            e.stopPropagation();
-            onLike();
-          }}
+          onPress={handleLike}
         >
           <Ionicons 
             name={post.isLiked ? 'heart' : 'heart-outline'} 

@@ -2,10 +2,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Ensure Server/posts directory exists for post media
+const serverPostsDir = path.join(__dirname, '../../Server/posts');
+if (!fs.existsSync(serverPostsDir)) {
+  fs.mkdirSync(serverPostsDir, { recursive: true });
 }
 
 // Configure storage
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
       folder = 'videos';
     }
     
-    const destPath = path.join(uploadDir, folder);
+    const destPath = path.join(serverPostsDir, folder);
     
     // Create subfolder if it doesn't exist
     if (!fs.existsSync(destPath)) {
@@ -47,12 +47,13 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Create the multer instance
+// Create the multer instance with increased limits
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB file size limit
+    fileSize: 100 * 1024 * 1024, // Increase to 100MB file size limit
+    fieldSize: 100 * 1024 * 1024, // Increase field size limit also
   }
 });
 

@@ -84,27 +84,36 @@ exports.getAllPosts = async (req, res) => {
 // Get single post
 exports.getPost = async (req, res) => {
   try {
+    console.log('[Debug Backend] Getting post with ID:', req.params.id);
+    console.log('[Debug Backend] User auth:', req.user ? `Authenticated as ${req.user._id}` : 'Not authenticated');
+    
     const post = await Post.findOne({ 
       _id: req.params.id,
       isDeleted: false
     });
     
     if (!post) {
+      console.log(`[Debug Backend] Post ${req.params.id} not found`);
       return res.status(404).json({ message: 'Post not found' });
     }
     
+    console.log(`[Debug Backend] Found post: ${post._id}, private: ${post.isPrivate}`);
+    
     // Check if user can view this post (public or owned by user)
     if (post.isPrivate) {
+      console.log('[Debug Backend] Post is private, checking permissions');
       // If post is private, check if user is authenticated and is the owner
       if (!req.user || post.user.toString() !== req.user._id.toString()) {
+        console.log('[Debug Backend] Permission denied for private post');
         return res.status(403).json({ message: 'You do not have permission to view this post' });
       }
     }
     
     const formattedPost = await formatPostData(post, req.user ? req.user._id : null);
+    console.log('[Debug Backend] Returning formatted post data');
     res.status(200).json(formattedPost);
   } catch (error) {
-    console.error('Error getting post:', error);
+    console.error('[Debug Backend] Error getting post:', error);
     res.status(500).json({ message: 'Error retrieving post' });
   }
 };
@@ -136,15 +145,42 @@ exports.createPost = async (req, res) => {
           return res.status(400).json({ message: 'Invalid file type' });
         }
         
-        // Store file path relative to uploads directory
-        const mediaType = isImage ? 'image' : 'video';
-        const baseUrl = `${req.protocol}://${req.get('host')}`;
-        const relativePath = req.file.path.split('uploads')[1].replace(/\\/g, '/');
-        const mediaUrl = `${baseUrl}/uploads${relativePath}`;
+        // Extract the filename and folder from the path
+        let folder, filename;
+        try {
+          // Handle Windows-style paths
+          if (req.file.path.includes('\\')) {
+            const pathParts = req.file.path.split('Server\\posts\\')[1].split('\\');
+            folder = pathParts[0]; // 'images' or 'videos'
+            filename = pathParts[1];
+          } 
+          // Handle Unix-style paths
+          else if (req.file.path.includes('/')) {
+            const pathParts = req.file.path.split('Server/posts/')[1].split('/');
+            folder = pathParts[0]; // 'images' or 'videos'
+            filename = pathParts[1];
+          }
+          // Fallback if path format is unexpected
+          else {
+            console.error('Unexpected path format:', req.file.path);
+            folder = isImage ? 'images' : 'videos';
+            filename = path.basename(req.file.path);
+          }
+          
+          console.log('Extracted path info:', { folder, filename, originalPath: req.file.path });
+        } catch (pathError) {
+          console.error('Error parsing file path:', pathError, req.file.path);
+          // Fallback to a simpler approach
+          folder = isImage ? 'images' : 'videos';
+          filename = path.basename(req.file.path);
+        }
+        
+        // Create the media URL using the new path format
+        const mediaUrl = `/posts/${folder}/${filename}`;
         
         // Add media data to post
         postData.media = {
-          type: mediaType,
+          type: isImage ? 'image' : 'video',
           url: mediaUrl
         };
         postData.hasMedia = true;
@@ -159,11 +195,22 @@ exports.createPost = async (req, res) => {
     }
     
     // Create and save post
-    const post = new Post(postData);
-    await post.save();
-    
-    const formattedPost = await formatPostData(post, userId);
-    res.status(201).json(formattedPost);
+    try {
+      const post = new Post(postData);
+      console.log('Attempting to save post with data:', JSON.stringify(postData, null, 2));
+      await post.save();
+      
+      const formattedPost = await formatPostData(post, userId);
+      res.status(201).json(formattedPost);
+    } catch (saveError) {
+      console.error('Error saving post to database:', saveError);
+      // Clean up the uploaded file since the post creation failed
+      if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+        console.log('Cleaned up file after failed post creation:', req.file.path);
+      }
+      res.status(500).json({ message: `Database error: ${saveError.message}` });
+    }
   } catch (error) {
     console.error('Error creating post:', error);
     // Clean up temp file if exists
@@ -222,13 +269,24 @@ exports.deletePost = async (req, res) => {
     if (post.hasMedia && post.media && post.media.url) {
       try {
         // Extract the file path from the URL
-        const urlParts = post.media.url.split('/uploads');
-        if (urlParts.length > 1) {
-          const relativePath = urlParts[1];
-          const filePath = path.join(__dirname, '../uploads', relativePath);
-          
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+        const mediaUrl = post.media.url;
+        if (mediaUrl.startsWith('/posts/')) {
+          // Format: /posts/folder/filename
+          const pathParts = mediaUrl.split('/');
+          if (pathParts.length >= 4) {
+            const folder = pathParts[2]; // 'images' or 'videos'
+            const filename = pathParts[3];
+            
+            // Construct the file path
+            const filePath = path.join(__dirname, '../../Server/posts', folder, filename);
+            console.log('Attempting to delete file:', filePath);
+            
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+              console.log(`Deleted media file: ${filePath}`);
+            } else {
+              console.log(`File not found at path: ${filePath}`);
+            }
           }
         }
       } catch (deleteError) {
@@ -287,19 +345,28 @@ exports.getPostComments = async (req, res) => {
     const { limit = 50, page = 1 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
+    console.log('[Debug Backend] Getting comments for post ID:', req.params.id);
+    console.log('[Debug Backend] User auth:', req.user ? `Authenticated as ${req.user._id}` : 'Not authenticated');
+    console.log('[Debug Backend] Query params:', { limit, page, skip });
+    
     const post = await Post.findOne({
       _id: req.params.id,
       isDeleted: false
     });
     
     if (!post) {
+      console.log(`[Debug Backend] Post ${req.params.id} not found`);
       return res.status(404).json({ message: 'Post not found' });
     }
     
+    console.log(`[Debug Backend] Found post: ${post._id}, private: ${post.isPrivate}`);
+    
     // Check if user can view this post (public or owned by user)
     if (post.isPrivate) {
+      console.log('[Debug Backend] Post is private, checking permissions');
       // If post is private, check if user is authenticated and is the owner
       if (!req.user || post.user.toString() !== req.user._id.toString()) {
+        console.log('[Debug Backend] Permission denied for private post');
         return res.status(403).json({ message: 'You do not have permission to view this post' });
       }
     }
@@ -313,9 +380,10 @@ exports.getPostComments = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit));
     
+    console.log(`[Debug Backend] Retrieved ${comments.length} comments`);
     res.status(200).json(comments);
   } catch (error) {
-    console.error('Error getting comments:', error);
+    console.error('[Debug Backend] Error getting comments:', error);
     res.status(500).json({ message: 'Error retrieving comments' });
   }
 };

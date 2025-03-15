@@ -155,3 +155,27 @@ exports.getComment = async (req, res) => {
     res.status(500).json({ message: 'Error retrieving comment' });
   }
 };
+
+// Get comments for a post
+exports.getCommentsByPost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    
+    // Find post to validate it exists
+    const post = await Post.findOne({ _id: postId, isDeleted: false });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found or has been deleted' });
+    }
+    
+    // Get comments for the post, sorted by creation date
+    const comments = await Comment.find({ post: postId })
+      .populate('user', 'displayName username profilePicture')
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error('Error getting comments for post:', error);
+    res.status(500).json({ message: 'Error retrieving comments' });
+  }
+};

@@ -17,10 +17,14 @@ import {
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import { Video, ResizeMode } from 'expo-av';
+import { Video as ExpoVideo, ResizeMode } from 'expo-av';
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '@/context/AuthContext';
 import moment from 'moment';
+import config from '@/config/config';
+
+// Add API base URL constant
+const API_BASE_URL = config.API_BASE_URL;
 
 // Define interfaces 
 interface User {
@@ -33,7 +37,7 @@ interface User {
 interface Post {
   _id: string;
   content: string;
-  userId: User;
+  user: User;
   createdAt: string;
   likes: string[];
   commentCount: number;
@@ -60,35 +64,59 @@ const CommentItem = ({
   onReportComment: (commentId: string) => void;
 }) => {
   const { colors } = useTheme();
+  const router = useRouter();
+  
+  // Add debug logging for comment data
+  console.log('[Debug] Comment user data:', JSON.stringify(comment.userId));
+  
+  // Helper function to safely get user profile picture
+  const getUserProfilePicture = () => {
+    if (!comment.userId || !comment.userId.profilePicture) {
+      return "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    }
+    return comment.userId.profilePicture;
+  };
+  
+  // Helper function to safely get user display name
+  const getUserDisplayName = () => {
+    if (!comment.userId) return 'Unknown User';
+    return comment.userId.displayName || comment.userId.username || 'Unknown User';
+  };
+  
+  // Navigate to user profile when avatar is tapped
+  const navigateToUserProfile = () => {
+    console.log('[Debug] Navigating to user profile, userId:', comment.userId?._id);
+    if (comment.userId && comment.userId._id) {
+      router.push(`/user-profile/${comment.userId._id}`);
+    }
+  };
   
   return (
-    <View style={[styles.commentItem, { borderBottomColor: colors.border }]}>
-      <View style={styles.commentHeader}>
+    <View style={[styles.commentContainer, { backgroundColor: colors.card }]}>
+      <TouchableOpacity onPress={navigateToUserProfile}>
         <Image 
-          source={{ 
-            uri: comment.userId.profilePicture || 
-              "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-          }}
+          source={{ uri: getUserProfilePicture() }} 
           style={styles.commentAvatar} 
         />
-        <View style={styles.commentInfo}>
-          <Text style={[styles.commentUsername, { color: colors.text }]}>
-            {comment.userId.displayName || comment.userId.username}
-          </Text>
-          <Text style={[styles.commentTimestamp, { color: colors.text }]}>
-            {moment(comment.createdAt).fromNow()}
-          </Text>
+      </TouchableOpacity>
+      <View style={styles.commentContent}>
+        <View style={styles.commentHeader}>
+          <TouchableOpacity onPress={navigateToUserProfile}>
+            <Text style={[styles.commentUsername, { color: colors.text }]}>
+              {getUserDisplayName()}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onReportComment(comment._id)}>
+            <Ionicons name="ellipsis-horizontal" size={16} color={colors.text} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={styles.commentMenu}
-          onPress={() => onReportComment(comment._id)}
-        >
-          <Ionicons name="ellipsis-vertical" size={16} color={colors.text} />
-        </TouchableOpacity>
+        <Text style={[styles.commentText, { color: colors.text }]}>
+          {comment.content}
+        </Text>
+        <Text style={styles.commentTime}>
+          {moment(comment.createdAt).fromNow()}
+        </Text>
       </View>
-      <Text style={[styles.commentContent, { color: colors.text }]}>
-        {comment.content}
-      </Text>
     </View>
   );
 };
@@ -162,7 +190,7 @@ export default function PostDetailScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const { isAuthenticated, getToken, user } = useAuth();
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef(null);
   
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -177,24 +205,41 @@ export default function PostDetailScreen() {
   const [reportType, setReportType] = useState<'post' | 'comment'>('post');
   const [reportTargetId, setReportTargetId] = useState<string>('');
   
+  // Add debugging for token
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await getToken();
+      console.log('[Debug] Auth token available:', !!token);
+      if (token) console.log('[Debug] Token starts with:', token.substring(0, 10) + '...');
+    };
+    checkToken();
+  }, []);
+  
   // Fetch post details
   const fetchPostDetails = useCallback(async () => {
     if (!id) return;
     try {
       setLoading(true);
-      const token = await getToken();
+      console.log('[Debug] Fetching post details for ID:', id);
+      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_POST.replace(':id', id));
       
-      const response = await fetch(`${API_ROUTES.GET_POST}/${id}`, {
+      const token = await getToken();
+      const response = await fetch(API_ROUTES.GET_POST.replace(':id', id), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       });
+
+      console.log('[Debug] Post fetch response status:', response.status);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch post details');
+        const errorText = await response.text();
+        console.error('[Debug] Error response:', errorText);
+        throw new Error(`Failed to fetch post: ${response.status}`);
       }
-      
+
       const data = await response.json();
+      console.log('[Debug] Received post data:', data);
       setPost(data);
       
       // Check if user has liked the post
@@ -202,7 +247,7 @@ export default function PostDetailScreen() {
         setLiked(true);
       }
     } catch (error) {
-      console.error('Error fetching post details:', error);
+      console.error('[Debug] Error fetching post details:', error);
       Alert.alert('Error', 'Failed to load post details');
     } finally {
       setLoading(false);
@@ -214,22 +259,40 @@ export default function PostDetailScreen() {
     if (!id) return;
     try {
       setCommentsLoading(true);
-      const token = await getToken();
+      console.log('[Debug] Fetching comments for post ID:', id);
       
-      const response = await fetch(`${API_ROUTES.GET_POST_COMMENTS}/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const token = await getToken();
+      console.log('[Debug] Token available for comments fetch:', !!token);
+      
+      const apiUrl = API_ROUTES.GET_POST_COMMENTS.replace(':id', id);
+      console.log('[Debug] Using API endpoint for comments:', apiUrl);
+      
+      // Add more detailed headers debugging
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      console.log('[Debug] Comments request headers:', JSON.stringify(headers));
+      
+      const response = await fetch(apiUrl, { headers });
+
+      console.log('[Debug] Comments fetch response status:', response.status);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch comments');
+        const errorText = await response.text();
+        console.error('[Debug] Error response for comments:', errorText);
+        throw new Error(`Failed to fetch comments: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      setComments(data);
+      console.log('[Debug] Received comments data type:', typeof data);
+      console.log('[Debug] Is comments data array?', Array.isArray(data));
+      console.log('[Debug] First comment example:', data.length > 0 ? JSON.stringify(data[0]) : 'No comments');
+      
+      // Make sure we're setting an array of comments
+      setComments(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error('[Debug] Error fetching comments:', error);
       Alert.alert('Error', 'Failed to load comments');
     } finally {
       setCommentsLoading(false);
@@ -423,28 +486,78 @@ export default function PostDetailScreen() {
   const renderMedia = () => {
     if (!post || !post.hasMedia || !post.mediaUrl) return null;
     
+    // Helper function to get the full media URL
+    const getFullMediaUrl = (url: string) => {
+      if (url.startsWith('http')) {
+        return url;
+      }
+      return `${API_BASE_URL}${url}`;
+    };
+    
+    const mediaUrl = getFullMediaUrl(post.mediaUrl);
+    console.log('[Debug] Rendering media with URL:', mediaUrl);
+    
     if (post.mediaType === 'image') {
       return (
         <Image 
-          source={{ uri: post.mediaUrl }} 
+          source={{ 
+            uri: mediaUrl,
+            headers: {
+              'Authorization': `Bearer ${getToken()}`,
+              'Accept': '*/*',
+              'Origin': API_BASE_URL
+            }
+          }} 
           style={styles.postMedia}
           resizeMode="cover"
         />
       );
     } else if (post.mediaType === 'video') {
       return (
-        <Video
+        <ExpoVideo
           ref={videoRef}
-          source={{ uri: post.mediaUrl }}
+          source={{ 
+            uri: mediaUrl,
+            headers: {
+              'Authorization': `Bearer ${getToken()}`,
+              'Accept': '*/*',
+              'Origin': API_BASE_URL
+            }
+          }}
           style={styles.postMedia}
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
           isLooping
+          shouldPlay={false}
+          onError={(error: { error: string }) => {
+            console.error('Video playback error:', error);
+          }}
+          onLoadStart={() => {
+            console.log('Video load started');
+          }}
+          onLoad={(status: { uri: string }) => {
+            console.log('Video loaded successfully:', status);
+          }}
         />
       );
     }
     
     return null;
+  };
+  
+  // Add this helper function to safely access user profile picture
+  const getUserProfilePicture = () => {
+    console.log('[Debug] Post user data:', post?.user);
+    if (!post || !post.user || !post.user.profilePicture) {
+      return "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    }
+    return post.user.profilePicture;
+  };
+  
+  // Add this helper function to safely get user display name
+  const getUserDisplayName = () => {
+    if (!post || !post.user) return 'Unknown User';
+    return post.user.displayName || 'Unknown User';
   };
   
   // Loading state
@@ -479,133 +592,150 @@ export default function PostDetailScreen() {
         options={{
           title: 'Post',
           headerTitleStyle: { color: colors.text },
-          headerStyle: { backgroundColor: colors.background },
+          headerStyle: { 
+            backgroundColor: colors.background,
+          },
+          headerSafeAreaInsets: { top: Platform.OS === 'android' ? 40 : 0 },
         }}
       />
       
-      <FlatList
-        data={comments}
-        keyExtractor={item => item._id}
-        renderItem={({ item }) => (
-          <CommentItem 
-            comment={item} 
-            onReportComment={handleReportComment} 
-          />
-        )}
-        ListHeaderComponent={
-          <View>
-            {/* Post header */}
-            <View style={styles.postHeader}>
-              <Image 
-                source={{ 
-                  uri: post.userId.profilePicture || 
-                    "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-                }} 
-                style={styles.avatar} 
-              />
-              <View style={styles.postInfo}>
-                <Text style={[styles.username, { color: colors.text }]}>
-                  {post.userId.displayName || post.userId.username}
-                </Text>
-                <Text style={[styles.timestamp, { color: colors.text }]}>
-                  {moment(post.createdAt).fromNow()} • {post.isPrivate ? 'Private' : 'Public'}
-                </Text>
-              </View>
-              <TouchableOpacity 
-                style={styles.menuButton}
-                onPress={handleReportPost}
-              >
-                <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            
-            {/* Post content */}
-            <Text style={[styles.postContent, { color: colors.text }]}>
-              {post.content}
-            </Text>
-            
-            {/* Post media */}
-            {renderMedia()}
-            
-            {/* Post stats */}
-            <View style={[styles.postStats, { borderBottomColor: colors.border, borderTopColor: colors.border }]}>
-              <TouchableOpacity 
-                style={styles.statItem} 
-                onPress={handleLike}
-              >
-                <Ionicons 
-                  name={liked ? "heart" : "heart-outline"} 
-                  size={22} 
-                  color={liked ? "#FF6B00" : colors.text} 
-                />
-                <Text style={[styles.statText, { color: colors.text }]}>
-                  {post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}
-                </Text>
-              </TouchableOpacity>
-              
-              <View style={styles.statItem}>
-                <Ionicons name="chatbubble-outline" size={22} color={colors.text} />
-                <Text style={[styles.statText, { color: colors.text }]}>
-                  {post.commentCount} {post.commentCount === 1 ? 'Comment' : 'Comments'}
-                </Text>
-              </View>
-            </View>
-            
-            {/* Comments header */}
-            <View style={styles.commentsHeader}>
-              <Text style={[styles.commentsTitle, { color: colors.text }]}>
-                Comments
-              </Text>
-              {commentsLoading && (
-                <ActivityIndicator size="small" color="#FF6B00" />
-              )}
-            </View>
-          </View>
-        }
-        ListEmptyComponent={
-          !commentsLoading ? (
-            <View style={styles.emptyComments}>
-              <Text style={[styles.emptyCommentsText, { color: colors.text }]}>
-                No comments yet. Be the first to comment!
-              </Text>
-            </View>
-          ) : null
-        }
-      />
-      
-      {/* Comment input */}
-      <View style={[styles.commentInputContainer, { backgroundColor: colors.card }]}>
-        <TextInput
-          style={[styles.commentInput, { color: colors.text, backgroundColor: colors.background }]}
-          placeholder="Add a comment..."
-          placeholderTextColor="#999"
-          value={commentText}
-          onChangeText={setCommentText}
-          multiline
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            (!commentText.trim() || submittingComment) && styles.disabledButton
-          ]}
-          onPress={handleSubmitComment}
-          disabled={!commentText.trim() || submittingComment}
-        >
-          {submittingComment ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Ionicons name="send" size={20} color="white" />
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={comments}
+          keyExtractor={item => item._id}
+          renderItem={({ item }) => (
+            <CommentItem 
+              comment={item} 
+              onReportComment={handleReportComment} 
+            />
           )}
-        </TouchableOpacity>
+          contentContainerStyle={styles.flatListContent}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <View style={styles.postContainer}>
+              {/* Post header */}
+              <View style={styles.postHeader}>
+                <TouchableOpacity onPress={() => post.user && post.user._id && router.push(`/user-profile/${post.user._id}`)}>
+                  <Image 
+                    source={{ 
+                      uri: getUserProfilePicture()
+                    }} 
+                    style={styles.avatar} 
+                  />
+                </TouchableOpacity>
+                <View style={styles.postInfo}>
+                  <TouchableOpacity onPress={() => post.user && post.user._id && router.push(`/user-profile/${post.user._id}`)}>
+                    <Text style={[styles.username, { color: colors.text }]}>
+                      {getUserDisplayName()}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.timestamp, { color: colors.text }]}>
+                    {moment(post.createdAt).fromNow()} • {post.isPrivate ? 'Private' : 'Public'}
+                  </Text>
+                </View>
+                <TouchableOpacity 
+                  style={styles.menuButton}
+                  onPress={handleReportPost}
+                >
+                  <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+              
+              {/* Post content */}
+              <Text style={[styles.postContent, { color: colors.text }]}>
+                {post.content}
+              </Text>
+              
+              {/* Post media */}
+              {renderMedia()}
+              
+              {/* Post stats */}
+              <View style={[styles.postStats, { borderBottomColor: colors.border, borderTopColor: colors.border }]}>
+                <TouchableOpacity 
+                  style={styles.statItem} 
+                  onPress={handleLike}
+                >
+                  <Ionicons 
+                    name={liked ? "heart" : "heart-outline"} 
+                    size={22} 
+                    color={liked ? "#FF6B00" : colors.text} 
+                  />
+                  <Text style={[styles.statText, { color: colors.text }]}>
+                    {post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}
+                  </Text>
+                </TouchableOpacity>
+                
+                <View style={styles.statItem}>
+                  <Ionicons name="chatbubble-outline" size={22} color={colors.text} />
+                  <Text style={[styles.statText, { color: colors.text }]}>
+                    {post.commentCount} {post.commentCount === 1 ? 'Comment' : 'Comments'}
+                  </Text>
+                </View>
+              </View>
+              
+              {/* Comments header */}
+              <View style={styles.commentsHeader}>
+                <Text style={[styles.commentsTitle, { color: colors.text }]}>
+                  Comments
+                </Text>
+                {commentsLoading && (
+                  <ActivityIndicator size="small" color="#FF6B00" />
+                )}
+              </View>
+            </View>
+          }
+          ListEmptyComponent={
+            commentsLoading ? null : (
+              <View style={styles.emptyComments}>
+                <Text style={[styles.emptyCommentsText, { color: colors.text }]}>
+                  No comments yet. Be the first to comment!
+                </Text>
+              </View>
+            )
+          }
+          ListFooterComponent={
+            commentsLoading ? (
+              <ActivityIndicator size="small" color="#FF6B00" style={styles.commentsLoader} />
+            ) : (
+              <View style={{ height: 60 }} />
+            )
+          }
+        />
+        
+        {/* Comment input */}
+        <View style={[styles.commentInputContainer, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
+          <TextInput
+            style={[styles.commentInput, { backgroundColor: colors.background, color: colors.text }]}
+            placeholder="Add a comment..."
+            placeholderTextColor={colors.text + '80'}
+            value={commentText}
+            onChangeText={setCommentText}
+            multiline
+          />
+          <TouchableOpacity 
+            style={[
+              styles.commentButton, 
+              { opacity: commentText.trim().length > 0 && !submittingComment ? 1 : 0.5 }
+            ]}
+            onPress={handleSubmitComment}
+            disabled={commentText.trim().length === 0 || submittingComment}
+          >
+            {submittingComment ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Ionicons name="send" size={20} color="white" />
+            )}
+          </TouchableOpacity>
+        </View>
+        
+        {/* Report modal */}
+        <ReportModal
+          visible={reportModalVisible}
+          onClose={() => setReportModalVisible(false)}
+          onSubmit={submitReport}
+          type={reportType}
+        />
       </View>
-      
-      {/* Report Modal */}
-      <ReportModal
-        visible={reportModalVisible}
-        onClose={() => setReportModalVisible(false)}
-        onSubmit={submitReport}
-        type={reportType}
-      />
     </SafeAreaView>
   );
 }
@@ -613,6 +743,10 @@ export default function PostDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    marginTop: Platform.OS === 'android' ? 20 : 0,
   },
   loadingContainer: {
     flex: 1,
@@ -640,48 +774,53 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  postContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    marginBottom: 12,
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     marginRight: 12,
   },
   postInfo: {
     flex: 1,
   },
   username: {
-    fontWeight: 'bold',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   timestamp: {
     fontSize: 12,
     marginTop: 2,
+    opacity: 0.7,
   },
   menuButton: {
-    padding: 8,
+    padding: 4,
   },
   postContent: {
     fontSize: 16,
     lineHeight: 24,
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    marginBottom: 16,
   },
   postMedia: {
     width: '100%',
     height: 300,
-    marginBottom: 12,
+    borderRadius: 12,
+    marginBottom: 16,
   },
   postStats: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     paddingVertical: 12,
     borderTopWidth: 1,
     borderBottomWidth: 1,
+    marginBottom: 16,
   },
   statItem: {
     flexDirection: 'row',
@@ -695,19 +834,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    marginTop: 8,
+    marginBottom: 8,
+    paddingHorizontal: 16,
   },
   commentsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  commentItem: {
-    padding: 16,
-    borderBottomWidth: 1,
-  },
-  commentHeader: {
+  commentContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    padding: 16,
+    marginHorizontal: 16,
+    marginVertical: 6,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   commentAvatar: {
     width: 36,
@@ -715,25 +860,27 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     marginRight: 12,
   },
-  commentInfo: {
+  commentContent: {
     flex: 1,
+  },
+  commentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   commentUsername: {
     fontWeight: 'bold',
     fontSize: 14,
   },
-  commentTimestamp: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  commentMenu: {
-    padding: 4,
-  },
-  commentContent: {
-    marginTop: 8,
+  commentText: {
     fontSize: 14,
     lineHeight: 20,
-    marginLeft: 48, // Align with the username
+  },
+  commentTime: {
+    marginTop: 4,
+    fontSize: 12,
+    color: '#888',
   },
   emptyComments: {
     padding: 20,
@@ -746,27 +893,35 @@ const styles = StyleSheet.create({
   commentInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
   },
   commentInput: {
     flex: 1,
-    padding: 10,
     borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     maxHeight: 100,
   },
-  sendButton: {
+  commentButton: {
     backgroundColor: '#FF6B00',
     width: 40,
     height: 40,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
-  },
-  disabledButton: {
-    opacity: 0.5,
+    marginLeft: 8,
   },
   modalOverlay: {
     flex: 1,
@@ -813,5 +968,12 @@ const styles = StyleSheet.create({
     color: '#FF6B00',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  commentsLoader: {
+    marginTop: 10,
+  },
+  flatListContent: {
+    paddingTop: 24,
+    paddingBottom: 80,
   },
 }); 

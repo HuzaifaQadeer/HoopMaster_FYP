@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Audio } from 'expo-av';
@@ -45,7 +46,7 @@ export default function AttemptChallengeScreen() {
   const [recording, setRecording] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [videoUri, setVideoUri] = useState<string | null>(null);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [sound, setSound] = useState<any>(null);
   const [trimValues, setTrimValues] = useState({ start: 0, end: 30 });
   const [videoDuration, setVideoDuration] = useState(0);
   const [showTrimmer, setShowTrimmer] = useState(false);
@@ -55,11 +56,14 @@ export default function AttemptChallengeScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const cameraRef = useRef<CameraView>(null);
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<any>(null);
   const recordingTimeout = useRef<NodeJS.Timeout>();
   const timerInterval = useRef<NodeJS.Timeout>();
   const recordStartTime = useRef<number | null>(null);
   const recordingTimerInterval = useRef<NodeJS.Timeout>();
+
+  // Video trimmer state
+  const [position, setPosition] = useState(0);
 
   useEffect(() => {
     fetchChallengeDetails();
@@ -365,38 +369,79 @@ export default function AttemptChallengeScreen() {
         return;
       }
 
+      // Check if user already has an attempt for this challenge
+      const checkResponse = await fetch(
+        API_ROUTES.GET_USER_ATTEMPT.replace(':challengeId', challengeId as string),
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      const isReplacingAttempt = checkResponse.status === 200;
+
       // Create form data with the video file
       const formData = new FormData();
-      await FileSystem.getInfoAsync(videoUri);
+      
+      // Get file info
+      const fileInfo = await FileSystem.getInfoAsync(videoUri) as any;
+      console.log('File info:', fileInfo);
+      
+      // Check file size - increase to match backend limit (100MB)
+      if (fileInfo.size && fileInfo.size > 100 * 1024 * 1024) {
+        Alert.alert('Error', 'Video too large (max 100MB)');
+        setIsSubmitting(false);
+        return;
+      }
       
       // Get the filename from the URI
       const uriParts = videoUri.split('/');
       const fileName = uriParts[uriParts.length - 1];
       
+      // Correctly format the file object for the form data
+      // The key must match what the server expects in multer configuration
       formData.append('video', {
-        uri: videoUri,
+        uri: Platform.OS === 'ios' ? videoUri.replace('file://', '') : videoUri,
         name: fileName,
         type: 'video/mp4'
       } as any);
 
-      // Submit to the challenge attempt endpoint
-      const response = await fetch(API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string), {
+      console.log('Submitting to URL:', API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string));
+      
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timed out after 60 seconds')), 60000);
+      });
+      
+      // Create the fetch promise
+      const fetchPromise = fetch(API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string), {
         method: 'POST',
         body: formData,
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         },
       });
+      
+      // Race the fetch against the timeout
+      const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit challenge attempt');
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.message || 'Failed to submit challenge attempt');
+        } catch (parseError) {
+          throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
       }
 
       Alert.alert(
         "Success!",
-        "Your challenge attempt has been submitted successfully.",
+        isReplacingAttempt 
+          ? "Your previous attempt has been replaced with this new submission."
+          : "Your challenge attempt has been submitted successfully.",
         [
           { 
             text: "View Challenge", 
@@ -413,7 +458,31 @@ export default function AttemptChallengeScreen() {
       );
     } catch (error) {
       console.error('Error submitting challenge attempt:', error);
-      Alert.alert("Submission Error", error instanceof Error ? error.message : 'Unknown error');
+      
+      // Provide more specific error messages
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        if (error.message.includes('timed out')) {
+          errorMessage = 'The request is taking too long. The server might be busy or your internet connection might be slow.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      Alert.alert(
+        "Submission Error", 
+        errorMessage,
+        [
+          { text: "Cancel", style: "cancel" },
+          { 
+            text: "Retry", 
+            onPress: () => {
+              setIsSubmitting(false);
+              setTimeout(() => submitChallengeAttempt(), 1000);
+            } 
+          }
+        ]
+      );
     } finally {
       setIsSubmitting(false);
     }

@@ -19,7 +19,7 @@ import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { Video, ResizeMode } from 'expo-av';
+import { Video as ExpoVideo, ResizeMode } from 'expo-av';
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '../context/AuthContext';
 
@@ -37,7 +37,7 @@ export default function CreatePostScreen() {
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef(null);
   
   // Check if user is authenticated
   React.useEffect(() => {
@@ -64,7 +64,7 @@ export default function CreatePostScreen() {
       
       if (!result.canceled && result.assets && result.assets.length > 0) {
         // Check file size (max 10MB)
-        const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+        const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri) as any;
         if (fileInfo.size && fileInfo.size > 10 * 1024 * 1024) {
           Alert.alert('Error', 'Image too large (max 10MB)');
           return;
@@ -96,10 +96,10 @@ export default function CreatePostScreen() {
       });
       
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        // Check file size (max 50MB)
-        const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
-        if (fileInfo.size && fileInfo.size > 50 * 1024 * 1024) {
-          Alert.alert('Error', 'Video too large (max 50MB)');
+        // Check file size (max 100MB)
+        const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri) as any;
+        if (fileInfo.size && fileInfo.size > 100 * 1024 * 1024) {
+          Alert.alert('Error', 'Video too large (max 100MB)');
           return;
         }
         
@@ -140,18 +140,26 @@ export default function CreatePostScreen() {
       
       // Create form data
       const formData = new FormData();
-      formData.append('content', content);
+      
+      // Ensure content is never empty, even with media-only posts
+      // This is required by the backend validation
+      const postContent = content.trim() || (media ? 'Shared a ' + media.type : 'New post');
+      formData.append('content', postContent);
+      
       formData.append('isPrivate', String(isPrivate));
       formData.append('userId', user?._id || '');
       
       // Add media if present
       if (media) {
+        console.log('Adding media to form data:', media);
         formData.append('media', {
           uri: media.uri,
           type: media.type === 'image' ? 'image/jpeg' : 'video/mp4',
-          name: media.name
+          name: media.name || `${Date.now()}.${media.type === 'image' ? 'jpg' : 'mp4'}`
         } as any);
       }
+      
+      console.log('Submitting post with content length:', postContent.length);
       
       // Submit to server
       const response = await fetch(API_ROUTES.CREATE_POST, {
@@ -164,8 +172,42 @@ export default function CreatePostScreen() {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create post');
+        let errorMessage = 'Failed to create post';
+        try {
+          const errorText = await response.text();
+          console.log('Error response text:', errorText);
+          
+          // Try to parse as JSON
+          try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.message || errorMessage;
+          } catch (parseError) {
+            // If parsing fails, use the raw text if it's not empty
+            if (errorText && errorText.trim()) {
+              errorMessage = `Server error: ${errorText.trim()}`;
+            }
+          }
+        } catch (responseError) {
+          console.error('Error reading response:', responseError);
+        }
+        
+        // Show error with retry option
+        Alert.alert(
+          'Error',
+          errorMessage,
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Retry', 
+              onPress: () => {
+                setIsSubmitting(false);
+                // Wait a moment before retrying
+                setTimeout(() => submitPost(), 1000);
+              } 
+            }
+          ]
+        );
+        return;
       }
       
       // Success! Go back to community page
@@ -176,7 +218,21 @@ export default function CreatePostScreen() {
       );
     } catch (error) {
       console.error('Error creating post:', error);
-      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to create post');
+      Alert.alert(
+        'Error', 
+        error instanceof Error ? error.message : 'Failed to create post',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Retry', 
+            onPress: () => {
+              setIsSubmitting(false);
+              // Wait a moment before retrying
+              setTimeout(() => submitPost(), 1000);
+            } 
+          }
+        ]
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -201,7 +257,7 @@ export default function CreatePostScreen() {
     } else {
       return (
         <View style={styles.mediaPreviewContainer}>
-          <Video
+          <ExpoVideo
             ref={videoRef}
             source={{ uri: media.uri }}
             style={styles.mediaPreview}
