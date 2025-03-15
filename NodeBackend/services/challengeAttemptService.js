@@ -111,4 +111,19 @@ exports.getTopAttempts = async (challengeId, limit = 3) => {
     .sort({ score: -1 })
     .limit(limit)
     .populate('user', 'displayName username profilePicture email');
+};
+
+// Get all attempts
+exports.getAllAttempts = async () => {
+  return await ChallengeAttempt.find()
+    .populate('user', 'displayName username profilePicture')
+    .populate('challenge', 'title description')
+    .sort({ createdAt: -1 });
+};
+
+// Get attempt by ID
+exports.getAttemptById = async (attemptId) => {
+  return await ChallengeAttempt.findById(attemptId)
+    .populate('user', 'displayName username profilePicture')
+    .populate('challenge', 'title description');
 }; 

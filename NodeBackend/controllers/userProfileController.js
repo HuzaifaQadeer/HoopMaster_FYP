@@ -1,9 +1,9 @@
-const User = require('../models/User');
-const Post = require('../models/Post');
-const Report = require('../models/Report');
-const Challenge = require('../models/Challenge');
-const ChallengeAttempt = require('../models/ChallengeAttempt');
-const Achievement = require('../models/Achievement');
+const User = require('../models/userModel');
+const Post = require('../models/postModel');
+const Report = require('../models/reportModel');
+const Challenge = require('../models/challengeModel');
+const ChallengeAttempt = require('../models/challengeAttemptModel');
+const Achievement = require('../models/achievementModel');
 
 // Get user profile
 exports.getUserProfile = async (req, res) => {
@@ -18,17 +18,17 @@ exports.getUserProfile = async (req, res) => {
     
     // Get user stats
     const postsCount = await Post.countDocuments({ 
-      userId, 
+      user: userId, 
       isDeleted: false 
     });
     
     const attemptCount = await ChallengeAttempt.countDocuments({
-      userId,
+      user: userId,
       status: { $ne: 'rejected' }
     });
     
     const achievementCount = await Achievement.countDocuments({
-      userId
+      user: userId
     });
     
     // Check if requesting user has admin privileges
@@ -203,7 +203,7 @@ exports.getUserPosts = async (req, res) => {
     
     // Base query
     const query = { 
-      userId, 
+      user: userId, 
       isDeleted: false 
     };
     
@@ -216,7 +216,7 @@ exports.getUserPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('userId', 'displayName username profilePicture');
+      .populate('user', 'displayName username profilePicture');
     
     // Get total count for pagination
     const total = await Post.countDocuments(query);
@@ -246,7 +246,7 @@ exports.getUserAchievements = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    const achievements = await Achievement.find({ userId })
+    const achievements = await Achievement.find({ user: userId })
       .sort({ awardedAt: -1 })
       .populate('challenge', 'title description');
     
@@ -272,18 +272,18 @@ exports.getUserChallengeAttempts = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const attempts = await ChallengeAttempt.find({ 
-      userId,
+      user: userId,
       status: { $ne: 'rejected' }
     })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('challengeId', 'title description')
-      .populate('userId', 'displayName username profilePicture');
+      .populate('challenge', 'title description')
+      .populate('user', 'displayName username profilePicture');
     
     // Get total count for pagination
     const total = await ChallengeAttempt.countDocuments({ 
-      userId,
+      user: userId,
       status: { $ne: 'rejected' }
     });
     

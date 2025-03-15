@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Admin = require('../models/adminModel');
 
-const authMiddleware = async (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
     // Get token from Authorization header
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -47,4 +47,5 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+// Export as an object with the protect property
+module.exports = { protect };

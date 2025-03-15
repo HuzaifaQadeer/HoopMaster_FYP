@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const challengeController = require('../controllers/challengeController');
-const authMiddleware = require('../middleware/authMiddleware');
-const adminMiddleware = require('../middleware/adminMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 // Admin routes
-router.post('/create', authMiddleware, adminMiddleware, challengeController.createChallenge);
-router.delete('/:id', authMiddleware, adminMiddleware, challengeController.deleteChallenge);
-router.get('/check-expired', authMiddleware, adminMiddleware, challengeController.checkExpiredChallenges);
+router.post('/create', protect, challengeController.createChallenge);
+router.delete('/:id', protect, challengeController.deleteChallenge);
+router.get('/check-expired', protect, challengeController.checkExpiredChallenges);
 
 // Public routes
 router.get('/all', challengeController.getAllChallenges);

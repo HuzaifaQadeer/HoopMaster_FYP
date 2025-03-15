@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const courseController = require('../controllers/courseController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
 router.get('/all', courseController.getAllCourses);
@@ -11,13 +11,13 @@ router.get('/parameters', courseController.getCoursesByParameters);
 router.get('/:id', courseController.getCourseById);
 
 // Protected routes (require authentication)
-router.post('/create', authMiddleware, courseController.createCourse);
-router.get('/user/courses', authMiddleware, courseController.getUserCourses);
-router.post('/register', authMiddleware, courseController.registerUserForCourse);
-router.delete('/abandon/:courseId', authMiddleware, courseController.abandonCourse);
-router.get('/:courseId/drills', authMiddleware, courseController.getCourseDrills);
-router.get('/:courseId/session/:sessionNumber', authMiddleware, courseController.getCourseSessionDrills);
-router.get('/:courseId/progress', authMiddleware, courseController.getCourseProgress);
-router.put('/:courseId/progress/:sessionNumber', authMiddleware, courseController.updateCourseProgress);
+router.post('/create', protect, courseController.createCourse);
+router.get('/user/courses', protect, courseController.getUserCourses);
+router.post('/register', protect, courseController.registerUserForCourse);
+router.delete('/abandon/:courseId', protect, courseController.abandonCourse);
+router.get('/:courseId/drills', protect, courseController.getCourseDrills);
+router.get('/:courseId/session/:sessionNumber', protect, courseController.getCourseSessionDrills);
+router.get('/:courseId/progress', protect, courseController.getCourseProgress);
+router.put('/:courseId/progress/:sessionNumber', protect, courseController.updateCourseProgress);
 
 module.exports = router;

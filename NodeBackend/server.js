@@ -7,12 +7,13 @@ const fileUpload = require('express-fileupload');
 
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
-const drillRoutes = require('./routes/drillRoutes');
-const courseRoutes = require('./routes/courseRoutes');
 const challengeRoutes = require('./routes/challengeRoutes');
+const challengeAttemptRoutes = require('./routes/challengeAttemptRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
 const postRoutes = require('./routes/postRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const userProfileRoutes = require('./routes/userProfileRoutes');
 const premiumRoutes = require('./routes/premiumRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
@@ -41,12 +42,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/users', userRoutes);
-app.use('/drills', drillRoutes);
-app.use('/courses', courseRoutes);
 app.use('/challenges', challengeRoutes);
+app.use('/challenge-attempts', challengeAttemptRoutes);
+app.use('/achievements', achievementRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments', commentRoutes);
 app.use('/reports', reportRoutes);
+app.use('/user-profiles', userProfileRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/admin', adminRoutes);
 app.use('/revenue', revenueRoutes);

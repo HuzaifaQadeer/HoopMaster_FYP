@@ -1,6 +1,6 @@
 const cron = require('node-cron');
-const Post = require('../models/Post');
-const Comment = require('../models/Comment');
+const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
 const fs = require('fs');
 const path = require('path');
 

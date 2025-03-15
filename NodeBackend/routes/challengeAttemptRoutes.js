@@ -1,10 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const challengeAttemptController = require('../controllers/challengeAttemptController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+// Debug: Check if controller functions are properly exported
+console.log('Controller functions:', Object.keys(challengeAttemptController));
+console.log('createAttempt function:', typeof challengeAttemptController.createAttempt);
+console.log('getAttemptsByChallenge function:', typeof challengeAttemptController.getAttemptsByChallenge);
+console.log('getUserAttempt function:', typeof challengeAttemptController.getUserAttempt);
+console.log('voteOnAttempt function:', typeof challengeAttemptController.voteOnAttempt);
+console.log('getAllAttempts function:', typeof challengeAttemptController.getAllAttempts);
+console.log('getAttemptById function:', typeof challengeAttemptController.getAttemptById);
+
+// Basic route for testing
+router.get('/', (req, res) => {
+  res.json({ message: 'Challenge attempts API' });
+});
 
 // Set up multer storage for challenge videos
 const storage = multer.diskStorage({
@@ -39,28 +53,29 @@ const upload = multer({
   }
 });
 
-// Create a new challenge attempt
-router.post('/:challengeId', 
-  authMiddleware, 
-  upload.single('video'), 
-  challengeAttemptController.createAttempt
-);
+// Add routes one by one
+router.get('/challenge/:challengeId', protect, (req, res) => {
+  challengeAttemptController.getAttemptsByChallenge(req, res);
+});
 
-// Get all attempts for a challenge
-router.get('/challenge/:challengeId', 
-  challengeAttemptController.getAttemptsByChallenge
-);
+router.get('/user/:challengeId', protect, (req, res) => {
+  challengeAttemptController.getUserAttempt(req, res);
+});
 
-// Get a user's attempt for a challenge
-router.get('/user/:challengeId', 
-  authMiddleware, 
-  challengeAttemptController.getUserAttempt
-);
+router.get('/all', protect, (req, res) => {
+  challengeAttemptController.getAllAttempts(req, res);
+});
 
-// Vote on an attempt
-router.post('/vote/:attemptId', 
-  authMiddleware, 
-  challengeAttemptController.voteOnAttempt
-);
+router.get('/attempt/:id', protect, (req, res) => {
+  challengeAttemptController.getAttemptById(req, res);
+});
+
+router.post('/:challengeId', protect, upload.single('video'), (req, res) => {
+  challengeAttemptController.createAttempt(req, res);
+});
+
+router.post('/vote/:attemptId', protect, (req, res) => {
+  challengeAttemptController.voteOnAttempt(req, res);
+});
 
 module.exports = router; 

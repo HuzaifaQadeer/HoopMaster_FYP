@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/userModel');
 
 /**
  * Middleware to check if a user is banned before allowing access to routes
@@ -51,4 +51,4 @@ const checkBan = async (req, res, next) => {
   }
 };
 
-module.exports = checkBan;
+module.exports = { checkBan };

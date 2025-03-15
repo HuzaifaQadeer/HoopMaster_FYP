@@ -1,13 +1,13 @@
-const Post = require('../models/Post');
-const User = require('../models/User');
-const Comment = require('../models/Comment');
+const Post = require('../models/postModel');
+const User = require('../models/userModel');
+const Comment = require('../models/commentModel');
 const fs = require('fs');
 const path = require('path');
 
 // Helper function to format post data
 const formatPostData = async (post, userId = null) => {
   // Populate user data
-  await post.populate('userId', 'displayName username profilePicture');
+  await post.populate('user', 'displayName username profilePicture');
   
   const formattedPost = post.toObject({ virtuals: true });
   
@@ -30,14 +30,14 @@ exports.getAllPosts = async (req, res) => {
     
     // If userId provided, filter by user
     if (userId) {
-      query.userId = userId;
+      query.user = userId;
     }
     
     // If not an admin, only show public posts or posts by the authenticated user
     if (!req.user.isAdmin) {
       query.$or = [
         { isPrivate: false },
-        { userId: req.user._id }
+        { user: req.user._id }
       ];
     }
     
@@ -81,7 +81,7 @@ exports.getPost = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to view this post' });
     }
     
@@ -105,7 +105,7 @@ exports.createPost = async (req, res) => {
     
     const postData = {
       content: content || '',
-      userId,
+      user: userId,
       isPrivate: isPrivate === 'true' || isPrivate === true
     };
     
@@ -127,8 +127,10 @@ exports.createPost = async (req, res) => {
         const mediaUrl = `${baseUrl}/uploads${relativePath}`;
         
         // Add media data to post
-        postData.mediaUrl = mediaUrl;
-        postData.mediaType = mediaType;
+        postData.media = {
+          type: mediaType,
+          url: mediaUrl
+        };
         postData.hasMedia = true;
       } catch (uploadError) {
         console.error('Error processing media:', uploadError);
@@ -168,7 +170,7 @@ exports.updatePost = async (req, res) => {
     }
     
     // Check if user is the author
-    if (post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to update this post' });
     }
     
@@ -196,15 +198,15 @@ exports.deletePost = async (req, res) => {
     }
     
     // Check if user is the author or an admin
-    if (post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to delete this post' });
     }
     
     // If post has media, delete the file
-    if (post.hasMedia && post.mediaUrl) {
+    if (post.hasMedia && post.media && post.media.url) {
       try {
         // Extract the file path from the URL
-        const urlParts = post.mediaUrl.split('/uploads');
+        const urlParts = post.media.url.split('/uploads');
         if (urlParts.length > 1) {
           const relativePath = urlParts[1];
           const filePath = path.join(__dirname, '../uploads', relativePath);
@@ -225,7 +227,7 @@ exports.deletePost = async (req, res) => {
     
     // Also mark all comments as deleted
     await Comment.updateMany(
-      { postId: post._id },
+      { post: post._id },
       { isDeleted: true }
     );
     
@@ -279,15 +281,15 @@ exports.getPostComments = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to view this post' });
     }
     
     const comments = await Comment.find({
-      postId: req.params.id,
+      post: req.params.id,
       isDeleted: false
     })
-      .populate('userId', 'displayName username profilePicture')
+      .populate('user', 'displayName username profilePicture')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
@@ -313,14 +315,14 @@ exports.getPostMedia = async (req, res) => {
     }
     
     // Check if user can view this post (public or owned by user)
-    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to view this media' });
     }
     
     // Return the media URL
     res.status(200).json({ 
-      mediaUrl: post.mediaUrl,
-      mediaType: post.mediaType
+      mediaUrl: post.media.url,
+      mediaType: post.media.type
     });
   } catch (error) {
     console.error('Error getting post media:', error);

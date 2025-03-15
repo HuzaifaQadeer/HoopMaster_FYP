@@ -1,10 +1,10 @@
-const Comment = require('../models/Comment');
-const Post = require('../models/Post');
+const Comment = require('../models/commentModel');
+const Post = require('../models/postModel');
 
 // Create a new comment
 exports.createComment = async (req, res) => {
   try {
-    const { content, postId, userId } = req.body;
+    const { content, postId } = req.body;
     
     if (!content || !content.trim()) {
       return res.status(400).json({ message: 'Comment content is required' });
@@ -18,15 +18,15 @@ exports.createComment = async (req, res) => {
     }
     
     // Check if user can comment on this post (public or owned by user)
-    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to comment on this post' });
     }
     
     // Create and save the comment
     const comment = new Comment({
       content: content.trim(),
-      postId,
-      userId: req.user._id
+      post: postId,
+      user: req.user._id
     });
     
     await comment.save();
@@ -36,7 +36,7 @@ exports.createComment = async (req, res) => {
     await post.save();
     
     // Populate user data before sending response
-    await comment.populate('userId', 'displayName username profilePicture');
+    await comment.populate('user', 'displayName username profilePicture');
     
     res.status(201).json(comment);
   } catch (error) {
@@ -61,7 +61,7 @@ exports.updateComment = async (req, res) => {
     }
     
     // Check if user is the author or admin
-    if (comment.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (comment.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to update this comment' });
     }
     
@@ -70,7 +70,7 @@ exports.updateComment = async (req, res) => {
     await comment.save();
     
     // Populate user data before sending response
-    await comment.populate('userId', 'displayName username profilePicture');
+    await comment.populate('user', 'displayName username profilePicture');
     
     res.status(200).json(comment);
   } catch (error) {
@@ -89,14 +89,14 @@ exports.deleteComment = async (req, res) => {
     }
     
     // Check if user is the author, post owner, or admin
-    const isCommentAuthor = comment.userId.toString() === req.user._id.toString();
+    const isCommentAuthor = comment.user.toString() === req.user._id.toString();
     
     // If not the comment author, check if they are the post owner
     let isPostOwner = false;
     
     if (!isCommentAuthor) {
-      const post = await Post.findById(comment.postId);
-      isPostOwner = post && post.userId.toString() === req.user._id.toString();
+      const post = await Post.findById(comment.post);
+      isPostOwner = post && post.user.toString() === req.user._id.toString();
     }
     
     // If not comment author, post owner or admin, reject
@@ -109,7 +109,7 @@ exports.deleteComment = async (req, res) => {
     await comment.save();
     
     // Decrement the comment count on the post
-    const post = await Post.findById(comment.postId);
+    const post = await Post.findById(comment.post);
     if (post) {
       post.commentCount = Math.max(0, post.commentCount - 1);
       await post.save();
@@ -128,21 +128,21 @@ exports.getComment = async (req, res) => {
     const comment = await Comment.findOne({
       _id: req.params.id,
       isDeleted: false
-    }).populate('userId', 'displayName username profilePicture');
+    }).populate('user', 'displayName username profilePicture');
     
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
     
     // Check if user can view the associated post
-    const post = await Post.findById(comment.postId);
+    const post = await Post.findById(comment.post);
     
     if (!post || post.isDeleted) {
       return res.status(404).json({ message: 'Associated post not found or deleted' });
     }
     
     // Check permissions for private posts
-    if (post.isPrivate && post.userId.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (post.isPrivate && post.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'You do not have permission to view this comment' });
     }
     

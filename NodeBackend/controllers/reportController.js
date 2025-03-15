@@ -1,11 +1,11 @@
-const Report = require('../models/Report');
-const Post = require('../models/Post');
-const Comment = require('../models/Comment');
+const Report = require('../models/reportModel');
+const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
 
 // Create a new report
 exports.createReport = async (req, res) => {
   try {
-    const { reason, contentType, contentId, reportedBy } = req.body;
+    const { reason, contentType, contentId } = req.body;
     
     if (!reason || !contentType || !contentId) {
       return res.status(400).json({ message: 'Reason, content type, and content ID are required' });
@@ -32,7 +32,7 @@ exports.createReport = async (req, res) => {
     const existingReport = await Report.findOne({
       contentType,
       contentId,
-      reportedBy: req.user._id
+      reporter: req.user._id
     });
     
     if (existingReport) {
@@ -44,7 +44,7 @@ exports.createReport = async (req, res) => {
       reason,
       contentType,
       contentId,
-      reportedBy: req.user._id
+      reporter: req.user._id
     });
     
     await newReport.save();
@@ -87,7 +87,7 @@ exports.getAllReports = async (req, res) => {
     
     // Get reports
     const reports = await Report.find(query)
-      .populate('reportedBy', 'displayName username')
+      .populate('reporter', 'displayName username')
       .populate('reviewedBy', 'displayName username')
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -119,7 +119,7 @@ exports.getReport = async (req, res) => {
     }
     
     const report = await Report.findById(req.params.id)
-      .populate('reportedBy', 'displayName username profilePicture')
+      .populate('reporter', 'displayName username profilePicture')
       .populate('reviewedBy', 'displayName username');
       
     if (!report) {
@@ -130,10 +130,10 @@ exports.getReport = async (req, res) => {
     let reportedContent = null;
     if (report.contentType === 'post') {
       reportedContent = await Post.findById(report.contentId)
-        .populate('userId', 'displayName username profilePicture');
+        .populate('user', 'displayName username profilePicture');
     } else if (report.contentType === 'comment') {
       reportedContent = await Comment.findById(report.contentId)
-        .populate('userId', 'displayName username profilePicture');
+        .populate('user', 'displayName username profilePicture');
     }
     
     res.status(200).json({

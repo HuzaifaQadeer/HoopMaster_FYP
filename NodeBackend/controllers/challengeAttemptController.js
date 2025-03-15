@@ -85,4 +85,31 @@ exports.getUserAttempt = async (req, res) => {
     console.error('Error getting user attempt:', error);
     res.status(400).json({ message: error.message });
   }
+};
+
+// Get all attempts
+exports.getAllAttempts = async (req, res) => {
+  try {
+    const attempts = await challengeAttemptService.getAllAttempts();
+    res.json(attempts);
+  } catch (error) {
+    console.error('Error getting all attempts:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get attempt by ID
+exports.getAttemptById = async (req, res) => {
+  try {
+    const attempt = await challengeAttemptService.getAttemptById(req.params.id);
+    
+    if (!attempt) {
+      return res.status(404).json({ message: 'Attempt not found' });
+    }
+    
+    res.json(attempt);
+  } catch (error) {
+    console.error('Error getting attempt by ID:', error);
+    res.status(500).json({ message: error.message });
+  }
 }; 
