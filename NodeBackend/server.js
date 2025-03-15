@@ -74,8 +74,36 @@ app.use('/public/uploads', express.static(path.join(__dirname, 'public/uploads')
 console.log('[Debug Backend] Serving static files from:', path.join(__dirname, 'public/uploads'), 'at path /public/uploads');
 
 // Serve challenge videos from Server/challenges without authentication
-app.use('/challenges', express.static(path.join(__dirname, '../Server/challenges')));
-console.log('[Debug Backend] Serving static files from:', path.join(__dirname, '../Server/challenges'), 'at path /challenges');
+app.use('/challenges', (req, res, next) => {
+  // Add CORS headers specifically for video files
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Accept-Ranges', 'bytes');
+  res.header('Cache-Control', 'no-cache');
+  
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  // Log video request for debugging
+  console.log(`[Debug Backend] Video request: ${req.path}`);
+  
+  // Continue to static middleware
+  next();
+}, express.static(path.join(__dirname, '../Server/challenges'), {
+  // Set proper content type for videos
+  setHeaders: (res, path) => {
+    if (path.endsWith('.mp4')) {
+      res.set('Content-Type', 'video/mp4');
+    } else if (path.endsWith('.mov')) {
+      res.set('Content-Type', 'video/quicktime');
+    } else if (path.endsWith('.webm')) {
+      res.set('Content-Type', 'video/webm');
+    }
+  }
+}));
 
 // Serve post media from Server/posts
 app.use('/posts', express.static(path.join(__dirname, '../Server/posts')));

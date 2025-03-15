@@ -20,6 +20,7 @@ import { Video, ResizeMode } from 'expo-av';
 import { API_ROUTES } from '@/config/config';
 import config from '@/config/config';
 import { useAuth } from '../../context/AuthContext';
+import ReliableVideoPlayer from '../../components/ReliableVideoPlayer';
 
 const API_BASE_URL = config.API_BASE_URL;
 
@@ -93,42 +94,6 @@ const AttemptCard = ({
     day: 'numeric'
   });
 
-  // Debug video URL
-  useEffect(() => {
-    if (attempt.videoUrl) {
-      const fullUrl = attempt.videoUrl.startsWith('http') 
-        ? attempt.videoUrl 
-        : `${API_BASE_URL}${attempt.videoUrl}`;
-      console.log('Video URL from DB:', attempt.videoUrl);
-      console.log('Full video URL:', fullUrl);
-      console.log('Is absolute URL:', attempt.videoUrl.startsWith('http'));
-      console.log('Auth token:', authToken ? 'Present' : 'Not present');
-      
-      // Test video URL accessibility
-      if (authToken) {
-        fetch(fullUrl, {
-          method: 'HEAD',
-          headers: {
-            'Accept': '*/*',
-            'Origin': API_BASE_URL,
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': `Bearer ${authToken}`
-          }
-        })
-        .then(response => {
-          console.log('Video URL test response:', {
-            status: response.status,
-            ok: response.ok,
-            headers: Object.fromEntries(response.headers.entries())
-          });
-        })
-        .catch(error => {
-          console.error('Video URL test error:', error);
-        });
-      }
-    }
-  }, [attempt.videoUrl, authToken]);
-
   const handleVote = (voteType: 'up' | 'down') => {
     if (!isLoggedIn) {
       onLoginPrompt();
@@ -169,35 +134,28 @@ const AttemptCard = ({
       
       {attempt.videoUrl && authToken && (
         <View style={styles.videoContainer}>
-          <Video
-            source={{ 
-              uri: attempt.videoUrl.startsWith('http') 
-                ? attempt.videoUrl 
-                : `${API_BASE_URL}${attempt.videoUrl}`,
-              headers: {
-                'Accept': '*/*',
-                'Origin': API_BASE_URL,
-                'Access-Control-Allow-Origin': '*',
-                'Authorization': `Bearer ${authToken}`
-              }
+          <ReliableVideoPlayer
+            uri={attempt.videoUrl.startsWith('http') 
+              ? attempt.videoUrl 
+              : `${API_BASE_URL}${attempt.videoUrl}`}
+            headers={{
+              'Accept': '*/*',
+              'Origin': API_BASE_URL,
+              'Access-Control-Allow-Origin': '*',
+              'Authorization': `Bearer ${authToken}`
             }}
             style={styles.video}
-            useNativeControls
+            useNativeControls={true}
             resizeMode={ResizeMode.CONTAIN}
-            isLooping
+            isLooping={true}
             shouldPlay={false}
-            onError={(error: { error: string }) => {
-              console.error('Video playback error:', error);
-            }}
-            onLoadStart={() => {
-              console.log('Video load started');
-            }}
-            onLoad={(status: { uri: string }) => {
-              console.log('Video loaded successfully:', status);
-            }}
             onPlaybackStatusUpdate={(status: any) => {
-              console.log('Video playback status:', status);
-              setVideoStatus({ isPlaying: status.isLoaded && status.isPlaying });
+              if (status.isLoaded) {
+                setVideoStatus({ isPlaying: status.isPlaying });
+              }
+            }}
+            onError={(error: any) => {
+              console.error('Video playback error in AttemptCard:', error);
             }}
           />
         </View>
