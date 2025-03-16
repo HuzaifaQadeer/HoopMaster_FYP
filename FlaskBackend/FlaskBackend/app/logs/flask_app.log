@@ -13992,3 +13992,61 @@ Exception: Error analyzing practice video: No module named 'yolov5'
 2025-03-16 16:14:36,658 - app - INFO - [__init__.py:53] - Flask application initialized successfully
 2025-03-16 16:14:36,690 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
 2025-03-16 16:14:36,705 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791
+2025-03-16 16:27:05,232 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 16:27:05,232 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 16:27:05,232 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 16:27:05,232 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 16:27:05,232 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 16:27:15,727 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 16:27:15,737 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 16:27:15,741 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 16:27:16,594 - werkzeug - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.46.123:8080
+2025-03-16 16:27:16,594 - werkzeug - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-03-16 16:27:16,602 - werkzeug - INFO - [_internal.py:97] -  * Restarting with watchdog (windowsapi)
+2025-03-16 16:27:17,101 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 16:27:17,101 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 16:27:17,106 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 16:27:17,106 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 16:27:17,106 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 16:27:29,758 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 16:27:29,766 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 16:27:29,772 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 16:27:29,779 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 16:27:29,779 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 16:27:29,790 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 16:27:29,790 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 16:27:29,790 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 16:27:29,795 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 16:27:29,933 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
+2025-03-16 16:27:29,948 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791

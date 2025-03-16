@@ -21,7 +21,7 @@ exports.getSubscriptionStatus = async (req, res) => {
 exports.checkPremiumExpiry = async (req, res) => {
   try {
     const result = await subscriptionService.checkPremiumExpiry();
-    res.json(result);
+    res.json({ message: 'Premium expiry check completed', result });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

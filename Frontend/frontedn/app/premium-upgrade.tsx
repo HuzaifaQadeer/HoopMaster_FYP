@@ -151,7 +151,7 @@ const PremiumUpgradeScreen = () => {
         'You have successfully upgraded to premium!',
         [{ text: 'OK', onPress: () => router.back() }]
       );
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to upgrade to premium');
     } finally {
       setIsLoading(false);
