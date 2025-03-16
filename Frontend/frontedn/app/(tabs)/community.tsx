@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -19,17 +19,22 @@ import { API_ROUTES } from '@/config/config';
 import { useAuth } from '../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import config from '@/config/config';
+import ProfilePicture from '@/components/custom/ProfilePicture';
 
 // Add API base URL constant
 const API_BASE_URL = config.API_BASE_URL;
 
+// Helper function to get full media URL
+const getFullMediaUrl = (url: string) => {
+  if (url.startsWith('http')) return url;
+  return `${API_BASE_URL}${url}`;
+};
+
 // Interface definitions
 interface Participant {
   _id: string;
-  name: string;
   displayName: string;
   profilePicture?: string;
-  score?: string;
 }
 
 interface Challenge {
@@ -38,30 +43,34 @@ interface Challenge {
   description: string;
   startDate: string;
   endDate: string;
-  participants: Participant[];
   participantCount: number;
   status: 'upcoming' | 'active' | 'completed';
   thumbnail?: string;
+  topParticipants?: {
+    user: {
+      displayName: string;
+      _id: string;
+      profilePicture?: string;
+    };
+    score: number;
+  }[];
 }
 
 interface User {
   id: string;
   displayName: string;
   profilePicture?: string;
-  email?: string;
 }
 
 interface Post {
   id: string;
   content: string;
   date: string;
-  author: string;
   user: User;
   media?: {
     type: 'image' | 'video';
     url: string;
   };
-  status?: string;
   likes?: string[];
   liked?: boolean;
 }
@@ -69,140 +78,103 @@ interface Post {
 const ChallengeCard = ({ challenge, onPress }: { challenge: Challenge, onPress: () => void }) => {
   const { colors } = useTheme();
   
-  // Calculate time remaining
-  const endDate = new Date(challenge.endDate);
-  const now = new Date();
-  const timeRemaining = getTimeRemaining(endDate, now);
-  
   return (
     <TouchableOpacity 
-      style={[styles.challengeCard, { backgroundColor: '#FF6B00' }]}
+      style={[styles.challengeCard]} 
       onPress={onPress}
     >
-      <Text style={styles.challengeTitle}>{challenge.title}</Text>
-      <Text style={styles.challengeDescription}>{challenge.description}</Text>
-      <View style={styles.participantsContainer}>
-        <Text style={styles.participantsLabel}>Top Participants:</Text>
-        {challenge.participants && challenge.participants.slice(0, 4).map((participant, index) => (
-          <View key={participant._id || index} style={styles.participantRow}>
-            <Text style={styles.participantName}>
-              {index === 0 && challenge.participants.length > 0 && 'You' in participant ? 'You' : participant.displayName || 'Anonymous'}
-            </Text>
-            <Text style={styles.participantScore}>{participant.score || '0'}</Text>
-          </View>
-        ))}
-        {(!challenge.participants || challenge.participants.length === 0) && (
-          <Text style={styles.noParticipantsText}>No participants yet. Be the first!</Text>
-        )}
+      <View style={styles.challengeHeader}>
+        <Text style={styles.challengeTitle}>{challenge.title}</Text>
+        <Text style={styles.challengeParticipants}>
+          {challenge.participantCount} participants
+        </Text>
       </View>
-      <Text style={styles.timeRemaining}>Time remaining: {timeRemaining}</Text>
+      <Text style={styles.challengeDescription} numberOfLines={2}>
+        {challenge.description}
+      </Text>
+      
+      {challenge.topParticipants && challenge.topParticipants.length > 0 && (
+        <View style={styles.topParticipantsContainer}>
+          <Text style={styles.topParticipantsTitle}>Top Participants</Text>
+          {challenge.topParticipants.slice(0, 3).map((participant, index) => (
+            <View key={participant.user._id} style={styles.participantRow}>
+              <View style={styles.participantInfo}>
+                <Text style={styles.rankNumber}>#{index + 1}</Text>
+                <ProfilePicture userId={participant.user._id} size={24} />
+                <Text style={styles.participantName} numberOfLines={1}>
+                  {participant.user.displayName}
+                </Text>
+              </View>
+              <Text style={styles.participantScore}>{participant.score} pts</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <Text style={styles.challengeTimeRemaining}>
+        {getTimeRemaining(new Date(challenge.endDate), new Date())}
+      </Text>
     </TouchableOpacity>
   );
 };
 
 const SocialPost = ({ post, onPress, onLike }: { post: Post, onPress: () => void, onLike: () => void }) => {
   const { colors } = useTheme();
+  const router = useRouter();
   const { getToken } = useAuth();
-  const [authToken, setAuthToken] = useState<string | null>(null);
-  const formattedTime = formatPostTime(post.date);
-  
-  // Fetch authentication token
+  const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await getToken();
-      setAuthToken(token);
+      const authToken = await getToken();
+      setToken(authToken);
     };
     fetchToken();
-  }, []);
-  
-  // Helper function to get the full media URL
-  const getFullMediaUrl = (url: string) => {
-    if (url.startsWith('http')) {
-      return url;
-    }
-    return `${API_BASE_URL}${url}`;
-  };
-  
-  // Debug media URL
-  useEffect(() => {
-    if (post.media?.url) {
-      const fullUrl = getFullMediaUrl(post.media.url);
-      console.log('[Debug Media] Post ID:', post.id);
-      console.log('[Debug Media] Original media URL:', post.media.url);
-      console.log('[Debug Media] Full media URL:', fullUrl);
-      console.log('[Debug Media] Media type:', post.media.type);
-      console.log('[Debug Media] Auth token present:', !!authToken);
-      
-      // Test media URL accessibility
-      if (authToken) {
-        fetch(fullUrl, {
-          method: 'HEAD',
-          headers: {
-            'Accept': '*/*',
-            'Origin': API_BASE_URL,
-            'Authorization': `Bearer ${authToken}`
-          }
-        })
-        .then(response => {
-          console.log('[Debug Media] URL test response:', {
-            status: response.status,
-            ok: response.ok,
-            headers: Object.fromEntries(response.headers.entries())
-          });
-        })
-        .catch(error => {
-          console.error('[Debug Media] URL test error:', error);
-        });
-      }
-    }
-  }, [post.media, authToken]);
-  
+  }, [getToken]);
+
   return (
     <TouchableOpacity 
-      style={[styles.postCard, { backgroundColor: colors.background }]}
+      style={[styles.postCard, { backgroundColor: colors.card }]} 
       onPress={onPress}
     >
       <View style={styles.postHeader}>
-        <Image 
-          source={{ 
-            uri: post.user.profilePicture || 
-              "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-          }} 
-          style={styles.profilePic} 
-        />
-        <View>
-          <Text style={[styles.authorName, { color: colors.text }]}>{post.user.displayName}</Text>
-          <Text style={styles.postTime}>{formattedTime}</Text>
-        </View>
+        <TouchableOpacity 
+          style={styles.userInfo}
+          onPress={() => post.user && router.push(`/user-profile/${post.user.id}`)}
+        >
+          <ProfilePicture userId={post.user.id} size={40} />
+          <View>
+            <Text style={[styles.username, { color: colors.text }]}>
+              {post.user.displayName}
+            </Text>
+            <Text style={[styles.postTime, { color: colors.text }]}>
+              {formatPostTime(post.date)}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
-      <Text style={[styles.postContent, { color: colors.text }]}>{post.content}</Text>
-      
-      {post.media?.type && post.media?.url && (
+
+      <Text style={[styles.postContent, { color: colors.text }]}>
+        {post.content}
+      </Text>
+
+      {post.media && post.media.type && post.media.url && (
         <View style={styles.mediaContainer}>
           {post.media.type === 'image' ? (
             <Image 
               source={{ 
                 uri: getFullMediaUrl(post.media.url),
-                headers: authToken ? {
-                  'Authorization': `Bearer ${authToken}`
+                headers: token ? {
+                  'Authorization': `Bearer ${token}`
                 } : undefined
               }} 
               style={styles.postImage}
-              resizeMode="cover"
             />
-          ) : post.media.type === 'video' ? (
-            <TouchableOpacity 
-              style={styles.postVideo}
-              onPress={onPress}
-            >
-              <Ionicons name="play-circle" size={48} color="white" />
-              <Text style={styles.videoPlayText}>Tap to play video</Text>
-            </TouchableOpacity>
           ) : null}
         </View>
       )}
-      
-      <View style={styles.postActions}>
+
+      <View style={styles.postFooter}>
         <TouchableOpacity 
           style={styles.likeButton} 
           onPress={onLike}
@@ -212,10 +184,9 @@ const SocialPost = ({ post, onPress, onLike }: { post: Post, onPress: () => void
             size={24} 
             color={post.liked ? "#FF6B00" : colors.text} 
           />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.commentButton}>
-          <Ionicons name="chatbubble-outline" size={22} color={colors.text} />
+          <Text style={[styles.likeCount, { color: colors.text }]}>
+            {post.likes?.length || 0}
+          </Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -231,7 +202,8 @@ const CommunityPage = () => {
   const [loading, setLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [banStatus, setBanStatus] = useState<{isBanned: boolean, bannedUntil: string, banReason: string} | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
 
   useEffect(() => {
     checkBanStatus();
@@ -269,11 +241,7 @@ const CommunityPage = () => {
           const now = new Date();
           
           if (bannedUntil > now) {
-            setBanStatus({
-              isBanned: true,
-              bannedUntil: data.bannedUntil,
-              banReason: data.banReason
-            });
+            setIsBanned(true);
           }
         }
       }
@@ -331,18 +299,10 @@ const CommunityPage = () => {
           description: challenge.description || '',
           startDate: challenge.startDate || new Date().toISOString(),
           endDate: challenge.endDate || new Date().toISOString(),
-          participants: Array.isArray(challenge.participants) 
-            ? challenge.participants.map((p: any) => ({
-                _id: p._id || p.id || '',
-                name: p.name || '',
-                displayName: p.displayName || 'Anonymous',
-                profilePicture: p.profilePicture,
-                score: p.score || '0'
-              }))
-            : [],
           participantCount: challenge.participantCount || (challenge.participants?.length || 0),
           status: challenge.status || 'active',
-          thumbnail: challenge.thumbnail || ''
+          thumbnail: challenge.thumbnail || '',
+          topParticipants: challenge.topParticipants || []
         }));
       
       console.log(`Found ${validChallenges.length} valid challenges after processing`);
@@ -398,15 +358,12 @@ const CommunityPage = () => {
         id: post._id || post.id,
         content: post.content || '',
         date: post.createdAt || post.date || new Date().toISOString(),
-        author: post.author || '',
         user: {
           id: post.user?._id || post.user?.id || '',
           displayName: post.user?.displayName || 'Unknown User',
           profilePicture: post.user?.profilePicture || null,
-          email: post.user?.email || ''
         },
         media: post.media,
-        status: post.status || '',
         likes: post.likes || [],
         liked: post.likes ? post.likes.includes(user?._id) : false
       }));
@@ -483,51 +440,18 @@ const CommunityPage = () => {
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    fetchChallenges();
-    fetchPosts();
-  };
+    await Promise.all([fetchChallenges(), fetchPosts()]);
+    setRefreshing(false);
+  }, [fetchChallenges, fetchPosts]);
 
-  const navigateToChallenge = (challengeId: string) => {
-    router.push(`/challenge-details/${challengeId}` as any);
-  };
-  
-  const navigateToPostDetail = (postId: string) => {
-    router.push({
-      pathname: 'post-detail/[id]' as any,
-      params: { id: postId }
-    });
-  };
-  
-  const navigateToCreatePost = () => {
-    router.push('create-post' as any);
-  };
-
-  // If user is banned, show ban message
-  if (banStatus?.isBanned) {
-    const bannedUntil = new Date(banStatus.bannedUntil);
-    const formattedDate = bannedUntil.toLocaleDateString();
-    const formattedTime = bannedUntil.toLocaleTimeString();
-    
+  if (loading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-        <View style={styles.headerContainer}>
-          <Header />
-        </View>
-        <View style={styles.banContainer}>
-          <Ionicons name="ban" size={80} color="#FF6B00" />
-          <Text style={[styles.banTitle, { color: colors.text }]}>Account Temporarily Restricted</Text>
-          <Text style={[styles.banMessage, { color: colors.text }]}>
-            You are currently banned from accessing the community section.
-          </Text>
-          <Text style={[styles.banReason, { color: colors.text }]}>
-            Reason: {banStatus.banReason}
-          </Text>
-          <Text style={[styles.banExpiry, { color: colors.text }]}>
-            Your access will be restored on {formattedDate} at {formattedTime}.
-          </Text>
+        <Header title="Community" />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF6B00" />
         </View>
       </SafeAreaView>
     );
@@ -535,77 +459,66 @@ const CommunityPage = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-      <View style={styles.headerContainer}>
-        <Header />
-      </View>
-      <ScrollView 
-        style={styles.content}
+      <Header title="Community" />
+      <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
             colors={['#FF6B00']}
+            tintColor="#FF6B00"
           />
         }
       >
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Challenges</Text>
-        
-        {loading ? (
-          <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
-        ) : challenges.length > 0 ? (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            style={styles.challengesScroll}
-          >
-            {challenges.map(challenge => (
-              <ChallengeCard 
-                key={challenge._id} 
-                challenge={challenge} 
-                onPress={() => navigateToChallenge(challenge._id)} 
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Active Challenges</Text>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {challenges.map((challenge) => (
+              <ChallengeCard
+                key={challenge._id}
+                challenge={challenge}
+                onPress={() => router.push(`/challenge-details/${challenge._id}`)}
               />
             ))}
+            {challenges.length === 0 && (
+              <View style={[styles.noContentCard, { backgroundColor: colors.card }]}>
+                <Text style={[styles.noContentText, { color: colors.text }]}>
+                  No active challenges at the moment
+                </Text>
+              </View>
+            )}
           </ScrollView>
-        ) : (
-          <View style={styles.noChallengesContainer}>
-            <Text style={[styles.noChallengesText, { color: colors.text }]}>
-              No active challenges at the moment. Check back soon!
-            </Text>
-          </View>
-        )}
-        
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Community Posts</Text>
         </View>
-        
-        {postsLoading ? (
-          <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
-        ) : posts.length > 0 ? (
-          posts.map(post => (
-            <SocialPost 
-              key={post.id} 
-              post={post} 
-              onPress={() => navigateToPostDetail(post.id)}
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Community Posts</Text>
+            <TouchableOpacity
+              style={styles.createPostButton}
+              onPress={() => router.push('/create-post')}
+            >
+              <Ionicons name="add-circle" size={24} color="#FF6B00" />
+            </TouchableOpacity>
+          </View>
+          {posts.map((post) => (
+            <SocialPost
+              key={post.id}
+              post={post}
+              onPress={() => router.push(`/post-detail/${post.id}`)}
               onLike={() => handleLikePost(post.id)}
             />
-          ))
-        ) : (
-          <View style={styles.noPostsContainer}>
-            <Text style={[styles.noPostsText, { color: colors.text }]}>
-              No posts yet. Be the first to share something with the community!
-            </Text>
-          </View>
-        )}
+          ))}
+          {posts.length === 0 && (
+            <View style={[styles.noContentCard, { backgroundColor: colors.card }]}>
+              <Text style={[styles.noContentText, { color: colors.text }]}>
+                No posts yet. Be the first to share!
+              </Text>
+            </View>
+          )}
+        </View>
       </ScrollView>
-      
-      {/* Floating button to create a new post */}
-      <TouchableOpacity 
-        style={styles.floatingButton}
-        onPress={navigateToCreatePost}
-      >
-        <Ionicons name="add" size={30} color="white" />
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -685,42 +598,86 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginRight: 16,
+    backgroundColor: '#FF6B00',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  challengeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   challengeTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
+    color: '#FFFFFF',
+    flex: 1,
+  },
+  challengeParticipants: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    opacity: 0.9,
   },
   challengeDescription: {
     fontSize: 14,
-    color: 'white',
+    color: '#FFFFFF',
     marginBottom: 16,
+    opacity: 0.9,
   },
-  participantsContainer: {
-    marginBottom: 16,
+  challengeTimeRemaining: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '600',
+    marginTop: 8,
   },
-  participantsLabel: {
-    color: 'white',
+  topParticipantsContainer: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  topParticipantsTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
   },
   participantRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4,
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  participantInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  rankNumber: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginRight: 8,
+    width: 20,
   },
   participantName: {
-    color: 'white',
+    fontSize: 12,
+    color: '#FFFFFF',
+    marginLeft: 8,
+    flex: 1,
+    opacity: 0.9,
   },
   participantScore: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  timeRemaining: {
-    color: 'white',
     fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   postCard: {
     padding: 16,
@@ -734,7 +691,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  authorName: {
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  username: {
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -745,12 +706,6 @@ const styles = StyleSheet.create({
   postContent: {
     fontSize: 14,
     marginBottom: 12,
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
   },
   mediaContainer: {
     width: '100%',
@@ -763,26 +718,27 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  postVideo: {
+  videoContainer: {
     width: '100%',
     height: '100%',
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  videoPlayText: {
+  videoPlaceholder: {
     color: 'white',
-    marginTop: 8,
     fontSize: 14,
   },
-  postActions: {
+  postFooter: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   likeButton: {
     marginRight: 16,
   },
-  commentButton: {
+  likeCount: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   loader: {
     marginVertical: 20,
@@ -796,10 +752,6 @@ const styles = StyleSheet.create({
   noChallengesText: {
     fontSize: 16,
     textAlign: 'center',
-  },
-  noParticipantsText: {
-    color: 'white',
-    fontStyle: 'italic',
   },
   noPostsContainer: {
     padding: 20,
@@ -848,16 +800,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
-  banReason: {
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-    fontStyle: 'italic',
+  section: {
+    padding: 16,
   },
-  banExpiry: {
+  createPostButton: {
+    padding: 8,
+  },
+  noContentCard: {
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 100,
+  },
+  noContentText: {
     fontSize: 16,
-    fontWeight: 'bold',
     textAlign: 'center',
+    opacity: 0.7,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

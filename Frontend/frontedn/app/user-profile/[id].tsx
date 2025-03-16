@@ -9,20 +9,17 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
-  useWindowDimensions,
   SafeAreaView
 } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { FlashList } from '@shopify/flash-list';
-import { TabView, TabBar } from 'react-native-tab-view';
-
+import { Image as ExpoImage } from 'expo-image';
+import { Video, ResizeMode } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '@/context/AuthContext';
-import PostCard from '@/components/custom/PostCard';
 import Achievement from '@/components/custom/achivement';
-import AttemptCard from '@/components/custom/AttemptCard';
 
 // Define interfaces
 interface User {
@@ -31,33 +28,38 @@ interface User {
   displayName: string;
   bio?: string;
   profilePicture?: string;
-  isAdmin: boolean;
-  isBanned: boolean;
-  createdAt: string;
+  highlightVideo?: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    youtube?: string;
+    twitter?: string;
+  };
+  height?: {
+    value: number;
+    unit: string;
+  };
+  weight?: {
+    value: number;
+    unit: string;
+  };
+  wingspan?: {
+    value: number;
+    unit: string;
+  };
+  verticalJump?: {
+    value: number;
+    unit: string;
+  };
+  position?: string;
+  aboutMe?: string;
+  isPremium: boolean;
+  isPrivate: boolean;
   stats: {
     postsCount: number;
     attemptCount: number;
     achievementCount: number;
   };
-}
-
-interface Post {
-  _id: string;
-  content: string;
-  userId: {
-    _id: string;
-    displayName: string;
-    username: string;
-    profilePicture?: string;
-  };
-  createdAt: string;
-  likes: string[];
-  commentCount: number;
-  hasMedia: boolean;
-  mediaType?: 'image' | 'video';
-  mediaUrl?: string;
-  isPrivate: boolean;
-  isLiked?: boolean;
 }
 
 interface Achievement {
@@ -68,61 +70,125 @@ interface Achievement {
   challenge: {
     _id: string;
     title: string;
-    description?: string;
   };
   awardedAt: string;
-}
-
-interface Attempt {
-  _id: string;
-  videoUrl: string;
-  votes: string[];
-  userId: {
-    _id: string;
-    displayName: string;
-    username: string;
-    profilePicture?: string;
-  };
-  challengeId: {
-    _id: string;
-    title: string;
-    description?: string;
-  };
-  createdAt: string;
-  status: string;
-}
-
-interface Tab {
-  key: string;
-  title: string;
 }
 
 export default function UserProfileScreen() {
   const { id } = useLocalSearchParams();
   const { colors } = useTheme();
   const router = useRouter();
-  const { isAuthenticated, getToken, user: currentUser } = useAuth();
-  const layout = useWindowDimensions();
+  const { isAuthenticated, getToken } = useAuth();
   
   // State variables
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [posts, setPosts] = React.useState<Post[]>([]);
   const [achievements, setAchievements] = React.useState<Achievement[]>([]);
-  const [attempts, setAttempts] = React.useState<Attempt[]>([]);
-  const [loadingPosts, setLoadingPosts] = React.useState(false);
-  const [loadingAchievements, setLoadingAchievements] = React.useState(false);
-  const [loadingAttempts, setLoadingAttempts] = React.useState(false);
+  const [loadingAchievements, setLoadingAchievements] = React.useState(true);
   const [refreshing, setRefreshing] = React.useState(false);
-  
-  // Tab state
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState<Tab[]>([
-    { key: 'posts', title: 'Posts' },
-    { key: 'achievements', title: 'Achievements' },
-    { key: 'attempts', title: 'Attempts' }
-  ]);
-  
+  const [imageUri, setImageUri] = React.useState<string | null>(null);
+  const [videoUri, setVideoUri] = React.useState<string | null>(null);
+
+  // Cache user profile data
+  const cacheUserProfile = async (userData: User, userImage: string | null, userVideo: string | null) => {
+    try {
+      if (userData) {
+        // Create separate cache entries for media and user data
+        const userDataOnly = {
+          ...userData,
+          profilePicture: undefined, // Remove large media data
+          highlightVideo: undefined,
+        };
+
+        // Cache core user data
+        await AsyncStorage.setItem(
+          `user_profile_${userData._id}_data`,
+          JSON.stringify({
+            user: userDataOnly,
+            timestamp: Date.now()
+          })
+        );
+
+        // Cache image separately if exists
+        if (userImage) {
+          await AsyncStorage.setItem(
+            `user_profile_${userData._id}_image`,
+            userImage
+          );
+        }
+
+        // Cache video separately if exists
+        if (userVideo) {
+          await AsyncStorage.setItem(
+            `user_profile_${userData._id}_video`,
+            userVideo
+          );
+        }
+
+        console.log('User profile cached successfully');
+      }
+    } catch (error) {
+      console.error('Error caching user profile:', error);
+    }
+  };
+
+  // Retrieve cached user profile
+  const getCachedUserProfile = async (): Promise<{ 
+    user: User | null, 
+    imageUri: string | null, 
+    videoUri: string | null 
+  }> => {
+    try {
+      if (!id) return { user: null, imageUri: null, videoUri: null };
+      
+      // Get core user data
+      const cachedUserData = await AsyncStorage.getItem(`user_profile_${id}_data`);
+      if (cachedUserData) {
+        const parsedData = JSON.parse(cachedUserData);
+        
+        // Check if cache is still valid (less than 1 hour old)
+        const now = Date.now();
+        const cacheAge = now - parsedData.timestamp;
+        const cacheValidityPeriod = 60 * 60 * 1000; // 1 hour in milliseconds
+        
+        if (cacheAge < cacheValidityPeriod) {
+          // Get cached image and video separately
+          const cachedImage = await AsyncStorage.getItem(`user_profile_${id}_image`);
+          const cachedVideo = await AsyncStorage.getItem(`user_profile_${id}_video`);
+          
+          console.log('Using cached user profile data');
+          return {
+            user: parsedData.user,
+            imageUri: cachedImage,
+            videoUri: cachedVideo
+          };
+        } else {
+          console.log('Cached user profile data is expired');
+          // Clean up expired cache
+          await AsyncStorage.multiRemove([
+            `user_profile_${id}_data`,
+            `user_profile_${id}_image`,
+            `user_profile_${id}_video`
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error('Error retrieving cached user profile:', error);
+      // Clean up potentially corrupted cache
+      try {
+        await AsyncStorage.multiRemove([
+          `user_profile_${id}_data`,
+          `user_profile_${id}_image`,
+          `user_profile_${id}_video`
+        ]);
+      } catch (cleanupError) {
+        console.error('Error cleaning up cache:', cleanupError);
+      }
+    }
+    
+    return { user: null, imageUri: null, videoUri: null };
+  };
+
   // Fetch user profile
   const fetchUserProfile = React.useCallback(async () => {
     if (!id) {
@@ -132,65 +198,109 @@ export default function UserProfileScreen() {
     
     try {
       setLoading(true);
+      
+      // Try to get cached profile data first
+      const cachedProfile = await getCachedUserProfile();
+      if (cachedProfile.user) {
+        setUser(cachedProfile.user);
+        setImageUri(cachedProfile.imageUri);
+        setVideoUri(cachedProfile.videoUri);
+        setLoading(false);
+        return;
+      }
+      
+      // If no cache or expired cache, fetch from API
       const token = await getToken();
-      console.log('[Debug] User profile fetch - token available:', !!token);
-      console.log('[Debug] User profile fetch - user ID:', id);
-      console.log('[Debug] User profile fetch - API endpoint:', `${API_ROUTES.GET_USER_PROFILE}/${id}`);
-      
-      const headers = { 'Authorization': `Bearer ${token}` };
-      console.log('[Debug] User profile fetch - headers:', JSON.stringify(headers));
-      
-      const response = await fetch(`${API_ROUTES.GET_USER_PROFILE}/${id}`, {
-        headers
+      const response = await fetch(API_ROUTES.GET_USER_PROFILE.replace(':id', id as string), {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      console.log('[Debug] User profile fetch - response status:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[Debug] User profile fetch - error response:', errorText);
         throw new Error('Failed to fetch user profile');
       }
       
       const data = await response.json();
-      console.log('[Debug] User profile fetch - data received:', JSON.stringify(data).substring(0, 200) + '...');
       setUser(data);
+
+      let fetchedImageUri: string | null = null;
+      let fetchedVideoUri: string | null = null;
+
+      // Fetch profile picture if available
+      if (data.profilePicture) {
+        try {
+          // Using a dynamic URL or data URI if the profile picture is already a full URL
+          if (data.profilePicture.startsWith('http') || data.profilePicture.startsWith('data:')) {
+            fetchedImageUri = data.profilePicture;
+            setImageUri(fetchedImageUri);
+          } else {
+            // If it's just a filename, construct a proper URL to fetch it
+            const pictureUrl = API_ROUTES.GET_USER_PROFILE_PICTURE.replace(':id', id as string);
+            const pictureResponse = await fetch(pictureUrl, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (pictureResponse.ok) {
+              const blob = await pictureResponse.blob();
+              const reader = new FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend = () => {
+                fetchedImageUri = reader.result as string;
+                setImageUri(fetchedImageUri);
+                // Update cache after all data is fetched
+                cacheUserProfile(data, fetchedImageUri, fetchedVideoUri);
+              };
+            }
+          }
+        } catch (error) {
+          // Silently handle image loading error and use default image
+          setImageUri("https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+        }
+      }
+
+      // Fetch highlight video if available
+      if (data.highlightVideo) {
+        try {
+          // Using a dynamic URL or data URI if the highlight video is already a full URL
+          if (data.highlightVideo.startsWith('http') || data.highlightVideo.startsWith('data:')) {
+            fetchedVideoUri = data.highlightVideo;
+            setVideoUri(fetchedVideoUri);
+          } else {
+            // If it's just a filename, construct a proper URL to fetch it
+            const videoUrl = API_ROUTES.GET_USER_HIGHLIGHT_VIDEO.replace(':id', id as string);
+            const videoResponse = await fetch(videoUrl, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (videoResponse.ok) {
+              const blob = await videoResponse.blob();
+              const reader = new FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend = () => {
+                fetchedVideoUri = reader.result as string;
+                setVideoUri(fetchedVideoUri);
+                // Update cache after all data is fetched
+                cacheUserProfile(data, fetchedImageUri, fetchedVideoUri);
+              };
+            }
+          }
+        } catch (error) {
+          // Silently handle video loading error
+        }
+      }
+      
+      // Cache the profile data if we didn't need to process blob data
+      if ((!data.profilePicture || (data.profilePicture && data.profilePicture.startsWith('http'))) &&
+          (!data.highlightVideo || (data.highlightVideo && data.highlightVideo.startsWith('http')))) {
+        cacheUserProfile(data, fetchedImageUri, fetchedVideoUri);
+      }
     } catch (error) {
-      console.error('[Debug] Error fetching user profile:', error);
+      console.error('Error fetching user profile:', error);
       Alert.alert('Error', 'Failed to load user profile');
     } finally {
       setLoading(false);
     }
-  }, [id, getToken, isAuthenticated]);
-  
-  // Fetch user posts
-  const fetchUserPosts = React.useCallback(async () => {
-    if (!id || !isAuthenticated) return;
-    
-    try {
-      setLoadingPosts(true);
-      const token = await getToken();
-      
-      const response = await fetch(`${API_ROUTES.GET_USER_POSTS}/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch user posts');
-      }
-      
-      const data = await response.json();
-      setPosts(data.posts || []);
-    } catch (error) {
-      console.error('Error fetching user posts:', error);
-      Alert.alert('Error', 'Failed to load user posts');
-    } finally {
-      setLoadingPosts(false);
-    }
-  }, [id, getToken, isAuthenticated]);
-  
+  }, [id, getToken]);
+
   // Fetch user achievements
   const fetchUserAchievements = React.useCallback(async () => {
     if (!id || !isAuthenticated) return;
@@ -199,90 +309,54 @@ export default function UserProfileScreen() {
       setLoadingAchievements(true);
       const token = await getToken();
       
-      const response = await fetch(`${API_ROUTES.GET_USER_ACHIEVEMENTS}/${id}`, {
+      // Check if the route exists
+      if (!API_ROUTES.GET_USER_ACHIEVEMENTS) {
+        console.error('Achievement route is not defined');
+        return;
+      }
+      
+      const achievementsUrl = API_ROUTES.GET_USER_ACHIEVEMENTS.replace(':id', id.toString());
+      console.log('Fetching achievements from:', achievementsUrl);
+      
+      const response = await fetch(achievementsUrl, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
       if (!response.ok) {
+        console.error('Failed to fetch user achievements:', response.status);
         throw new Error('Failed to fetch user achievements');
       }
       
       const data = await response.json();
-      setAchievements(data || []);
+      console.log('User achievements data:', data);
+      setAchievements(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching user achievements:', error);
-      Alert.alert('Error', 'Failed to load user achievements');
+      setAchievements([]); // Set empty array on error
     } finally {
       setLoadingAchievements(false);
     }
   }, [id, getToken, isAuthenticated]);
-  
-  // Fetch user challenge attempts
-  const fetchUserAttempts = React.useCallback(async () => {
-    if (!id || !isAuthenticated) return;
-    
-    try {
-      setLoadingAttempts(true);
-      const token = await getToken();
-      
-      const response = await fetch(`${API_ROUTES.GET_USER_ATTEMPTS}/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch user attempts');
-      }
-      
-      const data = await response.json();
-      setAttempts(data.attempts || []);
-    } catch (error) {
-      console.error('Error fetching user attempts:', error);
-      Alert.alert('Error', 'Failed to load user challenge attempts');
-    } finally {
-      setLoadingAttempts(false);
-    }
-  }, [id, getToken, isAuthenticated]);
-  
+
   // Initial data loading
   React.useEffect(() => {
-    fetchUserProfile();
-  }, [fetchUserProfile]);
-  
-  // Load tab data when tab changes
-  React.useEffect(() => {
-    if (!user) return;
-    
-    if (index === 0 && posts.length === 0) {
-      fetchUserPosts();
-    } else if (index === 1 && achievements.length === 0) {
+    if (isAuthenticated) {
+      fetchUserProfile();
       fetchUserAchievements();
-    } else if (index === 2 && attempts.length === 0) {
-      fetchUserAttempts();
     }
-  }, [index, user, fetchUserPosts, fetchUserAchievements, fetchUserAttempts, posts.length, achievements.length, attempts.length]);
-  
+  }, [fetchUserProfile, fetchUserAchievements, isAuthenticated]);
+
   // Handle refresh
   const handleRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    
-    if (index === 0) {
-      await fetchUserPosts();
-    } else if (index === 1) {
-      await fetchUserAchievements();
-    } else if (index === 2) {
-      await fetchUserAttempts();
-    }
-    
+    await Promise.all([fetchUserProfile(), fetchUserAchievements()]);
     setRefreshing(false);
-  }, [index, fetchUserPosts, fetchUserAchievements, fetchUserAttempts]);
-  
+  }, [fetchUserProfile, fetchUserAchievements]);
+
   // Check if authenticated
   React.useEffect(() => {
-    console.log('[Debug] User profile - isAuthenticated:', isAuthenticated);
     if (!isAuthenticated) {
       Alert.alert(
         'Login Required',
@@ -294,200 +368,7 @@ export default function UserProfileScreen() {
       );
     }
   }, [isAuthenticated, router]);
-  
-  // Handle like post
-  const handleLikePost = React.useCallback(async (postId: string) => {
-    if (!isAuthenticated) {
-      Alert.alert('Login Required', 'You need to be logged in to like posts');
-      return;
-    }
-    
-    try {
-      const token = await getToken();
-      
-      const response = await fetch(`${API_ROUTES.LIKE_POST}/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to like post');
-      }
-      
-      // Update local state
-      setPosts(prevPosts => 
-        prevPosts.map((post: Post) => {
-          if (post._id === postId) {
-            const userLiked = post.likes.includes(currentUser?._id || '');
-            return {
-              ...post,
-              isLiked: !userLiked,
-              likes: userLiked 
-                ? post.likes.filter((id: string) => id !== currentUser?._id)
-                : [...post.likes, currentUser?._id || '']
-            };
-          }
-          return post;
-        })
-      );
-    } catch (error) {
-      console.error('Error liking post:', error);
-      Alert.alert('Error', 'Failed to like post');
-    }
-  }, [getToken, isAuthenticated, currentUser]);
-  
-  // Render posts tab
-  const renderPostsTab = () => {
-    if (loadingPosts) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B00" />
-        </View>
-      );
-    }
-    
-    if (posts.length === 0) {
-      return (
-        <View style={styles.emptyContainer}>
-          <Ionicons name="document-text-outline" size={48} color={colors.text} />
-          <Text style={[styles.emptyText, { color: colors.text }]}>
-            No posts yet
-          </Text>
-        </View>
-      );
-    }
-    
-    return (
-      <FlashList
-        data={posts}
-        renderItem={({ item }: { item: Post }) => (
-          <PostCard 
-            post={item}
-            onLike={() => handleLikePost(item._id)}
-            onPress={() => router.push(`/post-detail/${item._id}`)}
-          />
-        )}
-        estimatedItemSize={250}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            colors={['#FF6B00']}
-            tintColor="#FF6B00"
-          />
-        }
-      />
-    );
-  };
-  
-  // Render achievements tab
-  const renderAchievementsTab = () => {
-    if (loadingAchievements) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B00" />
-        </View>
-      );
-    }
-    
-    if (achievements.length === 0) {
-      return (
-        <View style={styles.emptyContainer}>
-          <Ionicons name="trophy-outline" size={48} color={colors.text} />
-          <Text style={[styles.emptyText, { color: colors.text }]}>
-            No achievements yet
-          </Text>
-        </View>
-      );
-    }
-    
-    return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            colors={['#FF6B00']}
-            tintColor="#FF6B00"
-          />
-        }
-      >
-        <View style={styles.achievementsContainer}>
-          {achievements.map((achievement: Achievement) => (
-            <Achievement 
-              key={achievement._id}
-              title={achievement.title}
-              description={achievement.description}
-              position={achievement.position}
-              id={achievement._id}
-              challenge={achievement.challenge}
-            />
-          ))}
-        </View>
-      </ScrollView>
-    );
-  };
-  
-  // Render attempts tab
-  const renderAttemptsTab = () => {
-    if (loadingAttempts) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B00" />
-        </View>
-      );
-    }
-    
-    if (attempts.length === 0) {
-      return (
-        <View style={styles.emptyContainer}>
-          <Ionicons name="videocam-outline" size={48} color={colors.text} />
-          <Text style={[styles.emptyText, { color: colors.text }]}>
-            No challenge attempts yet
-          </Text>
-        </View>
-      );
-    }
-    
-    return (
-      <FlashList
-        data={attempts}
-        renderItem={({ item }: { item: Attempt }) => (
-          <AttemptCard
-            attempt={item}
-            onPress={() => router.push(`/challenge-details/${item.challengeId._id}`)}
-          />
-        )}
-        estimatedItemSize={300}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            colors={['#FF6B00']}
-            tintColor="#FF6B00"
-          />
-        }
-      />
-    );
-  };
-  
-  // Render scene for tab view
-  const renderScene = ({ route }: { route: Tab }) => {
-    switch (route.key) {
-      case 'posts':
-        return renderPostsTab();
-      case 'achievements':
-        return renderAchievementsTab();
-      case 'attempts':
-        return renderAttemptsTab();
-      default:
-        return null;
-    }
-  };
-  
+
   // Loading state
   if (loading) {
     return (
@@ -505,7 +386,7 @@ export default function UserProfileScreen() {
       </SafeAreaView>
     );
   }
-  
+
   // Error state if user not found
   if (!user) {
     return (
@@ -532,8 +413,7 @@ export default function UserProfileScreen() {
       </SafeAreaView>
     );
   }
-  
-  // Show profile
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen 
@@ -544,83 +424,204 @@ export default function UserProfileScreen() {
         }}
       />
       
-      <View style={styles.profileHeader}>
-        <Image 
-          source={{ 
-            uri: user.profilePicture || 
-              "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-          }} 
-          style={styles.profilePicture} 
-        />
-        
-        <View style={styles.profileInfo}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={['#FF6B00']}
+            tintColor="#FF6B00"
+          />
+        }
+        style={styles.scrollView}
+      >
+        <View style={styles.profilePictureContainer}>
+          {imageUri ? (
+            <ExpoImage
+              source={{ uri: imageUri }}
+              style={styles.profilePicture}
+              contentFit="cover"
+              transition={1000}
+              onError={(error) => {
+                console.log('Failed to load image:', error);
+                setImageUri("https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+              }}
+            />
+          ) : (
+            <View style={[styles.profilePicture, { backgroundColor: '#FFA500' }]}>
+              <Ionicons name="person" size={50} color="white" />
+            </View>
+          )}
+        </View>
+
+        <View style={styles.centerAlign}>
           <Text style={[styles.displayName, { color: colors.text }]}>
             {user.displayName || user.username}
           </Text>
-          <Text style={[styles.username, { color: colors.text }]}>
-            @{user.username}
-          </Text>
-          
-          {user.bio && (
-            <Text style={[styles.bio, { color: colors.text }]}>
-              {user.bio}
+          {user.username && (
+            <Text style={[styles.username, { color: colors.text }]}>
+              @{user.username}
             </Text>
           )}
-          
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: colors.text }]}>
-                {user.stats.postsCount}
+
+          <View style={styles.statsOverview}>
+            <View style={styles.statOverviewItem}>
+              <Text style={[styles.statOverviewValue, { color: colors.text }]}>
+                {user.stats?.postsCount || 0}
               </Text>
-              <Text style={[styles.statLabel, { color: colors.text }]}>
-                Posts
-              </Text>
+              <Text style={[styles.statOverviewLabel, { color: colors.text }]}>Posts</Text>
             </View>
-            
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: colors.text }]}>
-                {user.stats.attemptCount}
+            <View style={styles.statOverviewItem}>
+              <Text style={[styles.statOverviewValue, { color: colors.text }]}>
+                {user.stats?.achievementCount || 0}
               </Text>
-              <Text style={[styles.statLabel, { color: colors.text }]}>
-                Attempts
-              </Text>
-            </View>
-            
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: colors.text }]}>
-                {user.stats.achievementCount}
-              </Text>
-              <Text style={[styles.statLabel, { color: colors.text }]}>
-                Achievements
-              </Text>
+              <Text style={[styles.statOverviewLabel, { color: colors.text }]}>Achievements</Text>
             </View>
           </View>
+          
+          <View style={styles.socialsContainer}>
+            {user.socialMedia?.instagram && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => console.log('Instagram link:', user.socialMedia?.instagram)}
+              >
+                <Ionicons name="logo-instagram" size={24} color={colors.text} />
+              </TouchableOpacity>
+            )}
+            {user.socialMedia?.facebook && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => console.log('Facebook link:', user.socialMedia?.facebook)}
+              >
+                <Ionicons name="logo-facebook" size={24} color={colors.text} />
+              </TouchableOpacity>
+            )}
+            {user.socialMedia?.youtube && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => console.log('YouTube link:', user.socialMedia?.youtube)}
+              >
+                <Ionicons name="logo-youtube" size={24} color={colors.text} />
+              </TouchableOpacity>
+            )}
+            {user.socialMedia?.twitter && (
+              <TouchableOpacity 
+                style={styles.socialIcon}
+                onPress={() => console.log('Twitter link:', user.socialMedia?.twitter)}
+              >
+                <Ionicons name="logo-twitter" size={24} color={colors.text} />
+              </TouchableOpacity>
+            )}
+            {!user.socialMedia?.instagram && !user.socialMedia?.facebook && 
+              !user.socialMedia?.youtube && !user.socialMedia?.twitter && (
+              <Text style={{color: colors.text, fontStyle: 'italic'}}>No social media links</Text>
+            )}
+          </View>
         </View>
-      </View>
-      
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={(props: any) => (
-          <TabBar
-            {...props}
-            style={{ backgroundColor: colors.card }}
-            indicatorStyle={{ backgroundColor: '#FF6B00' }}
-            activeColor="#FF6B00"
-            inactiveColor={colors.text}
-            labelStyle={{ textTransform: 'none', fontWeight: 'bold' }}
-          />
+
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Highlights</Text>
+          <View style={styles.videoContainer}>
+            {videoUri ? (
+              <Video
+                source={{ uri: videoUri }}
+                style={styles.video}
+                useNativeControls
+                resizeMode={ResizeMode.CONTAIN}
+                isLooping
+              />
+            ) : (
+              <Text style={[styles.noVideoText, { color: colors.text }]}>
+                No highlight video available
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Stats</Text>
+          <View style={styles.statsContainer}>
+            {user.height && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: colors.text }]}>Height</Text>
+                <Text style={[styles.statValue, { color: colors.text }]}>
+                  {`${user.height.value} ${user.height.unit}`}
+                </Text>
+              </View>
+            )}
+            {user.weight && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: colors.text }]}>Weight</Text>
+                <Text style={[styles.statValue, { color: colors.text }]}>
+                  {`${user.weight.value} ${user.weight.unit}`}
+                </Text>
+              </View>
+            )}
+            {user.wingspan && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: colors.text }]}>Wingspan</Text>
+                <Text style={[styles.statValue, { color: colors.text }]}>
+                  {`${user.wingspan.value} ${user.wingspan.unit}`}
+                </Text>
+              </View>
+            )}
+            {user.verticalJump && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: colors.text }]}>Vertical Jump</Text>
+                <Text style={[styles.statValue, { color: colors.text }]}>
+                  {`${user.verticalJump.value} ${user.verticalJump.unit}`}
+                </Text>
+              </View>
+            )}
+            {user.position && (
+              <View style={styles.statItem}>
+                <Text style={[styles.statLabel, { color: colors.text }]}>Position</Text>
+                <Text style={[styles.statValue, { color: colors.text }]}>{user.position}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {user.aboutMe && (
+          <View style={[styles.section, { backgroundColor: colors.card }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>About Me</Text>
+            <Text style={[styles.aboutMeText, { color: colors.text }]}>{user.aboutMe}</Text>
+          </View>
         )}
-        style={styles.tabView}
-      />
+
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Achievements</Text>
+          {loadingAchievements ? (
+            <ActivityIndicator size="small" color="#FF6B00" style={styles.loader} />
+          ) : achievements.length > 0 ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {achievements.map((achievement) => (
+                <Achievement 
+                  key={achievement._id}
+                  id={achievement._id}
+                  title={achievement.title}
+                  description={achievement.description}
+                  position={achievement.position}
+                  challenge={achievement.challenge}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <Text style={[styles.noItemsText, { color: colors.text }]}>
+              No achievements yet
+            </Text>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   loadingContainer: {
@@ -650,63 +651,112 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  profileHeader: {
-    flexDirection: 'row',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+  profilePictureContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40, // Increased top margin
   },
   profilePicture: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 120, // Increased size
+    height: 120, // Increased size
+    borderRadius: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  profileInfo: {
-    flex: 1,
-    marginLeft: 16,
+  centerAlign: {
+    alignItems: 'center',
+    marginVertical: 24, // Increased vertical margin
   },
   displayName: {
-    fontSize: 18,
+    fontSize: 28, // Increased font size
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   username: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  bio: {
-    fontSize: 14,
-    marginBottom: 12,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    fontSize: 18, // Increased font size
+    textAlign: 'center',
     marginTop: 8,
+    marginBottom: 16,
+    opacity: 0.8,
   },
-  statItem: {
+  statsOverview: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    marginVertical: 16,
+    paddingVertical: 8,
+  },
+  statOverviewItem: {
     alignItems: 'center',
   },
-  statValue: {
-    fontSize: 16,
+  statOverviewValue: {
+    fontSize: 20,
     fontWeight: 'bold',
   },
-  statLabel: {
-    fontSize: 12,
+  statOverviewLabel: {
+    fontSize: 14,
+    opacity: 0.8,
   },
-  tabView: {
-    flex: 1,
+  socialsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
   },
-  emptyContainer: {
-    flex: 1,
+  socialIcon: {
+    marginHorizontal: 12,
+    padding: 8,
+  },
+  section: {
+    marginHorizontal: 16,
+    marginVertical: 8,
+    padding: 16,
+    borderRadius: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  videoContainer: {
+    height: 200,
+    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
-  emptyText: {
+  video: {
+    width: '100%',
+    height: '100%',
+  },
+  noVideoText: {
     fontSize: 16,
-    textAlign: 'center',
-    marginTop: 10,
   },
-  achievementsContainer: {
+  statsContainer: {
+    flexDirection: 'column',
+  },
+  statItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  aboutMeText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  loader: {
+    padding: 16,
+  },
+  noItemsText: {
+    fontSize: 14,
+    textAlign: 'center',
     padding: 16,
   },
 }); 

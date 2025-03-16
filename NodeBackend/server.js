@@ -35,13 +35,14 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: '*', // Allow all origins for debugging - change this in production
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // Allow Next.js frontend
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 
-console.log('[Debug Backend] CORS configuration enabled with origin: *');
+console.log('[Debug Backend] CORS configuration enabled for http://localhost:3000');
 
 // Connect to MongoDb
 connectDB();

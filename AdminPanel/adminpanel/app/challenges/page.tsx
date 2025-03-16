@@ -45,9 +45,15 @@ export default function Challenges() {
     try {
       setIsLoading(true);
       const response = await fetchWithAuth(API_ROUTES.CHALLENGE.GET_ALL);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch challenges');
+        const errorText = await response.text();
+        console.error('Error response body:', errorText);
+        throw new Error(`Failed to fetch challenges: ${response.status} - ${errorText}`);
       }
+      
       const data = await response.json();
       console.log('Fetched challenges data:', data);
       const validChallenges = data.filter((challenge: Challenge) => challenge && challenge._id != null);

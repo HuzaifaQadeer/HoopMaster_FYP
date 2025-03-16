@@ -28,15 +28,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="drillMenu"
-        options={{
-          title: 'Basic Drill',
-          headerShown: true,
-          tabBarButton: () => null,  // This removes the tab bar icon
-          tabBarStyle: { display: 'none' },  // This hides the entire tab bar on this screen
-        }}
-      />
-      <Tabs.Screen
         name="videoRecordScreen"
         options={{
           title: 'Record',

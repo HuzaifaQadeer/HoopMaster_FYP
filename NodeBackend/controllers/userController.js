@@ -1,4 +1,8 @@
 const userService = require('../services/userService');
+const mongoose = require('mongoose');
+const path = require('path');
+const fs = require('fs').promises;
+const User = require('../models/userModel');
 
 exports.registerUser = async (req, res) => {
   try {
@@ -382,5 +386,75 @@ exports.checkBanStatus = async (req, res) => {
     res.json(banStatus);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getUserProfilePicture = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    
+    // If user ID is invalid, return 400 error
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+    
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    if (!user.profilePicture) {
+      return res.status(404).json({ message: 'Profile picture not found' });
+    }
+    
+    const picturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', user.profilePicture);
+    
+    try {
+      await fs.access(picturePath);
+      res.sendFile(picturePath);
+    } catch (error) {
+      console.error('Error accessing profile picture:', error);
+      return res.status(404).json({ message: 'Profile picture file not found' });
+    }
+  } catch (error) {
+    console.error('Error in getUserProfilePicture:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUserHighlightVideo = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    
+    // If user ID is invalid, return 400 error
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+    
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    if (!user.highlightVideo) {
+      return res.status(404).json({ message: 'Highlight video not found' });
+    }
+    
+    const videoPath = path.join(__dirname, '..', '..', 'Server', 'highlights', user.highlightVideo);
+    
+    try {
+      await fs.access(videoPath);
+      // Set appropriate content type for video
+      res.set('Content-Type', 'video/mp4');
+      res.sendFile(videoPath);
+    } catch (error) {
+      console.error('Error accessing highlight video:', error);
+      return res.status(404).json({ message: 'Highlight video file not found' });
+    }
+  } catch (error) {
+    console.error('Error in getUserHighlightVideo:', error);
+    res.status(500).json({ message: error.message });
   }
 };

@@ -34,7 +34,7 @@ exports.getUserProfile = async (req, res) => {
     // Check if requesting user has admin privileges
     const isAdmin = req.user && req.user.isAdmin;
     
-    // Format user data
+    // Format user data with all necessary fields
     const userProfile = {
       _id: user._id,
       username: user.username,
@@ -42,6 +42,16 @@ exports.getUserProfile = async (req, res) => {
       email: isAdmin ? user.email : undefined, // Only expose email to admins
       bio: user.bio,
       profilePicture: user.profilePicture,
+      highlightVideo: user.highlightVideo,
+      socialMedia: user.socialMedia,
+      height: user.height,
+      weight: user.weight,
+      wingspan: user.wingspan,
+      verticalJump: user.verticalJump,
+      position: user.position,
+      aboutMe: user.aboutMe,
+      isPremium: user.isPremium,
+      isPrivate: user.isPrivate,
       isAdmin: user.isAdmin,
       isBanned: user.isBanned,
       banReason: isAdmin ? user.banReason : undefined, // Only expose ban reason to admins
@@ -54,6 +64,7 @@ exports.getUserProfile = async (req, res) => {
       }
     };
     
+    console.log('Sending user profile:', JSON.stringify(userProfile, null, 2));
     res.status(200).json(userProfile);
   } catch (error) {
     console.error('Error getting user profile:', error);

@@ -41,9 +41,10 @@ interface Post {
   createdAt: string;
   likes: string[];
   commentCount: number;
-  hasMedia: boolean;
-  mediaType?: 'image' | 'video';
-  mediaUrl?: string;
+  media?: {
+    type: 'image' | 'video';
+    url: string;
+  };
   isPrivate: boolean;
 }
 
@@ -51,7 +52,7 @@ interface Comment {
   _id: string;
   content: string;
   postId: string;
-  userId: User;
+  user: User;
   createdAt: string;
 }
 
@@ -67,27 +68,27 @@ const CommentItem = ({
   const router = useRouter();
   
   // Add debug logging for comment data
-  console.log('[Debug] Comment user data:', JSON.stringify(comment.userId));
+  console.log('[Debug] Comment user data:', JSON.stringify(comment.user));
   
   // Helper function to safely get user profile picture
   const getUserProfilePicture = () => {
-    if (!comment.userId || !comment.userId.profilePicture) {
+    if (!comment.user || !comment.user.profilePicture) {
       return "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
     }
-    return comment.userId.profilePicture;
+    return comment.user.profilePicture;
   };
   
   // Helper function to safely get user display name
   const getUserDisplayName = () => {
-    if (!comment.userId) return 'Unknown User';
-    return comment.userId.displayName || comment.userId.username || 'Unknown User';
+    if (!comment.user) return 'Unknown User';
+    return comment.user.displayName || comment.user.username || 'Unknown User';
   };
   
   // Navigate to user profile when avatar is tapped
   const navigateToUserProfile = () => {
-    console.log('[Debug] Navigating to user profile, userId:', comment.userId?._id);
-    if (comment.userId && comment.userId._id) {
-      router.push(`/user-profile/${comment.userId._id}`);
+    console.log('[Debug] Navigating to user profile, userId:', comment.user?._id);
+    if (comment.user && comment.user._id) {
+      router.push(`/user-profile/${comment.user._id}`);
     }
   };
   
@@ -484,7 +485,7 @@ export default function PostDetailScreen() {
   
   // Render post media
   const renderMedia = () => {
-    if (!post || !post.hasMedia || !post.mediaUrl) return null;
+    if (!post || !post.media?.url) return null;
     
     // Helper function to get the full media URL
     const getFullMediaUrl = (url: string) => {
@@ -494,10 +495,10 @@ export default function PostDetailScreen() {
       return `${API_BASE_URL}${url}`;
     };
     
-    const mediaUrl = getFullMediaUrl(post.mediaUrl);
+    const mediaUrl = getFullMediaUrl(post.media.url);
     console.log('[Debug] Rendering media with URL:', mediaUrl);
     
-    if (post.mediaType === 'image') {
+    if (post.media.type === 'image') {
       return (
         <Image 
           source={{ 
@@ -512,7 +513,7 @@ export default function PostDetailScreen() {
           resizeMode="cover"
         />
       );
-    } else if (post.mediaType === 'video') {
+    } else if (post.media.type === 'video') {
       return (
         <ExpoVideo
           ref={videoRef}

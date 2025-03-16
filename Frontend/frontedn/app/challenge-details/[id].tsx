@@ -21,6 +21,7 @@ import { API_ROUTES } from '@/config/config';
 import config from '@/config/config';
 import { useAuth } from '../../context/AuthContext';
 import ReliableVideoPlayer from '../../components/ReliableVideoPlayer';
+import ProfilePicture from '@/components/custom/ProfilePicture';
 
 const API_BASE_URL = config.API_BASE_URL;
 
@@ -70,18 +71,94 @@ const AttemptCard = ({
   onLoginPrompt: () => void;
 }) => {
   const { colors } = useTheme();
+  const router = useRouter();
   const { getToken } = useAuth();
   const [videoStatus, setVideoStatus] = useState({ isPlaying: false });
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [videoUri, setVideoUri] = useState<string | null>(null);
+  const [loadingState, setLoadingState] = useState('initial');
   
-  // Fetch authentication token
   useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getToken();
-      setAuthToken(token);
+    const fetchVideo = async () => {
+      try {
+        setLoadingState('fetching-token');
+        const token = await getToken();
+        setAuthToken(token);
+        
+        const videoUrl = attempt.videoUrl.startsWith('http') 
+          ? attempt.videoUrl 
+          : `${API_BASE_URL}${attempt.videoUrl}`;
+
+        console.log('[Video Debug] Attempt ID:', attempt._id);
+        console.log('[Video Debug] Video URL:', videoUrl);
+        console.log('[Video Debug] Token available:', !!token);
+        console.log('[Video Debug] Token prefix:', token ? token.substring(0, 10) + '...' : 'no token');
+
+        setLoadingState('fetching-video');
+        const response = await fetch(videoUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': '*/*',
+            'Origin': API_BASE_URL,
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
+
+        console.log('[Video Debug] Response status:', response.status);
+        console.log('[Video Debug] Response headers:', JSON.stringify(response.headers));
+
+        if (!response.ok) {
+          console.error('[Video Debug] Failed response:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers
+          });
+          throw new Error(`Failed to fetch video: ${response.status}`);
+        }
+
+        setLoadingState('processing-video');
+        const contentType = response.headers.get('content-type');
+        console.log('[Video Debug] Content type:', contentType);
+
+        // Get the raw data as base64
+        const blob = await response.blob();
+        console.log('[Video Debug] Blob size:', blob.size);
+        console.log('[Video Debug] Blob type:', blob.type);
+
+        const reader = new FileReader();
+        reader.onloadstart = () => {
+          console.log('[Video Debug] Started reading blob');
+          setLoadingState('reading-blob');
+        };
+
+        reader.onerror = () => {
+          console.error('[Video Debug] Error reading blob:', reader.error);
+          setLoadingState('error-reading');
+        };
+
+        reader.onloadend = () => {
+          console.log('[Video Debug] Finished reading blob');
+          setLoadingState('blob-read');
+          const base64data = reader.result;
+          console.log('[Video Debug] Base64 data length:', base64data?.toString().length);
+          setVideoUri(base64data as string);
+          setLoadingState('ready');
+        };
+
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error('[Video Debug] Error in video fetch process:', error);
+        console.error('[Video Debug] Loading state when error occurred:', loadingState);
+        setVideoUri(null);
+        setLoadingState('error');
+      }
     };
-    fetchToken();
-  }, []);
+
+    if (attempt.videoUrl) {
+      console.log('[Video Debug] Starting video fetch for attempt:', attempt._id);
+      fetchVideo();
+    }
+  }, [attempt.videoUrl]);
 
   // Check if the current user has already voted
   const hasUpvoted = attempt.upvotes.includes(userId || '');
@@ -112,50 +189,55 @@ const AttemptCard = ({
   return (
     <View style={[styles.attemptCard, { backgroundColor: colors.card }]}>
       <View style={styles.attemptHeader}>
-        <View style={styles.userInfo}>
-          <Image 
-            source={{ 
-              uri: attempt.user.profilePicture || 
-                "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" 
-            }}
-            style={styles.profilePic}
-          />
-          <View>
-            <Text style={[styles.username, { color: colors.text }]}>
-              {attempt.user.displayName}
-            </Text>
-            <Text style={styles.date}>{formattedDate}</Text>
-          </View>
-        </View>
-        <Text style={styles.score}>
+        <TouchableOpacity 
+          style={styles.userInfo}
+          onPress={() => router.push(`/user-profile/${attempt.user._id}`)}
+        >
+          <ProfilePicture userId={attempt.user._id} size={40} />
+          <Text style={[styles.username, { color: colors.text }]}>
+            {attempt.user.displayName || attempt.user.username}
+          </Text>
+        </TouchableOpacity>
+        <Text style={[styles.score, { color: colors.text }]}>
           Score: {attempt.score}
         </Text>
       </View>
       
-      {attempt.videoUrl && authToken && (
+      {loadingState !== 'ready' && loadingState !== 'initial' && (
         <View style={styles.videoContainer}>
-          <ReliableVideoPlayer
-            uri={attempt.videoUrl.startsWith('http') 
-              ? attempt.videoUrl 
-              : `${API_BASE_URL}${attempt.videoUrl}`}
-            headers={{
-              'Accept': '*/*',
-              'Origin': API_BASE_URL,
-              'Access-Control-Allow-Origin': '*',
-              'Authorization': `Bearer ${authToken}`
-            }}
+          <Text style={[styles.loadingText, { color: colors.text }]}>
+            Loading video... ({loadingState})
+          </Text>
+        </View>
+      )}
+      
+      {videoUri && (
+        <View style={styles.videoContainer}>
+          <Video
+            source={{ uri: videoUri }}
             style={styles.video}
             useNativeControls={true}
             resizeMode={ResizeMode.CONTAIN}
             isLooping={true}
             shouldPlay={false}
+            onLoadStart={() => {
+              console.log('[Video Debug] Video load started');
+            }}
+            onLoad={(status: { uri: string }) => {
+              console.log('[Video Debug] Video loaded:', status);
+            }}
+            onError={(error: { error: { code: number; message: string } }) => {
+              console.error('[Video Debug] Video playback error:', {
+                error,
+                loadingState,
+                uriPrefix: videoUri?.substring(0, 30) + '...'
+              });
+            }}
             onPlaybackStatusUpdate={(status: any) => {
               if (status.isLoaded) {
                 setVideoStatus({ isPlaying: status.isPlaying });
+                console.log('[Video Debug] Playback status:', status.isPlaying ? 'playing' : 'paused');
               }
-            }}
-            onError={(error: any) => {
-              console.error('Video playback error in AttemptCard:', error);
             }}
           />
         </View>
@@ -656,12 +738,6 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
   },
   username: {
     fontSize: 16,

@@ -117,7 +117,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   };
 
   const defaultOptions: RequestInit = {
-    credentials: 'include',
     headers,
     ...options,
   };

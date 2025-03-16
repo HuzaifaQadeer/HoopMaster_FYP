@@ -37,7 +37,7 @@ export const API_ROUTES = {
   VOTE_ON_ATTEMPT: `${API_BASE_URL}/challenge-attempts/vote/:attemptId`,
   
   // Achievement routes
-  GET_USER_ACHIEVEMENTS: `${API_BASE_URL}/achievements/user`,
+  GET_USER_ACHIEVEMENTS_OLD: `${API_BASE_URL}/achievements/user`, // Keeping old route for backward compatibility
   
   // Video routes for challenges
   GET_CHALLENGE_VIDEO: `${API_BASE_URL}/challenges/:filename`,
@@ -73,7 +73,12 @@ export const API_ROUTES = {
   CREATE_REPORT: `${API_BASE_URL}/reports/create`,
   
   // User profile & ban routes
-  GET_USER_PROFILE: `${API_BASE_URL}/user-profiles/:userId`,
+  GET_USER_PROFILE: `${API_BASE_URL}/user-profiles/:id/profile`,
+  GET_USER_POSTS: `${API_BASE_URL}/user-profiles/:id/posts`,
+  GET_USER_ACHIEVEMENTS: `${API_BASE_URL}/user-profiles/:id/achievements`,
+  GET_USER_ATTEMPTS: `${API_BASE_URL}/user-profiles/:id/attempts`,
+  GET_USER_PROFILE_PICTURE: `${API_BASE_URL}/users/:id/profilepicture`,
+  GET_USER_HIGHLIGHT_VIDEO: `${API_BASE_URL}/users/:id/highlightvideo`,
   CHECK_BAN_STATUS: `${API_BASE_URL}/users/ban-status`,
   
   // AI Analysis Routes

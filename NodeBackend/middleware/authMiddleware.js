@@ -16,16 +16,17 @@ const protect = async (req, res, next) => {
 
     // Find user by id
     const user = await User.findById(decoded.id).select('-password');
-
-    // If not found in User, check in Admin
     if (!user) {
+      // If not found in User, check Admin
       const admin = await Admin.findById(decoded.id).select('-password');
       if (!admin) {
-        return res.status(401).json({ message: 'Token is valid but user/admin not found' });
+        return res.status(401).json({ message: 'Token is valid but user not found' });
       }
       req.user = admin;
+      req.isAdmin = true;
     } else {
       req.user = user;
+      req.isAdmin = false;
     }
 
     next();
@@ -47,5 +48,13 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Export as an object with the protect property
-module.exports = { protect };
+// Middleware to ensure admin access
+const requireAdmin = async (req, res, next) => {
+  if (!req.isAdmin) {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  next();
+};
+
+// Export both middlewares
+module.exports = { protect, requireAdmin };
