@@ -45,7 +45,7 @@ export const API_ROUTES = {
   COURSE: {
     GET_ALL: `${API_BASE_URL}/courses/all`,
     GET_POPULAR: `${API_BASE_URL}/courses/popular`,
-    GET_USER_COURSES: `${API_BASE_URL}/courses/user/:userId`
+    GET_USER_COURSES: `${API_BASE_URL}/courses/user/courses`
   },
 
   // Challenge Routes

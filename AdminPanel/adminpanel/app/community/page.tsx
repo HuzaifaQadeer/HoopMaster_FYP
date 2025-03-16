@@ -12,6 +12,11 @@ interface Post {
   status: string;
   date: string;
   author: string;
+  media?: {
+    type?: string;
+    url?: string;
+  };
+  hasMedia?: boolean;
   user: {
     id: string;
     displayName: string;
@@ -118,12 +123,15 @@ const Community: React.FC = () => {
         // Check if postsData is an object with a posts property
         if (postsData && typeof postsData === 'object' && postsData.posts && Array.isArray(postsData.posts)) {
           const validPosts = postsData.posts.filter((post: any) => post != null);
+          console.log('Mapping post data with media:', validPosts);
           setPosts(validPosts.map((post: any) => ({
             id: post.id || post._id || '',
             content: post.content || '',
             status: post.status || 'unknown',
             date: post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown Date',
             author: post.author || 'Unknown User',
+            media: post.media || null,
+            hasMedia: post.hasMedia || (post.media && post.media.url ? true : false),
             user: {
               id: post.user?.id || post.user?._id || '',
               displayName: post.user?.displayName || 'Unknown User',
@@ -134,12 +142,15 @@ const Community: React.FC = () => {
         } else if (Array.isArray(postsData)) {
           // Handle case where API directly returns an array
           const validPosts = postsData.filter(post => post != null);
+          console.log('Mapping array post data with media:', validPosts);
           setPosts(validPosts.map((post: any) => ({
             id: post.id || post._id || '',
             content: post.content || '',
             status: post.status || 'unknown',
             date: post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown Date',
             author: post.author || 'Unknown User',
+            media: post.media || null,
+            hasMedia: post.hasMedia || (post.media && post.media.url ? true : false),
             user: {
               id: post.user?.id || post.user?._id || '',
               displayName: post.user?.displayName || 'Unknown User',
@@ -307,20 +318,7 @@ const Community: React.FC = () => {
       <div className="container mx-auto p-6">
         <h2 className="text-xl font-bold mb-4 text-black">Community Management</h2>
         
-        {/* Community Feed */}
-        <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6">
-          <h3 className="font-semibold mb-2">Community Feed</h3>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id} className="border-2 border-gray-300 rounded-lg p-4 mb-4">
-                <div className="mb-2 font-medium text-gray-600">{post.user.displayName}</div>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Player Search */}
+        {/* Player Search - Moved to top */}
         <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6">
           <h3 className="font-semibold mb-2">Player Search</h3>
           <div className="mb-4 flex gap-2">
@@ -351,6 +349,40 @@ const Community: React.FC = () => {
               ))}
             </ul>
           )}
+        </div>
+
+        {/* Community Feed */}
+        <div className="bg-white text-black p-4 rounded-lg shadow-lg mb-6 max-h-[600px] overflow-hidden">
+          <h3 className="font-semibold mb-2 sticky top-0 bg-white z-10">Community Feed</h3>
+          <div className="overflow-y-auto h-[550px] pr-2">
+            <ul>
+              {posts.map((post) => (
+                <li key={post.id} className="border-2 border-gray-300 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="font-medium text-gray-600">{post.user.displayName}</div>
+                  </div>
+                  <p className="mb-3">{post.content}</p>
+                  {post.hasMedia && post.media && post.media.url && (
+                    <div className="mb-3">
+                      {post.media.type === 'image' ? (
+                        <img 
+                          src={`http://localhost:5000${post.media.url}`} 
+                          alt="Post image" 
+                          className="max-w-full h-auto rounded-lg"
+                        />
+                      ) : post.media.type === 'video' ? (
+                        <video 
+                          src={`http://localhost:5000${post.media.url}`} 
+                          controls 
+                          className="max-w-full h-auto rounded-lg"
+                        />
+                      ) : null}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Player Reports */}

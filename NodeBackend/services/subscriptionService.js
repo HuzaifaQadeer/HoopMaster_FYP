@@ -12,9 +12,11 @@ class SubscriptionService {
       throw new Error('User does not have an active premium subscription');
     }
     
-    // We don't immediately remove premium status
-    // Instead, we let it expire at the end of the current period
-    // This is handled by the premium expiry check job
+    // Immediately remove premium status
+    user.isPremium = false;
+    user.premiumStartDate = null;
+    user.premiumExpiryDate = null;
+    await user.save();
     
     // Create revenue record for cancellation
     await Revenue.create({
@@ -23,7 +25,12 @@ class SubscriptionService {
       source: 'premium_unsubscribed'
     });
     
-    return { message: 'Subscription will be cancelled at the end of the current billing period' };
+    return { 
+      message: 'Subscription cancelled successfully',
+      isPremium: false,
+      premiumStartDate: null,
+      premiumExpiryDate: null
+    };
   }
   
   async renewPremium(userId) {

@@ -12,7 +12,11 @@ interface ReportDetails {
   reason: string;
   content: string;
   date: string;
-  media?: string;
+  media?: {
+    type?: string;
+    url?: string;
+  };
+  hasMedia?: boolean;
   reported: {
     _id: string;
     email: string;
@@ -46,6 +50,11 @@ interface PostContent {
   isPrivate: boolean;
   likes: string[];
   comments: string[];
+  media?: {
+    type?: string;
+    url?: string;
+  };
+  hasMedia?: boolean;
   user: {
     _id: string;
     displayName: string;
@@ -72,32 +81,77 @@ const ReportDetails = () => {
         API_ROUTES.REPORT.GET_ONE.replace(':reportId', params.reportId as string)
       );
 
-      if (!reportResponse.ok) throw new Error('Failed to fetch report');
-      const reportData = await reportResponse.json();
-      setReportData(reportData);
-
-      console.log('Report Data:', reportData);
-      console.log('Content Type:', reportData.contentType);
-      console.log('Content ID:', reportData.contentId);
-
-      const isPost = reportData.contentType?.toLowerCase() === 'post';
-      
-      const contentEndpoint = isPost
-        ? `${API_ROUTES.POST.GET_ONE}/${reportData.contentId}`
-        : `${API_ROUTES.COMMENT.GET_ONE}/${reportData.contentId}`;
-
-      console.log('Content Endpoint:', contentEndpoint);
-
-      const contentResponse = await fetchWithAuth(contentEndpoint);
-
-      if (!contentResponse.ok) {
-        console.error('Content Response:', await contentResponse.text());
-        throw new Error('Failed to fetch content');
+      if (!reportResponse.ok) {
+        console.error('Report Response Error:', reportResponse.status);
+        throw new Error('Failed to fetch report');
       }
       
-      const contentData = await contentResponse.json();
-      console.log('Content Data:', contentData);
-      setContentData(contentData);
+      const reportData = await reportResponse.json();
+      console.log('Report Data:', reportData);
+      
+      // Transform report data to match our interface
+      const transformedReport = {
+        id: reportData._id || reportData.id,
+        userId: reportData.userId,
+        contentId: reportData.contentId,
+        contentType: reportData.contentType,
+        reason: reportData.reason,
+        content: reportData.content,
+        date: reportData.createdAt || reportData.date,
+        media: reportData.media || null,
+        hasMedia: reportData.hasMedia || (reportData.media && reportData.media.url ? true : false),
+        reported: reportData.reported || {},
+        reporter: reportData.reporter || {},
+        status: reportData.status,
+        resolved: reportData.resolved,
+        adminAction: reportData.adminAction
+      };
+
+      setReportData(transformedReport);
+      console.log('Transformed Report:', transformedReport);
+
+      // Fetch the associated content
+      const contentEndpoint = transformedReport.contentType === 'post'
+        ? `${API_ROUTES.POST.GET_ONE}/${transformedReport.contentId}`
+        : `${API_ROUTES.COMMENT.GET_ONE}/${transformedReport.contentId}`;
+
+      try {
+        const contentResponse = await fetchWithAuth(contentEndpoint);
+        
+        if (!contentResponse.ok) {
+          console.error('Content Response Error:', contentResponse.status);
+          throw new Error(`Failed to fetch content: ${contentResponse.status}`);
+        }
+
+        const contentData = await contentResponse.json();
+        console.log('Content Data:', contentData);
+
+        // Transform content data
+        const transformedContent = {
+          _id: contentData._id || contentData.id,
+          content: contentData.content,
+          status: contentData.status,
+          createdAt: contentData.createdAt || contentData.date,
+          updatedAt: contentData.updatedAt,
+          isPrivate: contentData.isPrivate || false,
+          likes: contentData.likes || [],
+          comments: contentData.comments || [],
+          media: contentData.media || null,
+          hasMedia: contentData.hasMedia || (contentData.media && contentData.media.url ? true : false),
+          user: {
+            _id: contentData.user?._id || contentData.user?.id,
+            displayName: contentData.user?.displayName || 'Unknown User',
+            profilePicture: contentData.user?.profilePicture
+          },
+          __v: contentData.__v || 0
+        };
+
+        setContentData(transformedContent);
+        console.log('Transformed Content:', transformedContent);
+      } catch (contentError) {
+        console.error('Error fetching content:', contentError);
+        // Continue with the report even if content can't be fetched
+      }
     } catch (err) {
       setError('Failed to load report data');
       console.error('Error details:', err);
@@ -216,7 +270,7 @@ const ReportDetails = () => {
       <Navbar />
       <div className="container mx-auto p-6">
         {/* Admin Controls */}
-        <div className="flex flex-wrap items-center gap-4 mb-6">
+        <div className="flex flex-wrap items-center gap-4 mb-6 sticky top-0 bg-white z-10 p-4">
           <button
             onClick={() => router.back()}
             className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
@@ -256,82 +310,94 @@ const ReportDetails = () => {
         </div>
 
         {/* Report Details */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Report</h2>
-            <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-              reportData.contentType === 'post' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
-            }`}>
-              {reportData.contentType.charAt(0).toUpperCase() + reportData.contentType.slice(1)}
-            </span>
-          </div>
-
-          {/* Reported Content */}
-          <div className="border-2 border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                {contentData?.user?.profilePicture && (
-                  <img 
-                    src={contentData.user.profilePicture}
-                    alt={`${contentData.user.displayName}'s profile`}
-                    className="w-10 h-10 rounded-full"
-                  />
-                )}
-                <div>
-                  <h4 className="font-bold">{contentData?.user.displayName}</h4>
-                  <p className="text-xs text-gray-500">
-                    {new Date(contentData?.createdAt || '').toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                {contentData?.status}
+        <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-2">Report</h2>
+              <span className={`inline-block px-3 py-1 rounded-full text-sm ${
+                reportData.contentType === 'post' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+              }`}>
+                {reportData.contentType.charAt(0).toUpperCase() + reportData.contentType.slice(1)}
               </span>
             </div>
 
-            {reportData.media && (
-              <div className="mb-4">
-                <div className="h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <div className="flex items-center gap-2">
-                    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-sm text-gray-500">Media Attachment</span>
+            {/* Reported Content */}
+            <div className="border-2 border-red-200 rounded-lg p-4 mb-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h4 className="font-bold">{contentData?.user.displayName}</h4>
+                    <p className="text-xs text-gray-500">
+                      {new Date(contentData?.createdAt || '').toLocaleString()}
+                    </p>
                   </div>
                 </div>
+                <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                  {contentData?.status}
+                </span>
               </div>
-            )}
 
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-800 whitespace-pre-wrap">
-                {contentData?.content}
-              </p>
-            </div>
-
-            <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
-              <span>{contentData?.likes.length} likes</span>
-              <span>{contentData?.comments.length} comments</span>
-              {contentData?.isPrivate && (
-                <span className="text-blue-600">Private Post</span>
+              {/* Display media if available */}
+              {((contentData?.hasMedia && contentData?.media?.url) || 
+                (reportData.hasMedia && reportData.media?.url)) && (
+                <div className="mb-4">
+                  {/* Determine whether to display image or video based on media type */}
+                  {contentData?.media?.type === 'image' || reportData.media?.type === 'image' ? (
+                    <img 
+                      src={`http://localhost:5000${contentData?.media?.url || reportData.media?.url}`} 
+                      alt="Post content" 
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  ) : contentData?.media?.type === 'video' || reportData.media?.type === 'video' ? (
+                    <video 
+                      src={`http://localhost:5000${contentData?.media?.url || reportData.media?.url}`} 
+                      controls 
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  ) : (
+                    <div className="h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span className="text-sm text-gray-500">Media Attachment</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
-            </div>
-          </div>
 
-          {/* Reporter Information */}
-          <div className="border-2 border-gray-200 rounded-lg p-4">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-bold">Reported By: {reportData.reporter.displayName}</h3>
-                <p className="text-gray-600 text-sm">{reportData.reporter.email}</p>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-800 whitespace-pre-wrap">
+                  {contentData?.content}
+                </p>
               </div>
-              <span className="text-gray-500 text-sm">
-                {new Date(reportData.date).toLocaleDateString()}
-              </span>
+
+              <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+                <span>{contentData?.likes?.length || 0} likes</span>
+                <span>{contentData?.comments?.length || 0} comments</span>
+                {contentData?.isPrivate && (
+                  <span className="text-blue-600">Private Post</span>
+                )}
+              </div>
             </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-800 font-medium mb-2">Reporter's Comment:</p>
-              <p>{reportData.reason}</p>
+
+            {/* Reporter Information */}
+            <div className="border-2 border-gray-200 rounded-lg p-4">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="font-bold">Reported By: {reportData.reporter.displayName}</h3>
+                  <p className="text-gray-600 text-sm">{reportData.reporter.email}</p>
+                </div>
+                <span className="text-gray-500 text-sm">
+                  {new Date(reportData.date).toLocaleDateString()}
+                </span>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-800 font-medium mb-2">Reporter's Comment:</p>
+                <p>{reportData.reason}</p>
+              </div>
             </div>
           </div>
         </div>

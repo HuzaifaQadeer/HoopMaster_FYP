@@ -36,7 +36,6 @@ interface UserProfile {
   };
   isPremium: boolean;
   isPrivate: boolean;
-  courses?: any[];
   achievements?: any[];
   banStatus?: {
     isBanned: boolean;
@@ -45,22 +44,11 @@ interface UserProfile {
   };
 }
 
-interface Course {
-  _id: string;
-  title: string;
-  description: string;
-  level: 'beginner' | 'intermediate' | 'expert';
-  duration: string;
-  frequency: string;
-  isPremium: boolean;
-}
-
 const UserProfile = () => {
   const router = useRouter();
   const params = useParams();
   const { isAuthenticated } = useAuth();
   const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [userCourses, setUserCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,27 +69,12 @@ const UserProfile = () => {
     }
   };
 
-  const fetchUserCourses = async () => {
-    try {
-      const response = await fetchWithAuth(
-        API_ROUTES.COURSE.GET_USER_COURSES.replace(':userId', params.userId as string)
-      );
-
-      if (!response.ok) throw new Error('Failed to fetch user courses');
-      const data = await response.json();
-      setUserCourses(data);
-    } catch (err) {
-      console.error('Failed to load user courses:', err);
-    }
-  };
-
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
       return;
     }
     fetchUserData();
-    fetchUserCourses();
   }, [params.userId, isAuthenticated]);
 
   const handleBan = async (duration: string) => {
@@ -245,15 +218,6 @@ const UserProfile = () => {
         {/* User Basic Info */}
         <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
           <div className="flex items-start gap-6">
-            <div className="w-32 h-32 bg-gray-200 rounded-full">
-              {userData?.profilePicture && (
-                <img 
-                  src={userData.profilePicture} 
-                  alt={userData.displayName} 
-                  className="w-full h-full rounded-full object-cover"
-                />
-              )}
-            </div>
             <div>
               <h2 className="text-2xl font-bold">{userData?.displayName}</h2>
               <p className="text-gray-600">{userData?.email}</p>
@@ -302,39 +266,6 @@ const UserProfile = () => {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Courses */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-          <h3 className="text-xl font-bold mb-4">Courses</h3>
-          {userCourses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userCourses.map(course => (
-                <div key={course._id} className="border rounded-lg p-4">
-                  <h4 className="font-semibold text-lg mb-2">{course.title}</h4>
-                  <p className="text-gray-600 text-sm mb-2">{course.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                      {course.level}
-                    </span>
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                      {course.duration}
-                    </span>
-                    <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
-                      {course.frequency}
-                    </span>
-                    {course.isPremium && (
-                      <span className="px-2 py-1 bg-gold-100 text-gold-800 rounded-full text-xs">
-                        Premium
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600">No courses enrolled</p>
-          )}
         </div>
       </div>
     </div>
