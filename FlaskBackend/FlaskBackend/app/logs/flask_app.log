@@ -14458,3 +14458,263 @@ Exception: Error analyzing practice video: No module named 'yolov5'
 2025-03-16 19:05:24,074 - app - INFO - [__init__.py:53] - Flask application initialized successfully
 2025-03-16 19:05:24,105 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
 2025-03-16 19:05:24,123 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791
+2025-03-16 19:39:40,006 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 19:39:40,006 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 19:39:40,006 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 19:39:40,006 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 19:39:40,019 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 19:40:02,546 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 19:40:02,555 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 19:40:02,555 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 19:40:02,556 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 19:40:02,560 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 19:40:03,506 - werkzeug - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.46.123:8080
+2025-03-16 19:40:03,506 - werkzeug - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-03-16 19:40:03,526 - werkzeug - INFO - [_internal.py:97] -  * Restarting with watchdog (windowsapi)
+2025-03-16 19:40:04,510 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 19:40:04,510 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 19:40:04,514 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 19:40:04,514 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 19:40:04,514 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 19:40:22,711 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 19:40:22,722 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 19:40:22,722 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 19:40:22,722 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 19:40:22,722 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 19:40:22,722 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 19:40:22,723 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 19:40:22,723 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 19:40:22,724 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 19:40:22,724 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 19:40:22,724 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 19:40:22,724 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 19:40:22,724 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 19:40:22,726 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 19:40:22,726 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 19:40:22,743 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
+2025-03-16 19:40:22,743 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791
+2025-03-16 19:46:25,026 - werkzeug - INFO - [_internal.py:97] - 127.0.0.1 - - [16/Mar/2025 19:46:25] "[33mGET /api HTTP/1.1[0m" 404 -
+2025-03-16 19:46:25,775 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-16 19:47:10,574 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 7212fc5b-5abb-43ee-bb58-efae773e9d9f for file 2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,638 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7212fc5b-5abb-43ee-bb58-efae773e9d9f_2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,649 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 7212fc5b-5abb-43ee-bb58-efae773e9d9f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7212fc5b-5abb-43ee-bb58-efae773e9d9f_2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,649 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 7212fc5b-5abb-43ee-bb58-efae773e9d9f
+2025-03-16 19:47:10,656 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 7212fc5b-5abb-43ee-bb58-efae773e9d9f: Calling analyze_practice_video
+2025-03-16 19:47:10,656 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:34] - Starting practice video analysis
+2025-03-16 19:47:10,718 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:46] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\dcdf1cc9-5890-4442-a7b3-561852209631_7212fc5b-5abb-43ee-bb58-efae773e9d9f_2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,718 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:54] - Starting to load or get YOLO models
+2025-03-16 19:47:10,721 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:58] - YOLO models not loaded yet, loading now...
+2025-03-16 19:47:10,721 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:67] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:47:10,721 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:71] - Added YOLOv5 to Python path: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:47:10,721 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:76] - Added shot_analyzer to Python path: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer
+2025-03-16 19:47:10,721 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:80] - Running YOLOv5 setup script
+2025-03-16 19:47:10,754 - setup - INFO - [setup.py:79] - YOLOv5 directory already exists at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:47:10,754 - setup - INFO - [setup.py:107] - Weights file already exists at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\weights\basket_rim.pt
+2025-03-16 19:47:10,798 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Program Files\\Python38\\Lib\\modulefinder.py', reloading
+2025-03-16 19:47:10,892 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\torchvision\\_meta_registrations.py', reloading
+2025-03-16 19:47:11,744 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Program Files\\Python38\\Lib\\cProfile.py', reloading
+2025-03-16 19:47:11,759 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Program Files\\Python38\\Lib\\profile.py', reloading
+2025-03-16 19:47:11,784 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Program Files\\Python38\\Lib\\pstats.py', reloading
+2025-03-16 19:47:11,917 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\torch\\_inductor\\test_operators.py', reloading
+2025-03-16 19:47:13,445 - werkzeug - INFO - [_internal.py:97] -  * Restarting with watchdog (windowsapi)
+2025-03-16 19:47:14,068 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 19:47:14,068 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 19:47:14,071 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 19:47:14,071 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 19:47:14,071 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 19:47:24,670 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 19:47:24,708 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
+2025-03-16 19:47:24,713 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791
+2025-03-16 19:59:02,315 - werkzeug - INFO - [_internal.py:97] - 127.0.0.1 - - [16/Mar/2025 19:59:02] "[33mGET /api HTTP/1.1[0m" 404 -
+2025-03-16 19:59:03,081 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-16 19:59:09,787 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 8a1510ca-d4cf-4dcf-b126-9704de567f4d for file eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,790 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8a1510ca-d4cf-4dcf-b126-9704de567f4d
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d: Calling analyze_practice_video
+2025-03-16 19:59:09,806 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:34] - Starting practice video analysis
+2025-03-16 19:59:09,822 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:46] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\07155d08-7e44-42ab-8a86-af4b15eb7014_8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,822 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:54] - Starting to load or get YOLO models
+2025-03-16 19:59:09,829 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:58] - YOLO models not loaded yet, loading now...
+2025-03-16 19:59:09,829 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:67] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:59:09,829 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:71] - Added YOLOv5 to Python path: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:59:09,829 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:76] - Added shot_analyzer to Python path: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer
+2025-03-16 19:59:09,829 - app.services.practice_analysis_service - INFO - [practice_analysis_service.py:80] - Running YOLOv5 setup script
+2025-03-16 19:59:09,829 - setup - INFO - [setup.py:79] - YOLOv5 directory already exists at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-03-16 19:59:09,829 - setup - INFO - [setup.py:107] - Weights file already exists at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\weights\basket_rim.pt
+2025-03-16 19:59:10,998 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\torch\\distributed\\_functional_collectives.py', reloading
+2025-03-16 19:59:11,039 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\torchvision\\models\\densenet.py', reloading
+2025-03-16 19:59:12,270 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\yolov5\\utils\\general.py', reloading
+2025-03-16 19:59:12,694 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'C:\\Users\\aunaf\\AppData\\Roaming\\Python\\Python38\\site-packages\\yolov5\\utils\\augmentations.py', reloading
+2025-03-16 19:59:14,354 - werkzeug - INFO - [_internal.py:97] -  * Restarting with watchdog (windowsapi)
+2025-03-16 19:59:14,807 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 19:59:14,807 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 19:59:14,810 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 19:59:14,810 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 19:59:14,810 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 19:59:26,561 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 19:59:26,576 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 19:59:26,609 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
+2025-03-16 19:59:26,609 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791
+2025-03-16 20:04:58,967 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\run.py', reloading
+2025-03-16 20:04:58,980 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\config.py', reloading
+2025-03-16 20:04:58,981 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\__init__.py', reloading
+2025-03-16 20:04:58,988 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\tween_dribble\\process_services.py', reloading
+2025-03-16 20:04:58,990 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\process_services.py', reloading
+2025-03-16 20:04:58,994 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\feature_extractor.py', reloading
+2025-03-16 20:04:59,000 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\crossover_dribble\\evaluator.py', reloading
+2025-03-16 20:04:59,002 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\chatbot_service.py', reloading
+2025-03-16 20:04:59,005 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\between_the_legs\\process_services.py', reloading
+2025-03-16 20:04:59,009 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\behind_the_back\\process_services.py', reloading
+2025-03-16 20:04:59,013 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\process_services.py', reloading
+2025-03-16 20:04:59,013 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\feature_extractor.py', reloading
+2025-03-16 20:04:59,013 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\basic_dribble\\evaluator.py', reloading
+2025-03-16 20:04:59,013 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\videos.py', reloading
+2025-03-16 20:04:59,029 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\practice_analysis.py', reloading
+2025-03-16 20:04:59,034 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\dribble_analysis.py', reloading
+2025-03-16 20:04:59,034 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\routes\\chatbot.py', reloading
+2025-03-16 20:04:59,039 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\logging_config.py', reloading
+2025-03-16 20:04:59,041 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\config\\config.py', reloading
+2025-03-16 20:04:59,041 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\config\\chatbot_config.py', reloading
+2025-03-16 20:04:59,041 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\segment\\val.py', reloading
+2025-03-16 20:04:59,044 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\segment\\train.py', reloading
+2025-03-16 20:04:59,045 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\segment\\predict.py', reloading
+2025-03-16 20:04:59,046 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\models\\__init__.py', reloading
+2025-03-16 20:04:59,048 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\models\\yolo.py', reloading
+2025-03-16 20:04:59,048 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\models\\tf.py', reloading
+2025-03-16 20:04:59,054 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\models\\experimental.py', reloading
+2025-03-16 20:04:59,054 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\models\\common.py', reloading
+2025-03-16 20:04:59,054 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\hubconf.py', reloading
+2025-03-16 20:04:59,058 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\export.py', reloading
+2025-03-16 20:04:59,059 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\detect.py', reloading
+2025-03-16 20:04:59,078 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\classify\\val.py', reloading
+2025-03-16 20:04:59,083 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\classify\\train.py', reloading
+2025-03-16 20:04:59,083 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\classify\\predict.py', reloading
+2025-03-16 20:04:59,083 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\benchmarks.py', reloading
+2025-03-16 20:04:59,085 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\test_without_mp.py', reloading
+2025-03-16 20:04:59,089 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\test_import.py', reloading
+2025-03-16 20:04:59,089 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\test_detect.py', reloading
+2025-03-16 20:04:59,089 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\shot_analyzer.py', reloading
+2025-03-16 20:04:59,092 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\setup.py', reloading
+2025-03-16 20:04:59,093 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\Shooting_analysis.py', reloading
+2025-03-16 20:04:59,094 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\practice_analysis_service.py', reloading
+2025-03-16 20:04:59,106 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\train.py', reloading
+2025-03-16 20:04:59,109 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\val.py', reloading
+2025-03-16 20:04:59,113 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\__init__.py', reloading
+2025-03-16 20:04:59,114 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\triton.py', reloading
+2025-03-16 20:04:59,114 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\torch_utils.py', reloading
+2025-03-16 20:04:59,114 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\__init__.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\plots.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\metrics.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\loss.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\general.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\dataloaders.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\segment\\augmentations.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\plots.py', reloading
+2025-03-16 20:04:59,116 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\metrics.py', reloading
+2025-03-16 20:04:59,121 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loss.py', reloading
+2025-03-16 20:04:59,121 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\__init__.py', reloading
+2025-03-16 20:04:59,121 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\wandb\\__init__.py', reloading
+2025-03-16 20:04:59,121 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\wandb\\wandb_utils.py', reloading
+2025-03-16 20:04:59,124 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\__init__.py', reloading
+2025-03-16 20:04:59,125 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\hpo.py', reloading
+2025-03-16 20:04:59,125 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\comet\\comet_utils.py', reloading
+2025-03-16 20:04:59,127 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\__init__.py', reloading
+2025-03-16 20:04:59,127 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\hpo.py', reloading
+2025-03-16 20:04:59,127 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\loggers\\clearml\\clearml_utils.py', reloading
+2025-03-16 20:04:59,129 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\general.py', reloading
+2025-03-16 20:04:59,130 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\flask_rest_api\\restapi.py', reloading
+2025-03-16 20:04:59,131 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\flask_rest_api\\example_request.py', reloading
+2025-03-16 20:04:59,131 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\downloads.py', reloading
+2025-03-16 20:04:59,133 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\dataloaders.py', reloading
+2025-03-16 20:04:59,133 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\callbacks.py', reloading
+2025-03-16 20:04:59,134 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\aws\\__init__.py', reloading
+2025-03-16 20:04:59,135 - werkzeug - INFO - [_internal.py:97] -  * Detected change in 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\services\\shot_analyzer\\yolov5\\utils\\aws\\resume.py', reloading
+2025-03-16 20:05:01,371 - werkzeug - INFO - [_internal.py:97] -  * Restarting with watchdog (windowsapi)
+2025-03-16 20:05:02,303 - root - INFO - [logging_config.py:76] - Logging configured successfully
+2025-03-16 20:05:02,303 - app - INFO - [__init__.py:11] - Starting Flask application
+2025-03-16 20:05:02,307 - app - INFO - [__init__.py:23] - CORS configured
+2025-03-16 20:05:02,307 - app - INFO - [__init__.py:28] - Upload folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos
+2025-03-16 20:05:02,307 - app - INFO - [__init__.py:29] - Output folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\processed_videos
+2025-03-16 20:05:22,809 - app - INFO - [__init__.py:41] - All blueprints registered
+2025-03-16 20:05:22,830 - app - INFO - [__init__.py:44] - Registered URLs:
+2025-03-16 20:05:22,830 - app - INFO - [__init__.py:46] - static: /static/<path:filename>
+2025-03-16 20:05:22,834 - app - INFO - [__init__.py:46] - chatbot.chat: /api/chat
+2025-03-16 20:05:22,834 - app - INFO - [__init__.py:46] - dribble.basic_dribble: /api/dribble/basic_dribble
+2025-03-16 20:05:22,840 - app - INFO - [__init__.py:46] - dribble.behind_the_back: /api/dribble/behind_the_back
+2025-03-16 20:05:22,861 - app - INFO - [__init__.py:46] - dribble.between_the_legs: /api/dribble/between_the_legs
+2025-03-16 20:05:22,862 - app - INFO - [__init__.py:46] - dribble.crossover_dribble: /api/dribble/crossover_dribble
+2025-03-16 20:05:22,875 - app - INFO - [__init__.py:46] - dribble.tween_dribble: /api/dribble/tween_dribble
+2025-03-16 20:05:22,875 - app - INFO - [__init__.py:46] - videos.get_video: /uploads/processed_videos/<filename>
+2025-03-16 20:05:22,875 - app - INFO - [__init__.py:46] - videos.test_endpoint: /test
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.test_route: /api/practice/test
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.health_check: /api/practice/health
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.check_analyzer: /api/practice/check-analyzer
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.simple_analyze: /api/practice/simple-analyze
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.analyze_practice: /api/practice/analyze
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.get_job_status: /api/practice/status/<job_id>
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:46] - practice_analysis.get_results: /api/practice/results/<job_id>
+2025-03-16 20:05:22,883 - app - INFO - [__init__.py:51] - Upload directories created
+2025-03-16 20:05:22,892 - app - INFO - [__init__.py:53] - Flask application initialized successfully
+2025-03-16 20:05:22,935 - werkzeug - WARNING - [_internal.py:97] -  * Debugger is active!
+2025-03-16 20:05:22,943 - werkzeug - INFO - [_internal.py:97] -  * Debugger PIN: 142-977-791

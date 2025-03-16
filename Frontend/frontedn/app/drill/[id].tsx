@@ -105,7 +105,23 @@ export default function DrillPage() {
           },
         }}
       />
-      <ScrollView style={styles.scrollContainer}>
+      <View style={styles.contentContainer}>
+        <ScrollView style={styles.scrollContainer}>
+          <Text style={[styles.drillName, { color: colors.text }]}>{drill.title}</Text>
+          
+          <Text style={[styles.description, { color: colors.text }]}>
+            {drill.description}
+          </Text>
+          
+          <Text style={[styles.stepsTitle, { color: colors.text }]}>Steps</Text>
+          
+          {steps.map((step, index) => (
+            <View key={index} style={[styles.stepContainer, { backgroundColor: colors.card }]}>
+              <Text style={[styles.stepText, { color: colors.text }]}>{step}</Text>
+            </View>
+          ))}
+        </ScrollView>
+        
         <TouchableOpacity 
           style={[styles.recordButton, { backgroundColor: colors.primary }]}
           onPress={handleRecordPress}
@@ -113,21 +129,7 @@ export default function DrillPage() {
         >
           <Text style={styles.recordButtonText}>Record</Text>
         </TouchableOpacity>
-        
-        <Text style={[styles.drillName, { color: colors.text }]}>{drill.title}</Text>
-        
-        <Text style={[styles.description, { color: colors.text }]}>
-          {drill.description}
-        </Text>
-        
-        <Text style={[styles.stepsTitle, { color: colors.text }]}>Steps</Text>
-        
-        {steps.map((step, index) => (
-          <View key={index} style={[styles.stepContainer, { backgroundColor: colors.card }]}>
-            <Text style={[styles.stepText, { color: colors.text }]}>{step}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -136,8 +138,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  contentContainer: {
+    flex: 1,
+    position: 'relative',
+  },
   scrollContainer: {
     padding: 20,
+    paddingBottom: 80, // Add padding to prevent content from being hidden behind the button
+    paddingTop: 40, // Add extra padding at the top to prevent overlap with header
   },
   loadingContainer: {
     flex: 1,
@@ -145,10 +153,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recordButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
-    marginBottom: 20,
   },
   recordButtonText: {
     color: 'white',
@@ -159,6 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop: 10, // Add some margin to the title itself
   },
   description: {
     fontSize: 16,

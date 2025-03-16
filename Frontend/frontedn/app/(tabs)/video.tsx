@@ -648,22 +648,6 @@ export default function VideoScreen() {
         isLooping={true}
       />
       
-      <View style={styles.trimmerControls}>
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={videoDuration}
-          value={trimValues.start}
-          onValueChange={(value) => setTrimValues(prev => ({ ...prev, start: value }))}
-        />
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={videoDuration}
-          value={trimValues.end}
-          onValueChange={(value) => setTrimValues(prev => ({ ...prev, end: value }))}
-        />
-      </View>
 
       <View style={styles.actionButtons}>
         <TouchableOpacity style={styles.actionButton} onPress={resetCamera}>

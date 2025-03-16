@@ -387,3 +387,15 @@ Exception: Error analyzing practice video: No module named 'yolov5'
 2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 890252 bytes
 2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
 2025-03-12 13:49:34,396 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-03-16 19:46:25,775 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-16 19:47:10,574 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 7212fc5b-5abb-43ee-bb58-efae773e9d9f for file 2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,638 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7212fc5b-5abb-43ee-bb58-efae773e9d9f_2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,649 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 7212fc5b-5abb-43ee-bb58-efae773e9d9f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\7212fc5b-5abb-43ee-bb58-efae773e9d9f_2ccbbc00-dde6-4aa3-af5a-f024a489306e.mp4
+2025-03-16 19:47:10,649 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 7212fc5b-5abb-43ee-bb58-efae773e9d9f
+2025-03-16 19:47:10,656 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 7212fc5b-5abb-43ee-bb58-efae773e9d9f: Calling analyze_practice_video
+2025-03-16 19:59:03,081 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-03-16 19:59:09,787 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 8a1510ca-d4cf-4dcf-b126-9704de567f4d for file eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,790 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8a1510ca-d4cf-4dcf-b126-9704de567f4d
+2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d: Calling analyze_practice_video
