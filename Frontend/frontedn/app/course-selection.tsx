@@ -17,6 +17,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AdBanner from '@/components/custom/AdBanner';
 
 const CourseSelectionScreen = () => {
   const { colors } = useTheme();
@@ -28,6 +29,7 @@ const CourseSelectionScreen = () => {
   const [duration, setDuration] = useState('2 week');
   const [isLoading, setIsLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [showAd, setShowAd] = useState(false);
   const [userHasPremium, setUserHasPremium] = useState(false);
 
   useEffect(() => {
@@ -118,11 +120,35 @@ const CourseSelectionScreen = () => {
         throw new Error(errorData.message || 'Failed to register for course');
       }
 
-      Alert.alert(
-        'Success', 
-        'You have been registered for the course!',
-        [{ text: 'OK', onPress: () => router.back() }]
-      );
+      // Show ad if user is not premium
+      if (!userHasPremium) {
+        setShowAd(true);
+        // Continue with navigation after a short delay to ensure ad is seen
+        setTimeout(() => {
+          Alert.alert(
+            'Success',
+            'You have successfully registered for the course!',
+            [
+              {
+                text: 'OK',
+                onPress: () => router.push('/courses' as any)
+              }
+            ]
+          );
+        }, 1500);
+      } else {
+        // Navigate immediately for premium users
+        Alert.alert(
+          'Success',
+          'You have successfully registered for the course!',
+          [
+            {
+              text: 'OK',
+              onPress: () => router.push('/courses' as any)
+            }
+          ]
+        );
+      }
     } catch (error) {
       console.error('Error registering for course:', error);
       Alert.alert('Error', (error as Error).message || 'Failed to register for course');
@@ -202,6 +228,13 @@ const CourseSelectionScreen = () => {
           )}
         </TouchableOpacity>
       </View>
+
+      {showAd && (
+        <AdBanner 
+          type="course" 
+          onClose={() => setShowAd(false)} 
+        />
+      )}
     </SafeAreaView>
   );
 };

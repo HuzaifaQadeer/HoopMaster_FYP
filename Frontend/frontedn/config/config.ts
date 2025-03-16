@@ -89,6 +89,10 @@ export const API_ROUTES = {
   TWEEN_DRIBBLE_ANALYSIS: `${AI_API_URL}/api/dribble/tween_dribble`,
   PRACTICE_ANALYSIS: `${AI_API_URL}/api/practice/analyze`,
   GET_PROCESSED_VIDEO: `${AI_API_URL}/uploads/processed_videos/:filename`,
+  
+  // Subscription routes
+  GET_SUBSCRIPTION_STATUS: `${API_BASE_URL}/subscriptions/status`,
+  CANCEL_PREMIUM: `${API_BASE_URL}/subscriptions/cancel`,
 };
 
 export default {

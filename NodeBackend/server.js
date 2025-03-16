@@ -19,10 +19,12 @@ const adminRoutes = require('./routes/adminRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
 const drillRoutes = require('./routes/drillRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
 // Import the cron jobs
 const challengeExpirationCron = require('./cron/challengeExpiration');
 const postCleanupCron = require('./cron/postCleanup');
+const subscriptionRenewalJob = require('./cron/subscriptionRenewalJob');
 
 const app = express();
 
@@ -143,6 +145,7 @@ app.use('/admin', adminRoutes);
 app.use('/revenue', revenueRoutes);
 app.use('/drills', drillRoutes);
 app.use('/courses', courseRoutes);
+app.use('/subscriptions', subscriptionRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -178,4 +181,9 @@ app.listen(PORT, () => {
   console.log('Starting post cleanup cron job...');
   postCleanupCron.startCronJob();
   console.log('Post cleanup cron job started');
+  
+  // Start subscription renewal job
+  console.log('Starting subscription renewal job...');
+  subscriptionRenewalJob.scheduleSubscriptionRenewalJob();
+  console.log('Subscription renewal job started');
 });

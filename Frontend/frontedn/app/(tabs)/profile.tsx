@@ -353,9 +353,18 @@ const UserProfileScreen: React.FC = () => {
 
   const renderOptionsMenu = () => (
     <View style={[styles.optionsMenu, { backgroundColor: theme.colors.card }]}>
-      <TouchableOpacity style={styles.optionItem}>
+      <TouchableOpacity 
+        style={styles.optionItem}
+        onPress={() => {
+          if (userProfile?.isPremium) {
+            router.push('/premium-subscription' as any);
+          } else {
+            router.push('/premium-upgrade' as any);
+          }
+        }}
+      >
         <Text style={[styles.optionText, { color: theme.colors.text }]}>
-          {userProfile?.isPremium ? "Premium Account" : "Upgrade to Premium"}
+          {userProfile?.isPremium ? "Manage Premium Subscription" : "Upgrade to Premium"}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionItem} onPress={togglePrivacy}>
