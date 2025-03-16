@@ -120,11 +120,22 @@ const PremiumSubscriptionScreen = () => {
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    try {
+      // Parse the date string and handle potential invalid dates
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString);
+        return 'N/A';
+      }
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'N/A';
+    }
   };
 
   if (isLoading) {
@@ -189,10 +200,6 @@ const PremiumSubscriptionScreen = () => {
             </View>
             <View style={styles.benefitItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-              <Text style={[styles.benefitText, { color: colors.text }]}>Unlimited challenge attempts</Text>
-            </View>
-            <View style={styles.benefitItem}>
-              <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
               <Text style={[styles.benefitText, { color: colors.text }]}>Priority support</Text>
             </View>
           </View>
@@ -212,7 +219,7 @@ const PremiumSubscriptionScreen = () => {
           </TouchableOpacity>
           
           <Text style={styles.disclaimer}>
-            By cancelling, you will continue to have access to premium features until the end of your current billing period.
+            By cancelling, you will lose all premium features.
           </Text>
         </>
       ) : (

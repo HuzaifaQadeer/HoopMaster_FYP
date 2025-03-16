@@ -91,7 +91,13 @@ export default function EditProfileScreen() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      if (!response.ok) throw new Error('Failed to fetch profile');
+      if (!response.ok) {
+        if (response.status !== 404) { // Ignore 404 errors
+          throw new Error('Failed to fetch profile');
+        }
+        return;
+      }
+
       const data = await response.json();
       
       // Convert measurements to appropriate format
@@ -105,8 +111,10 @@ export default function EditProfileScreen() {
       
       setProfileData(formattedData);
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      setError('Failed to load profile data');
+      if (error instanceof Error && !error.message.includes('404')) {
+        console.error('Error fetching profile:', error);
+        setError('Failed to load profile data');
+      }
     }
   };
 
@@ -139,7 +147,7 @@ export default function EditProfileScreen() {
       });
       
       if (!response.ok) {
-        if (response.status !== 404) { // Ignore 404 errors
+        if (response.status !== 404) { // Ignore 404 errors as they're expected when no picture exists
           throw new Error('Failed to fetch profile picture');
         }
         return;
@@ -156,8 +164,9 @@ export default function EditProfileScreen() {
       reader.readAsDataURL(blob);
       reader.onloadend = () => setImageUri(reader.result as string);
     } catch (error) {
-      console.error('Error fetching profile picture:', error);
-      // Don't set imageUri to null here
+      if (error instanceof Error && !error.message.includes('404')) {
+        console.error('Error fetching profile picture:', error);
+      }
     }
   };
 

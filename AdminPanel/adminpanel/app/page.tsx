@@ -16,25 +16,9 @@ interface MonthlyDataType {
 
 type TimeFrameType = '3months' | 'year' | 'allTime';
 
-interface PopularItem {
-  _id: string;
-  title: string;
-  participants?: { _id: string; displayName: string; profilePicture: string; }[] | number;
-  enrolledUsers?: string[] | number;
-  totalAttempts?: number;
-}
-
-interface TransformedPopularItem extends Omit<PopularItem, 'participants' | 'enrolledUsers'> {
-  participants?: number;
-  enrolledUsers?: number;
-}
-
 const Dashboard = () => {
   const [timeFrame, setTimeFrame] = useState<TimeFrameType>('3months');
   const [monthlyData, setMonthlyData] = useState<MonthlyDataType[]>([]);
-  const [popularCourses, setPopularCourses] = useState<TransformedPopularItem[]>([]);
-  const [popularChallenges, setPopularChallenges] = useState<TransformedPopularItem[]>([]);
-  const [popularDrills, setPopularDrills] = useState<PopularItem[]>([]);
   const [overallTotals, setOverallTotals] = useState({ players: 0, revenue: 0, premiumUsers: 0 });
   const [useRealData, setUseRealData] = useState<boolean>(true);
 
@@ -125,44 +109,6 @@ const Dashboard = () => {
     fetchTimeData();
   }, [timeFrame, useRealData]);
 
-  // Fetch popular items
-  useEffect(() => {
-    const fetchPopularItems = async () => {
-      try {
-        const [coursesRes, challengesRes, drillsRes] = await Promise.all([
-          fetchWithAuth(API_ROUTES.COURSE.GET_POPULAR),
-          fetchWithAuth(API_ROUTES.CHALLENGE.GET_POPULAR),
-          fetchWithAuth(API_ROUTES.DRILL.GET_POPULAR)
-        ]);
-
-        const courses = await coursesRes.json();
-        const challenges = await challengesRes.json();
-        const drills = await drillsRes.json();
-
-        // Transform the data to include the correct counts
-        const transformedCourses = courses.map((course: PopularItem) => ({
-          ...course,
-          enrolledUsers: Array.isArray(course.enrolledUsers) ? course.enrolledUsers.length : (course.enrolledUsers || 0)
-        }));
-
-        const transformedChallenges = challenges.map((challenge: PopularItem) => ({
-          ...challenge,
-          participants: Array.isArray(challenge.participants) ? challenge.participants.length : (challenge.participants || 0)
-        }));
-
-        setPopularCourses(transformedCourses || []);
-        setPopularChallenges(transformedChallenges || []);
-        setPopularDrills(drills || []);
-      } catch (error) {
-        console.error('Error fetching popular items:', error);
-        setPopularCourses([]);
-        setPopularChallenges([]);
-        setPopularDrills([]);
-      }
-    };
-    fetchPopularItems();
-  }, []);
-
   // Calculate totals
   const calculateTotals = (data: MonthlyDataType[]): { 
     players: number; 
@@ -190,11 +136,6 @@ const Dashboard = () => {
   };
 
   const totals = calculateTotals(getDisplayData());
-  // Calculate total players for courses
-  const totalCoursePlayers = popularCourses.reduce((acc, course) => acc + (course.enrolledUsers || 0), 0);
-
-  // Calculate total participants for challenges 
-  const totalChallengeParticipants = popularChallenges.reduce((acc, challenge) => acc + (challenge.participants || 0), 0);
 
   return (
     <div className="bg-white min-h-screen">
@@ -309,57 +250,6 @@ const Dashboard = () => {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* 4. What's Popular Section - Moved to bottom */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6 text-black">What's Popular</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Popular Courses */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-black">
-              <h3 className="text-lg font-semibold mb-4 text-black">Popular Courses</h3>
-              <div className="space-y-4">
-                {popularCourses.map((course) => (
-                  <div key={course._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{course.title}</span>
-                    <span className="text-gray-600 text-sm">
-                      {(course.enrolledUsers || 0).toLocaleString()} players
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Popular Challenges */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-black">
-              <h3 className="text-lg font-semibold mb-4 text-black">Popular Challenges</h3>
-              <div className="space-y-4">
-                {popularChallenges.map((challenge) => (
-                  <div key={challenge._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{challenge.title}</span>
-                    <span className="text-gray-600 text-sm">
-                      {(challenge.participants || 0).toLocaleString()} players
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Popular Drills */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-black">
-              <h3 className="text-lg font-semibold mb-4 text-black">Popular Drills</h3>
-              <div className="space-y-4">
-                {popularDrills.map((drill) => (
-                  <div key={drill._id} className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-gray-800">{drill.title}</span>
-                    <span className="text-gray-600 text-sm">
-                      {(drill.totalAttempts || 0).toLocaleString()} players
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,6 +32,12 @@ const CourseSelectionScreen = () => {
   const [showAd, setShowAd] = useState(false);
   const [userHasPremium, setUserHasPremium] = useState(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      checkUserPremium();
+    }, [])
+  );
+
   useEffect(() => {
     // Calculate duration based on frequency
     if (frequency === 'daily') {
@@ -41,14 +47,11 @@ const CourseSelectionScreen = () => {
     } else if (frequency === 'weekly') {
       setDuration('2 months');
     }
-
-    // Check if user has premium
-    checkUserPremium();
   }, [frequency]);
 
   const checkUserPremium = async () => {
     try {
-      const userInfo = await AsyncStorage.getItem('userInfo');
+      const userInfo = await AsyncStorage.getItem('userDetails');
       if (userInfo) {
         const parsedInfo = JSON.parse(userInfo);
         setUserHasPremium(parsedInfo.isPremium || false);
@@ -56,6 +59,31 @@ const CourseSelectionScreen = () => {
     } catch (error) {
       console.error('Error checking premium status:', error);
     }
+  };
+
+  const handleLevelChange = async (itemValue: string) => {
+    if (itemValue === 'expert') {
+      // Check premium status before allowing expert level selection
+      const userInfo = await AsyncStorage.getItem('userDetails');
+      const parsedInfo = userInfo ? JSON.parse(userInfo) : null;
+      const hasPremium = parsedInfo?.isPremium || false;
+
+      if (!hasPremium) {
+        Alert.alert(
+          'Premium Required',
+          'Expert level courses are only available to premium users.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Upgrade to Premium', 
+              onPress: () => router.push('/premium-upgrade' as any)
+            }
+          ]
+        );
+        return;
+      }
+    }
+    setLevel(itemValue);
   };
 
   const handleSubmit = async () => {
@@ -89,6 +117,9 @@ const CourseSelectionScreen = () => {
         return;
       }
 
+      // Recheck premium status before showing premium course alert
+      await checkUserPremium();
+
       // Check if course is premium and user has premium access
       if (course.isPremium && !userHasPremium) {
         Alert.alert(
@@ -120,22 +151,12 @@ const CourseSelectionScreen = () => {
         throw new Error(errorData.message || 'Failed to register for course');
       }
 
+      // Recheck premium status before showing ad
+      await checkUserPremium();
+      
       // Show ad if user is not premium
       if (!userHasPremium) {
         setShowAd(true);
-        // Continue with navigation after a short delay to ensure ad is seen
-        setTimeout(() => {
-          Alert.alert(
-            'Success',
-            'You have successfully registered for the course!',
-            [
-              {
-                text: 'OK',
-                onPress: () => router.push('/courses' as any)
-              }
-            ]
-          );
-        }, 1500);
       } else {
         // Navigate immediately for premium users
         Alert.alert(
@@ -155,6 +176,20 @@ const CourseSelectionScreen = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAdClose = () => {
+    setShowAd(false);
+    Alert.alert(
+      'Success',
+      'You have successfully registered for the course!',
+      [
+        {
+          text: 'OK',
+          onPress: () => router.push('/courses' as any)
+        }
+      ]
+    );
   };
 
   return (
@@ -180,7 +215,7 @@ const CourseSelectionScreen = () => {
           <View style={[styles.pickerContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Picker
               selectedValue={level}
-              onValueChange={(itemValue) => setLevel(itemValue)}
+              onValueChange={handleLevelChange}
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
@@ -232,7 +267,7 @@ const CourseSelectionScreen = () => {
       {showAd && (
         <AdBanner 
           type="course" 
-          onClose={() => setShowAd(false)} 
+          onClose={handleAdClose} 
         />
       )}
     </SafeAreaView>

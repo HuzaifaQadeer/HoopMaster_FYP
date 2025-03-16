@@ -42,6 +42,13 @@ interface CourseType {
   progress?: number;
 }
 
+// Cache configuration
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_KEYS = {
+  DRILLS: 'cached_drills',
+  COURSES: 'cached_courses'
+};
+
 const HomePage = () => {
   const { colors } = useTheme();
   const [drills, setDrills] = useState<Drill[]>([]);
@@ -50,28 +57,69 @@ const HomePage = () => {
   const [loadingDrills, setLoadingDrills] = useState(true);
   const [loadingCourses, setLoadingCourses] = useState(true);
 
-  useEffect(() => {
-    fetchDrills();
-  }, []);
+  // Cache management functions
+  const getCachedData = async (key: string) => {
+    try {
+      const cached = await AsyncStorage.getItem(key);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        const now = Date.now();
+        if (now - timestamp < CACHE_EXPIRY) {
+          return data;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error(`Error reading cache for ${key}:`, error);
+      return null;
+    }
+  };
 
-  // Use focus effect to refresh user courses when the screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      fetchUserCourses();
-    }, [])
-  );
+  const setCachedData = async (key: string, data: any) => {
+    try {
+      const cacheData = {
+        data,
+        timestamp: Date.now()
+      };
+      await AsyncStorage.setItem(key, JSON.stringify(cacheData));
+    } catch (error) {
+      console.error(`Error caching ${key}:`, error);
+    }
+  };
 
   const fetchDrills = async () => {
     try {
+      // First try to get cached drills
+      const cachedDrills = await getCachedData(CACHE_KEYS.DRILLS);
+      if (cachedDrills) {
+        setDrills(cachedDrills);
+        setFilteredDrills(cachedDrills);
+        setLoadingDrills(false);
+      }
+
+      // Fetch fresh data from API
       const response = await fetch(API_ROUTES.GET_ALL_DRILLS);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setDrills(data);
-      setFilteredDrills(data);
+
+      // Compare with cached data
+      if (JSON.stringify(data) !== JSON.stringify(cachedDrills)) {
+        setDrills(data);
+        setFilteredDrills(data);
+        await setCachedData(CACHE_KEYS.DRILLS, data);
+      }
     } catch (error) {
       console.error('Error fetching drills:', error);
+      // If we have cached data, we can still show it even if the fetch failed
+      if (!drills.length) {
+        const cachedDrills = await getCachedData(CACHE_KEYS.DRILLS);
+        if (cachedDrills) {
+          setDrills(cachedDrills);
+          setFilteredDrills(cachedDrills);
+        }
+      }
     } finally {
       setLoadingDrills(false);
     }
@@ -84,6 +132,13 @@ const HomePage = () => {
       if (!token) {
         setLoadingCourses(false);
         return;
+      }
+
+      // First try to get cached courses
+      const cachedCourses = await getCachedData(CACHE_KEYS.COURSES);
+      if (cachedCourses) {
+        setUserCourses(cachedCourses);
+        setLoadingCourses(false);
       }
 
       const response = await fetch(API_ROUTES.GET_USER_COURSES, {
@@ -111,35 +166,53 @@ const HomePage = () => {
             
             if (progressResponse.ok) {
               const progressData = await progressResponse.json();
-              // Handle both old and new API response formats
               const progressValue = progressData.progress !== undefined 
                 ? progressData.progress 
                 : (typeof progressData === 'number' ? progressData : 0);
               
-              // Ensure progress is a valid number between 0-100
               const validProgress = !isNaN(progressValue) 
                 ? Math.min(Math.max(0, progressValue), 100) 
                 : 0;
               
-              console.log(`Course ${course.title} progress: ${validProgress}%`);
               return { ...course, progress: validProgress };
             }
-            console.log(`Failed to fetch progress for course ${course.title}, using 0%`);
             return { ...course, progress: 0 };
           } catch (error) {
-            console.error(`Error fetching progress for course ${course.title}:`, error);
             return { ...course, progress: 0 };
           }
         })
       );
 
-      setUserCourses(coursesWithProgress);
+      // Compare with cached data
+      if (JSON.stringify(coursesWithProgress) !== JSON.stringify(cachedCourses)) {
+        setUserCourses(coursesWithProgress);
+        await setCachedData(CACHE_KEYS.COURSES, coursesWithProgress);
+      }
     } catch (error) {
       console.error('Error fetching user courses:', error);
+      // If we have cached data, we can still show it even if the fetch failed
+      if (!userCourses.length) {
+        const cachedCourses = await getCachedData(CACHE_KEYS.COURSES);
+        if (cachedCourses) {
+          setUserCourses(cachedCourses);
+        }
+      }
     } finally {
       setLoadingCourses(false);
     }
   };
+
+  // Use effect to fetch drills on mount
+  useEffect(() => {
+    fetchDrills();
+  }, []);
+
+  // Use focus effect to refresh user courses when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserCourses();
+    }, [])
+  );
 
   const handleSearch = useCallback((searchText: string) => {
     const filtered = drills.filter(drill => 

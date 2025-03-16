@@ -98,8 +98,8 @@ class SubscriptionService {
     
     return {
       isPremium: user.isPremium,
-      premiumStartDate: user.premiumStartDate,
-      premiumExpiryDate: user.premiumExpiryDate
+      premiumStartDate: user.premiumStartDate ? user.premiumStartDate.toISOString() : null,
+      premiumExpiryDate: user.premiumExpiryDate ? user.premiumExpiryDate.toISOString() : null
     };
   }
 }

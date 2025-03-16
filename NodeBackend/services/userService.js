@@ -291,21 +291,36 @@ class UserService {
       throw new Error('User not found');
     }
     
-    user.isPremium = true;
-    user.premiumStartDate = new Date();
-    // Set expiry date to 30 days from now
-    user.premiumExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+    const expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     
-    await user.save();
+    // Create update object with only the fields we want to modify
+    const updates = {
+      isPremium: true,
+      premiumStartDate: now,
+      premiumExpiryDate: expiryDate
+    };
+    
+    // Use findByIdAndUpdate to avoid modifying other fields
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true }
+    );
 
     // Create revenue record
     await Revenue.create({
       userId: user._id,
-      amount: 9.99, // Or whatever your premium amount is
+      amount: 9.99,
       source: 'premium_subscribed'
     });
 
-    return { isPremium: user.isPremium };
+    // Format dates as ISO strings
+    return {
+      isPremium: updatedUser.isPremium,
+      premiumStartDate: now.toISOString(),
+      premiumExpiryDate: expiryDate.toISOString()
+    };
   }
 
   async updateProfilePicture(userId, profilePicture) {

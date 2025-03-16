@@ -64,6 +64,44 @@ interface Achievement {
   awardedAt: string;
 }
 
+// Add cache configuration
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_KEYS = {
+  PROFILE: 'cached_profile',
+  ACHIEVEMENTS: 'cached_achievements',
+  PROFILE_COURSES: 'cached_profile_courses'
+};
+
+// Add cache management functions
+const getCachedData = async (key: string) => {
+  try {
+    const cached = await AsyncStorage.getItem(key);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      if (now - timestamp < CACHE_EXPIRY) {
+        return data;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error reading cache for ${key}:`, error);
+    return null;
+  }
+};
+
+const setCachedData = async (key: string, data: any) => {
+  try {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    await AsyncStorage.setItem(key, JSON.stringify(cacheData));
+  } catch (error) {
+    console.error(`Error caching ${key}:`, error);
+  }
+};
+
 const UserProfileScreen: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -139,7 +177,11 @@ const UserProfileScreen: React.FC = () => {
           });
           
           if (!response.ok) {
-            throw new Error(`Failed to fetch highlight video: ${response.status}`);
+            if (response.status !== 404) { // Ignore 404 errors as they're expected when no video exists
+              throw new Error(`Failed to fetch highlight video: ${response.status}`);
+            }
+            setVideoUri(null);
+            return;
           }
 
           // Get the raw data as base64
@@ -152,7 +194,9 @@ const UserProfileScreen: React.FC = () => {
           };
 
         } catch (error) {
-          console.error('Error fetching highlight video:', error);
+          if (error instanceof Error && !error.message.includes('404')) {
+            console.error('Error fetching highlight video:', error);
+          }
           setVideoUri(null);
         }
       };
@@ -163,29 +207,38 @@ const UserProfileScreen: React.FC = () => {
 
   const fetchUserProfile = async () => {
     try {
-      // Try to get cached data first
-      const userDetailsJson = await AsyncStorage.getItem('userDetails');
-      if (!userDetailsJson) {
-        // No cached data, make API call
-        const token = await getToken();
-        const response = await fetch(API_ROUTES.GET_PROFILE, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile');
-        }
-        const data = await response.json();
-        setUserProfile(data);
-        // Cache the data
-        await AsyncStorage.setItem('userDetails', JSON.stringify(data));
-        return;
+      // Try to get cached profile data first
+      const cachedProfile = await getCachedData(CACHE_KEYS.PROFILE);
+      if (cachedProfile) {
+        setUserProfile(cachedProfile);
       }
 
-      // Use cached data
-      const userDetails = JSON.parse(userDetailsJson);
-      setUserProfile(userDetails);
+      // Try to get token and make API call
+      const token = await getToken();
+      const response = await fetch(API_ROUTES.GET_PROFILE, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+
+      const data = await response.json();
+      
+      // Compare with cached data
+      if (JSON.stringify(data) !== JSON.stringify(cachedProfile)) {
+        setUserProfile(data);
+        await setCachedData(CACHE_KEYS.PROFILE, data);
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      // If we have cached data, we can still use it
+      if (!userProfile) {
+        const cachedProfile = await getCachedData(CACHE_KEYS.PROFILE);
+        if (cachedProfile) {
+          setUserProfile(cachedProfile);
+        }
+      }
     }
   };
 
@@ -196,6 +249,13 @@ const UserProfileScreen: React.FC = () => {
       if (!token) {
         setLoadingCourses(false);
         return;
+      }
+
+      // Try to get cached courses first
+      const cachedCourses = await getCachedData(CACHE_KEYS.PROFILE_COURSES);
+      if (cachedCourses) {
+        setUserCourses(cachedCourses);
+        setLoadingCourses(false);
       }
 
       const response = await fetch(API_ROUTES.GET_USER_COURSES, {
@@ -223,31 +283,37 @@ const UserProfileScreen: React.FC = () => {
             
             if (progressResponse.ok) {
               const progressData = await progressResponse.json();
-              // Handle both old and new API response formats
               const progressValue = progressData.progress !== undefined 
                 ? progressData.progress 
                 : (typeof progressData === 'number' ? progressData : 0);
               
-              // Ensure progress is a valid number between 0-100
               const validProgress = !isNaN(progressValue) 
                 ? Math.min(Math.max(0, progressValue), 100) 
                 : 0;
               
-              console.log(`Profile - Course ${course.title} progress: ${validProgress}%`);
               return { ...course, progress: validProgress };
             }
-            console.log(`Failed to fetch progress for course ${course.title}, using 0%`);
             return { ...course, progress: 0 };
           } catch (error) {
-            console.error(`Error fetching progress for course ${course.title}:`, error);
             return { ...course, progress: 0 };
           }
         })
       );
 
-      setUserCourses(coursesWithProgress);
+      // Compare with cached data
+      if (JSON.stringify(coursesWithProgress) !== JSON.stringify(cachedCourses)) {
+        setUserCourses(coursesWithProgress);
+        await setCachedData(CACHE_KEYS.PROFILE_COURSES, coursesWithProgress);
+      }
     } catch (error) {
       console.error('Error fetching user courses:', error);
+      // If we have cached data, we can still use it
+      if (!userCourses.length) {
+        const cachedCourses = await getCachedData(CACHE_KEYS.PROFILE_COURSES);
+        if (cachedCourses) {
+          setUserCourses(cachedCourses);
+        }
+      }
     } finally {
       setLoadingCourses(false);
     }
@@ -262,7 +328,14 @@ const UserProfileScreen: React.FC = () => {
         return;
       }
 
-      const response = await fetch(API_ROUTES.GET_USER_ACHIEVEMENTS, {
+      // Try to get cached achievements first
+      const cachedAchievements = await getCachedData(CACHE_KEYS.ACHIEVEMENTS);
+      if (cachedAchievements) {
+        setAchievements(cachedAchievements);
+        setLoadingAchievements(false);
+      }
+
+      const response = await fetch(API_ROUTES.GET_USER_ACHIEVEMENTS_OLD, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -273,9 +346,21 @@ const UserProfileScreen: React.FC = () => {
       }
 
       const achievementsData = await response.json();
-      setAchievements(achievementsData);
+      
+      // Compare with cached data
+      if (JSON.stringify(achievementsData) !== JSON.stringify(cachedAchievements)) {
+        setAchievements(achievementsData);
+        await setCachedData(CACHE_KEYS.ACHIEVEMENTS, achievementsData);
+      }
     } catch (error) {
       console.error('Error fetching user achievements:', error);
+      // If we have cached data, we can still use it
+      if (!achievements.length) {
+        const cachedAchievements = await getCachedData(CACHE_KEYS.ACHIEVEMENTS);
+        if (cachedAchievements) {
+          setAchievements(cachedAchievements);
+        }
+      }
     } finally {
       setLoadingAchievements(false);
     }
@@ -367,11 +452,6 @@ const UserProfileScreen: React.FC = () => {
           {userProfile?.isPremium ? "Manage Premium Subscription" : "Upgrade to Premium"}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.optionItem} onPress={togglePrivacy}>
-        <Text style={[styles.optionText, { color: theme.colors.text }]}>
-          {userProfile?.isPrivate ? "Set Account to Public" : "Set Account to Private"}
-        </Text>
-      </TouchableOpacity>
       <TouchableOpacity 
         style={styles.optionItem} 
         onPress={() => router.push('/editprofile')}
@@ -439,6 +519,7 @@ const UserProfileScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
+        fetchUserProfile();
         fetchUserCourses();
         fetchUserAchievements();
       }

@@ -22,9 +22,47 @@ import { API_ROUTES } from '@/config/config';
 import { useAuth } from '@/context/AuthContext';
 import moment from 'moment';
 import config from '@/config/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Add API base URL constant
 const API_BASE_URL = config.API_BASE_URL;
+
+// Add cache configuration
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_KEYS = {
+  POST_DETAILS: (id: string) => `post_details_${id}`,
+  POST_COMMENTS: (id: string) => `post_comments_${id}`
+};
+
+// Add cache management functions
+const getCachedData = async (key: string) => {
+  try {
+    const cached = await AsyncStorage.getItem(key);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      if (now - timestamp < CACHE_EXPIRY) {
+        return data;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error reading cache for ${key}:`, error);
+    return null;
+  }
+};
+
+const setCachedData = async (key: string, data: any) => {
+  try {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    await AsyncStorage.setItem(key, JSON.stringify(cacheData));
+  } catch (error) {
+    console.error(`Error caching ${key}:`, error);
+  }
+};
 
 // Define interfaces 
 interface User {
@@ -224,11 +262,21 @@ export default function PostDetailScreen() {
       console.log('[Debug] Fetching post details for ID:', id);
       console.log('[Debug] Using API endpoint:', API_ROUTES.GET_POST.replace(':id', id));
       
+      // Try to get cached post details first
+      const cachedPost = await getCachedData(CACHE_KEYS.POST_DETAILS(id));
+      if (cachedPost) {
+        setPost(cachedPost);
+        setLoading(false);
+      }
+
       const token = await getToken();
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(API_ROUTES.GET_POST.replace(':id', id), {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers
       });
 
       console.log('[Debug] Post fetch response status:', response.status);
@@ -241,7 +289,12 @@ export default function PostDetailScreen() {
 
       const data = await response.json();
       console.log('[Debug] Received post data:', data);
-      setPost(data);
+      
+      // Compare with cached data and update if different
+      if (JSON.stringify(data) !== JSON.stringify(cachedPost)) {
+        setPost(data);
+        await setCachedData(CACHE_KEYS.POST_DETAILS(id), data);
+      }
       
       // Check if user has liked the post
       if (isAuthenticated && user && data.likes.includes(user._id)) {
@@ -262,6 +315,13 @@ export default function PostDetailScreen() {
       setCommentsLoading(true);
       console.log('[Debug] Fetching comments for post ID:', id);
       
+      // Try to get cached comments first
+      const cachedComments = await getCachedData(CACHE_KEYS.POST_COMMENTS(id));
+      if (cachedComments) {
+        setComments(cachedComments);
+        setCommentsLoading(false);
+      }
+
       const token = await getToken();
       console.log('[Debug] Token available for comments fetch:', !!token);
       
@@ -290,8 +350,11 @@ export default function PostDetailScreen() {
       console.log('[Debug] Is comments data array?', Array.isArray(data));
       console.log('[Debug] First comment example:', data.length > 0 ? JSON.stringify(data[0]) : 'No comments');
       
-      // Make sure we're setting an array of comments
-      setComments(Array.isArray(data) ? data : []);
+      // Compare with cached data and update if different
+      if (JSON.stringify(data) !== JSON.stringify(cachedComments)) {
+        setComments(Array.isArray(data) ? data : []);
+        await setCachedData(CACHE_KEYS.POST_COMMENTS(id), data);
+      }
     } catch (error) {
       console.error('[Debug] Error fetching comments:', error);
       Alert.alert('Error', 'Failed to load comments');

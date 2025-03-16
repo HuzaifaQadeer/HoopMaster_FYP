@@ -261,7 +261,7 @@ const SessionDetailsScreen = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.border} />
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton} 
@@ -286,16 +286,9 @@ const SessionDetailsScreen = () => {
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
               isLooping
-              onPlaybackStatusUpdate={status => setVideoStatus(status)}
+              onPlaybackStatusUpdate={(status: React.SetStateAction<{}>) => setVideoStatus(status)}
             />
-          ) : (
-            <View style={[styles.videoPlaceholder, { backgroundColor: colors.border }]}>
-              <Ionicons name="videocam" size={48} color={colors.text} />
-              <Text style={[styles.videoPlaceholderText, { color: colors.text }]}>
-                Video not available
-              </Text>
-            </View>
-          )}
+          ) : null}
         </View>
 
         <View style={styles.instructionsContainer}>
@@ -423,16 +416,6 @@ const styles = StyleSheet.create({
   video: {
     width: '100%',
     height: '100%',
-  },
-  videoPlaceholder: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  videoPlaceholderText: {
-    marginTop: 8,
-    fontSize: 16,
   },
   instructionsContainer: {
     padding: 16,

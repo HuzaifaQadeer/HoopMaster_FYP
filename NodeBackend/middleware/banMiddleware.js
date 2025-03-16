@@ -10,7 +10,7 @@ const checkBan = async (req, res, next) => {
       return next();
     }
     
-    const user = await User.findById(req.user._id).select('isBanned banReason banExpires');
+    const user = await User.findById(req.user._id).select('banStatus');
     
     // If user not found (shouldn't happen since we already passed auth)
     if (!user) {
@@ -18,10 +18,16 @@ const checkBan = async (req, res, next) => {
     }
     
     // If the user is banned but the ban has expired, unban them
-    if (user.isBanned && user.banExpires && new Date() > user.banExpires) {
-      user.isBanned = false;
-      user.banReason = '';
-      user.banExpires = null;
+    if (user.banStatus.isBanned && user.banStatus.bannedUntil && new Date() > user.banStatus.bannedUntil) {
+      user.banStatus = {
+        isBanned: false,
+        banReason: '',
+        banDuration: 0,
+        bannedAt: null,
+        bannedUntil: null,
+        bannedBy: null,
+        banHistory: user.banStatus.banHistory // Preserve ban history
+      };
       await user.save();
       
       // Allow the user to proceed
@@ -29,16 +35,16 @@ const checkBan = async (req, res, next) => {
     }
     
     // If user is banned, deny access
-    if (user.isBanned) {
+    if (user.banStatus.isBanned) {
       // Format ban expiration (if temporary ban)
-      let expiration = user.banExpires 
-        ? `until ${user.banExpires.toLocaleDateString()}` 
+      let expiration = user.banStatus.bannedUntil 
+        ? `until ${user.banStatus.bannedUntil.toLocaleDateString()}` 
         : 'permanently';
       
       return res.status(403).json({ 
         message: `Your account has been banned ${expiration}`,
-        reason: user.banReason || 'No reason provided',
-        banExpires: user.banExpires || null,
+        reason: user.banStatus.banReason || 'No reason provided',
+        banExpires: user.banStatus.bannedUntil || null,
         isBanned: true
       });
     }

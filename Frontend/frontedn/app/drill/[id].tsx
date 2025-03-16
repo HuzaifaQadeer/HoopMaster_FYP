@@ -106,10 +106,6 @@ export default function DrillPage() {
         }}
       />
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.videoPlaceholder}>
-          <Text style={[styles.placeholderText, { color: colors.text }]}>Video Placeholder</Text>
-        </View>
-
         <TouchableOpacity 
           style={[styles.recordButton, { backgroundColor: colors.primary }]}
           onPress={handleRecordPress}
@@ -147,17 +143,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  videoPlaceholder: {
-    height: 200,
-    backgroundColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 10,
-  },
-  placeholderText: {
-    fontSize: 18,
   },
   recordButton: {
     padding: 15,

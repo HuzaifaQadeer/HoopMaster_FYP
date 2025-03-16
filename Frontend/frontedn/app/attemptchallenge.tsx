@@ -21,6 +21,8 @@ import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { API_ROUTES } from '@/config/config';
 import { useAuth } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AdBanner from '@/components/custom/AdBanner';
 
 const COUNTDOWN_DURATION = 5;
 const MAX_RECORDING_DURATION = 30;
@@ -54,6 +56,8 @@ export default function AttemptChallengeScreen() {
   const [recordingTimer, setRecordingTimer] = useState<number | null>(null);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAd, setShowAd] = useState(false);
+  const [userHasPremium, setUserHasPremium] = useState(false);
   
   const cameraRef = useRef<CameraView>(null);
   const videoRef = useRef<any>(null);
@@ -67,6 +71,7 @@ export default function AttemptChallengeScreen() {
 
   useEffect(() => {
     fetchChallengeDetails();
+    checkUserPremium();
     
     return () => {
       if (sound) {
@@ -140,6 +145,18 @@ export default function AttemptChallengeScreen() {
     } catch (error) {
       console.error('Error fetching challenge details:', error);
       Alert.alert('Error', 'Failed to load challenge details');
+    }
+  };
+
+  const checkUserPremium = async () => {
+    try {
+      const userInfo = await AsyncStorage.getItem('userDetails');
+      if (userInfo) {
+        const parsedInfo = JSON.parse(userInfo);
+        setUserHasPremium(parsedInfo.isPremium || false);
+      }
+    } catch (error) {
+      console.error('Error checking premium status:', error);
     }
   };
 
@@ -398,7 +415,6 @@ export default function AttemptChallengeScreen() {
       const fileName = uriParts[uriParts.length - 1];
       
       // Correctly format the file object for the form data
-      // The key must match what the server expects in multer configuration
       formData.append('video', {
         uri: Platform.OS === 'ios' ? videoUri.replace('file://', '') : videoUri,
         name: fileName,
@@ -406,86 +422,64 @@ export default function AttemptChallengeScreen() {
       } as any);
 
       console.log('Submitting to URL:', API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string));
-      
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timed out after 60 seconds')), 60000);
-      });
-      
-      // Create the fetch promise
-      const fetchPromise = fetch(API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string), {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        },
-      });
-      
-      // Race the fetch against the timeout
-      const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+
+      const response = await fetch(
+        API_ROUTES.CREATE_CHALLENGE_ATTEMPT.replace(':challengeId', challengeId as string),
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          },
+          body: formData
+        }
+      );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        try {
-          const errorData = JSON.parse(errorText);
-          throw new Error(errorData.message || 'Failed to submit challenge attempt');
-        } catch (parseError) {
-          throw new Error(`Server error: ${response.status} ${response.statusText}`);
-        }
+        throw new Error('Failed to submit challenge attempt');
       }
 
-      Alert.alert(
-        "Success!",
-        isReplacingAttempt 
-          ? "Your previous attempt has been replaced with this new submission."
-          : "Your challenge attempt has been submitted successfully.",
-        [
-          { 
-            text: "View Challenge", 
-            onPress: () => router.replace({
-              pathname: 'challenge-details/[id]' as any,
-              params: { id: challengeId }
-            }) 
-          },
-          { 
-            text: "OK", 
-            onPress: () => router.back() 
-          }
-        ]
-      );
+      // Recheck premium status before showing ad
+      await checkUserPremium();
+      
+      // Show ad if user is not premium
+      if (!userHasPremium) {
+        setShowAd(true);
+      } else {
+        // Navigate immediately for premium users
+        Alert.alert(
+          'Success',
+          isReplacingAttempt 
+            ? 'Your challenge attempt has been updated!'
+            : 'Your challenge attempt has been submitted!',
+          [
+            {
+              text: 'OK',
+              onPress: () => router.back()
+            }
+          ]
+        );
+      }
     } catch (error) {
       console.error('Error submitting challenge attempt:', error);
-      
-      // Provide more specific error messages
-      let errorMessage = 'Unknown error';
-      if (error instanceof Error) {
-        if (error.message.includes('timed out')) {
-          errorMessage = 'The request is taking too long. The server might be busy or your internet connection might be slow.';
-        } else {
-          errorMessage = error.message;
-        }
-      }
-      
-      Alert.alert(
-        "Submission Error", 
-        errorMessage,
-        [
-          { text: "Cancel", style: "cancel" },
-          { 
-            text: "Retry", 
-            onPress: () => {
-              setIsSubmitting(false);
-              setTimeout(() => submitChallengeAttempt(), 1000);
-            } 
-          }
-        ]
-      );
+      Alert.alert('Error', 'Failed to submit challenge attempt');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAdClose = () => {
+    setShowAd(false);
+    Alert.alert(
+      'Success',
+      'Your challenge attempt has been submitted!',
+      [
+        {
+          text: 'OK',
+          onPress: () => router.back()
+        }
+      ]
+    );
   };
 
   const renderCamera = () => (
@@ -615,6 +609,13 @@ export default function AttemptChallengeScreen() {
         }}
       />
       {videoUri && showTrimmer ? renderTrimmer() : renderCamera()}
+      
+      {showAd && (
+        <AdBanner 
+          type="challenge" 
+          onClose={handleAdClose} 
+        />
+      )}
     </View>
   );
 }

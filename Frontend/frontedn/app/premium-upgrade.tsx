@@ -114,9 +114,6 @@ const PremiumUpgradeScreen = () => {
         return;
       }
 
-      // In a real app, you would send the card details to your backend
-      // which would then validate with a payment processor
-      // For this demo, we'll just call the upgrade endpoint
       const response = await fetch(API_ROUTES.UPGRADE_PREMIUM, {
         method: 'POST',
         headers: {
@@ -131,19 +128,40 @@ const PremiumUpgradeScreen = () => {
         })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to upgrade to premium');
+      const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        console.error('Response Text:', responseText);
+        throw new Error('Invalid response from server');
       }
 
-      const data = await response.json();
-      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to upgrade to premium');
+      }
+
       // Update local storage with premium status
       const userInfo = await AsyncStorage.getItem('userDetails');
       if (userInfo) {
         const parsedInfo = JSON.parse(userInfo);
         parsedInfo.isPremium = true;
+        parsedInfo.premiumStartDate = data.premiumStartDate;
+        parsedInfo.premiumExpiryDate = data.premiumExpiryDate;
         await AsyncStorage.setItem('userDetails', JSON.stringify(parsedInfo));
+      }
+
+      // Fetch fresh profile data to ensure all screens have latest data
+      const profileResponse = await fetch(API_ROUTES.GET_PROFILE, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        await AsyncStorage.setItem('userDetails', JSON.stringify(profileData));
       }
 
       Alert.alert(
@@ -180,10 +198,6 @@ const PremiumUpgradeScreen = () => {
           <View style={styles.benefitItem}>
             <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
             <Text style={[styles.benefitText, { color: colors.text }]}>Access to premium courses</Text>
-          </View>
-          <View style={styles.benefitItem}>
-            <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-            <Text style={[styles.benefitText, { color: colors.text }]}>Unlimited challenge attempts</Text>
           </View>
           <View style={styles.benefitItem}>
             <Ionicons name="checkmark-circle" size={20} color={colors.primary} />

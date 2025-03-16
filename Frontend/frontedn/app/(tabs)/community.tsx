@@ -20,9 +20,20 @@ import { useAuth } from '../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import config from '@/config/config';
 import ProfilePicture from '@/components/custom/ProfilePicture';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Add API base URL constant
 const API_BASE_URL = config.API_BASE_URL;
+
+// Update cache configuration
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_KEYS = {
+  CHALLENGES: 'cached_challenges',
+  POSTS: 'cached_posts',
+  TOP_CHALLENGES: 'cached_top_5_challenges',
+  TOP_POSTS: 'cached_top_5_posts',
+  POST_COMMENTS: (postId: string) => `cached_post_comments_${postId}`
+};
 
 // Helper function to get full media URL
 const getFullMediaUrl = (url: string) => {
@@ -74,6 +85,36 @@ interface Post {
   likes?: string[];
   liked?: boolean;
 }
+
+// Add cache management functions
+const getCachedData = async (key: string) => {
+  try {
+    const cached = await AsyncStorage.getItem(key);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      if (now - timestamp < CACHE_EXPIRY) {
+        return data;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error reading cache for ${key}:`, error);
+    return null;
+  }
+};
+
+const setCachedData = async (key: string, data: any) => {
+  try {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    await AsyncStorage.setItem(key, JSON.stringify(cacheData));
+  } catch (error) {
+    console.error(`Error caching ${key}:`, error);
+  }
+};
 
 const ChallengeCard = ({ challenge, onPress }: { challenge: Challenge, onPress: () => void }) => {
   const { colors } = useTheme();
@@ -253,44 +294,43 @@ const CommunityPage = () => {
   const fetchChallenges = async () => {
     try {
       setLoading(true);
-      console.log('[Debug] Fetching active challenges');
-      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_ACTIVE_CHALLENGES);
-      
+
+      // Try to get cached top 5 challenges first
+      const cachedTopChallenges = await getCachedData(CACHE_KEYS.TOP_CHALLENGES);
+      if (cachedTopChallenges) {
+        setChallenges(cachedTopChallenges);
+        setLoading(false);
+      }
+
+      // Try to get all cached challenges
+      const cachedChallenges = await getCachedData(CACHE_KEYS.CHALLENGES);
+      if (cachedChallenges && !cachedTopChallenges) {
+        setChallenges(cachedChallenges);
+        setLoading(false);
+      }
+
       const response = await fetch(API_ROUTES.GET_ACTIVE_CHALLENGES);
       
-      console.log('[Debug] Challenges response status:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[Debug] Error response:', errorText);
         throw new Error(`Failed to fetch challenges: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('[Debug] Received challenges data, count:', data.length);
       
-      // The backend might return an array directly or an object with a challenges property
-      // Handle both formats
       let challengesArray = [];
       
       if (Array.isArray(data)) {
-        console.log('Challenge data is an array with', data.length, 'items');
         challengesArray = data;
       } else if (data && typeof data === 'object') {
         if (data.challenges && Array.isArray(data.challenges)) {
-          console.log('Challenge data has challenges array with', data.challenges.length, 'items');
           challengesArray = data.challenges;
         } else {
-          console.log('Challenge data is an object but does not have a challenges array');
-          // Try to convert the object to an array if it's not already one
           challengesArray = Object.values(data).filter(item => 
             item && typeof item === 'object' && '_id' in (item as Record<string, any>)
           );
-          console.log('Extracted', challengesArray.length, 'challenges from object');
         }
       }
       
-      // Transform and validate challenge data
       const validChallenges = challengesArray
         .filter((challenge: any) => challenge && challenge._id)
         .map((challenge: any) => ({
@@ -304,12 +344,27 @@ const CommunityPage = () => {
           thumbnail: challenge.thumbnail || '',
           topParticipants: challenge.topParticipants || []
         }));
-      
-      console.log(`Found ${validChallenges.length} valid challenges after processing`);
-      setChallenges(validChallenges);
+
+      // Cache all challenges
+      if (JSON.stringify(validChallenges) !== JSON.stringify(cachedChallenges)) {
+        setChallenges(validChallenges);
+        await setCachedData(CACHE_KEYS.CHALLENGES, validChallenges);
+      }
+
+      // Cache top 5 challenges separately
+      const top5Challenges = validChallenges.slice(0, 5);
+      if (JSON.stringify(top5Challenges) !== JSON.stringify(cachedTopChallenges)) {
+        await setCachedData(CACHE_KEYS.TOP_CHALLENGES, top5Challenges);
+      }
     } catch (error) {
-      console.error('[Debug] Error fetching challenges:', error);
-      setChallenges([]);
+      console.error('Error fetching challenges:', error);
+      // If we have cached data, we can still show it even if the fetch failed
+      if (!challenges.length) {
+        const cachedChallenges = await getCachedData(CACHE_KEYS.CHALLENGES);
+        if (cachedChallenges) {
+          setChallenges(cachedChallenges);
+        }
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -319,41 +374,41 @@ const CommunityPage = () => {
   const fetchPosts = async () => {
     try {
       setPostsLoading(true);
-      console.log('[Debug] Fetching community posts');
-      console.log('[Debug] Using API endpoint:', API_ROUTES.GET_ALL_POSTS);
-      
       const token = await getToken();
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      // Try to get cached top 5 posts first
+      const cachedTopPosts = await getCachedData(CACHE_KEYS.TOP_POSTS);
+      if (cachedTopPosts) {
+        setPosts(cachedTopPosts);
+        setPostsLoading(false);
+      }
+
+      // Try to get all cached posts
+      const cachedPosts = await getCachedData(CACHE_KEYS.POSTS);
+      if (cachedPosts && !cachedTopPosts) {
+        setPosts(cachedPosts);
+        setPostsLoading(false);
       }
       
       const response = await fetch(`${API_ROUTES.GET_ALL_POSTS}?limit=10`, {
         headers
       });
       
-      console.log('[Debug] Posts response status:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[Debug] Error response:', errorText);
         throw new Error(`Failed to fetch posts: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('[Debug] Received posts data, count:', data.posts ? data.posts.length : 0);
-      
-      // Extract posts array from response - the backend returns {posts: [...], pagination: {...}}
       const postsArray = data.posts || [];
       
       if (!Array.isArray(postsArray)) {
-        console.log('Posts data is not an array:', typeof postsArray);
         throw new Error('Invalid posts data format');
       }
       
-      console.log(`Found ${postsArray.length} posts`);
-      
-      // Transform the data to match our Post interface and check if user has liked each post
       const transformedPosts = postsArray.map((post: any) => ({
         id: post._id || post.id,
         content: post.content || '',
@@ -368,15 +423,30 @@ const CommunityPage = () => {
         liked: post.likes ? post.likes.includes(user?._id) : false
       }));
       
-      // Sort posts by like count (descending)
       transformedPosts.sort((a: Post, b: Post) => 
         (b.likes?.length || 0) - (a.likes?.length || 0)
       );
       
-      setPosts(transformedPosts);
+      // Cache all posts
+      if (JSON.stringify(transformedPosts) !== JSON.stringify(cachedPosts)) {
+        setPosts(transformedPosts);
+        await setCachedData(CACHE_KEYS.POSTS, transformedPosts);
+      }
+
+      // Cache top 5 posts separately
+      const top5Posts = transformedPosts.slice(0, 5);
+      if (JSON.stringify(top5Posts) !== JSON.stringify(cachedTopPosts)) {
+        await setCachedData(CACHE_KEYS.TOP_POSTS, top5Posts);
+      }
     } catch (error) {
-      console.error('[Debug] Error fetching posts:', error);
-      setPosts([]);
+      console.error('Error fetching posts:', error);
+      // If we have cached data, we can still show it even if the fetch failed
+      if (!posts.length) {
+        const cachedPosts = await getCachedData(CACHE_KEYS.POSTS);
+        if (cachedPosts) {
+          setPosts(cachedPosts);
+        }
+      }
     } finally {
       setPostsLoading(false);
       setRefreshing(false);
@@ -390,11 +460,7 @@ const CommunityPage = () => {
     }
     
     try {
-      console.log('[Debug] Liking post with ID:', postId);
-      console.log('[Debug] Using API endpoint:', API_ROUTES.LIKE_POST.replace(':id', postId));
-      
       const token = await getToken();
-      // Replace :id in the URL with the actual postId
       const likeUrl = API_ROUTES.LIKE_POST.replace(':id', postId);
       
       const response = await fetch(likeUrl, {
@@ -405,25 +471,18 @@ const CommunityPage = () => {
         }
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to like post');
-      }
+      if (!response.ok) throw new Error('Failed to like post');
       
-      // Update local state
-      setPosts(posts.map(post => {
+      // Update local state and cache
+      const updatedPosts = posts.map(post => {
         if (post.id === postId) {
-          // Toggle the liked status
           const newLikedStatus = !post.liked;
-          
-          // Update the likes array based on the new status
           let updatedLikes = [...(post.likes || [])];
           if (newLikedStatus && user?._id) {
-            // Add user ID to likes if not already there
             if (!updatedLikes.includes(user._id)) {
               updatedLikes.push(user._id);
             }
           } else if (!newLikedStatus && user?._id) {
-            // Remove user ID from likes
             updatedLikes = updatedLikes.filter(id => id !== user._id);
           }
           
@@ -434,9 +493,12 @@ const CommunityPage = () => {
           };
         }
         return post;
-      }));
+      });
+      
+      setPosts(updatedPosts);
+      await setCachedData(CACHE_KEYS.POSTS, updatedPosts);
     } catch (error) {
-      console.error('[Debug] Error liking post:', error);
+      console.error('Error liking post:', error);
     }
   };
 

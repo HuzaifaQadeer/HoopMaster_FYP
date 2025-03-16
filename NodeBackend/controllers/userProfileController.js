@@ -85,10 +85,16 @@ exports.checkBanStatus = async (req, res) => {
     }
     
     // If the user is banned but the ban has expired, unban them
-    if (user.isBanned && user.banExpires && new Date() > user.banExpires) {
-      user.isBanned = false;
-      user.banReason = '';
-      user.banExpires = null;
+    if (user.banStatus.isBanned && user.banStatus.bannedUntil && new Date() > user.banStatus.bannedUntil) {
+      user.banStatus = {
+        isBanned: false,
+        banReason: '',
+        banDuration: 0,
+        bannedAt: null,
+        bannedUntil: null,
+        bannedBy: null,
+        banHistory: user.banStatus.banHistory // Preserve ban history
+      };
       await user.save();
       
       return res.status(200).json({
@@ -98,9 +104,9 @@ exports.checkBanStatus = async (req, res) => {
     }
     
     res.status(200).json({
-      isBanned: user.isBanned,
-      banReason: user.isBanned ? user.banReason : undefined,
-      banExpires: user.isBanned ? user.banExpires : undefined
+      isBanned: user.banStatus.isBanned,
+      banReason: user.banStatus.isBanned ? user.banStatus.banReason : undefined,
+      banExpires: user.banStatus.isBanned ? user.banStatus.bannedUntil : undefined
     });
   } catch (error) {
     console.error('Error checking ban status:', error);
@@ -133,17 +139,25 @@ exports.banUser = async (req, res) => {
       return res.status(403).json({ message: 'Cannot ban an admin user' });
     }
     
-    // Set ban expiration if duration is provided (in days)
-    let banExpires = null;
-    if (duration && !isNaN(duration)) {
-      banExpires = new Date();
-      banExpires.setDate(banExpires.getDate() + parseInt(duration));
-    }
-    
     // Ban the user
-    user.isBanned = true;
-    user.banReason = reason;
-    user.banExpires = banExpires;
+    const bannedAt = new Date();
+    const bannedUntil = duration ? new Date(bannedAt.getTime() + (parseInt(duration) * 24 * 60 * 60 * 1000)) : null;
+
+    user.banStatus = {
+      isBanned: true,
+      banReason: reason,
+      banDuration: duration ? parseInt(duration) : 0,
+      bannedAt: bannedAt,
+      bannedUntil: bannedUntil,
+      bannedBy: req.user._id,
+      banHistory: [...(user.banStatus.banHistory || []), {
+        reason: reason,
+        duration: duration ? parseInt(duration) : 0,
+        bannedAt: bannedAt,
+        bannedUntil: bannedUntil,
+        bannedBy: req.user._id
+      }]
+    };
     
     await user.save();
     
@@ -152,9 +166,7 @@ exports.banUser = async (req, res) => {
       user: {
         _id: user._id,
         username: user.username,
-        isBanned: user.isBanned,
-        banReason: user.banReason,
-        banExpires: user.banExpires
+        banStatus: user.banStatus
       }
     });
   } catch (error) {
@@ -178,9 +190,15 @@ exports.unbanUser = async (req, res) => {
     }
     
     // Unban the user
-    user.isBanned = false;
-    user.banReason = '';
-    user.banExpires = null;
+    user.banStatus = {
+      isBanned: false,
+      banReason: '',
+      banDuration: 0,
+      bannedAt: null,
+      bannedUntil: null,
+      bannedBy: null,
+      banHistory: user.banStatus.banHistory // Preserve ban history
+    };
     
     await user.save();
     
@@ -189,7 +207,7 @@ exports.unbanUser = async (req, res) => {
       user: {
         _id: user._id,
         username: user.username,
-        isBanned: user.isBanned
+        banStatus: user.banStatus
       }
     });
   } catch (error) {
