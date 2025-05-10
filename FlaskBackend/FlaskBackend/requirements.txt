@@ -8,6 +8,9 @@ google-generativeai
 cohere
 python-dotenv
 numpy
-opencv-python
+opencv-python-headless
 mediapipe
 ultralytics>=8.0.0
+torch
+torchvision
+torchaudio --index-url https://download.pytorch.org/whl/cu118

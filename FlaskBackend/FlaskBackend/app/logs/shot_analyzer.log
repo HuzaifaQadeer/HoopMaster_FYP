@@ -11337,3 +11337,46 @@
 2025-03-12 13:49:34,388 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
 2025-03-12 13:49:34,389 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 15.93 seconds
 2025-03-12 13:49:34,389 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 17.39 frames per second
+2025-05-09 10:01:10,033 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:26] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-09 10:01:10,033 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:36] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-09 10:01:11,402 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-09 10:01:11,403 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:81] - Successfully imported mediapipe
+2025-05-09 10:01:11,408 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:100] - MediaPipe pose detector pre-initialized
+2025-05-09 10:01:14,203 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\bfacaff2-073d-4588-a03c-e0dfd7b5bbfc_40b61315-8104-4454-a603-aa92ffe2148e_2373c073-f1d2-45c2-ad5d-de9713bbb9e5.mp4
+2025-05-09 10:01:14,203 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746810074.mp4
+2025-05-09 10:01:14,203 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-09 10:01:14,203 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\bfacaff2-073d-4588-a03c-e0dfd7b5bbfc_40b61315-8104-4454-a603-aa92ffe2148e_2373c073-f1d2-45c2-ad5d-de9713bbb9e5.mp4
+2025-05-09 10:01:14,262 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 1920x1080
+2025-05-09 10:01:14,264 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 29.99790712275888
+2025-05-09 10:01:14,265 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 29.99790712275888
+2025-05-09 10:01:14,266 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-09 10:01:14,266 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-09 10:01:14,266 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-09 10:01:14,273 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-09 10:01:14,273 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 1920x1080 at 29.99790712275888 fps
+2025-05-09 10:01:14,799 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-09 10:01:14,799 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-09 10:01:14,960 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:786] - Pose detection failed for frame 4
+2025-05-09 10:01:16,239 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_4.txt
+2025-05-09 10:03:33,701 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\cc78e586-ae54-4386-8328-6195a2462ac9_d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:33,705 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746810213.mp4
+2025-05-09 10:03:33,707 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-09 10:03:33,709 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\cc78e586-ae54-4386-8328-6195a2462ac9_d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:33,733 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 1920x1080
+2025-05-09 10:03:33,735 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 29.924894382725707
+2025-05-09 10:03:33,735 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 29.924894382725707
+2025-05-09 10:03:33,735 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-09 10:03:33,736 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-09 10:03:33,736 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-09 10:03:33,736 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-09 10:03:33,736 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 1920x1080 at 29.924894382725707 fps
+2025-05-09 10:03:33,941 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-09 10:03:33,941 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-09 10:03:35,207 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:728] - End of video reached
+2025-05-09 10:03:35,207 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:919] - Generating trajectory traces
+2025-05-09 10:03:35,212 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:922] - Trajectory traces generated successfully
+2025-05-09 10:03:35,212 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:927] - Finalizing video output
+2025-05-09 10:03:35,253 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:933] - Output video successfully created: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746810213.mp4 (1771110 bytes)
+2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
+2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 1.55 seconds
+2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 10.98 frames per second

@@ -11,7 +11,7 @@ $commands = @(
     @{
         Name = "Flask Backend"
         Dir = "FlaskBackend/FlaskBackend"
-        Cmd = "python run.py"
+        Cmd = ".\\venv\\Scripts\\Activate; python run.py"
     },
     @{
         Name = "Node Tunnel"
@@ -21,7 +21,7 @@ $commands = @(
     @{
         Name = "Flask Tunnel"
         Dir = "."
-        Cmd = "lt --port 8080 --subdomain flaskapp"
+        Cmd = "lt --port 8082 --subdomain flaskapp"
     },
     @{
         Name = "Admin Panel"

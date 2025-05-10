@@ -399,3 +399,37 @@ Exception: Error analyzing practice video: No module named 'yolov5'
 2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8a1510ca-d4cf-4dcf-b126-9704de567f4d_eaf798ea-8326-4263-b7b7-7462a115d91c.mp4
 2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8a1510ca-d4cf-4dcf-b126-9704de567f4d
 2025-03-16 19:59:09,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8a1510ca-d4cf-4dcf-b126-9704de567f4d: Calling analyze_practice_video
+2025-05-09 09:59:32,459 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-09 10:01:09,976 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 40b61315-8104-4454-a603-aa92ffe2148e for file 2373c073-f1d2-45c2-ad5d-de9713bbb9e5.mp4
+2025-05-09 10:01:10,004 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\40b61315-8104-4454-a603-aa92ffe2148e_2373c073-f1d2-45c2-ad5d-de9713bbb9e5.mp4
+2025-05-09 10:01:10,006 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 40b61315-8104-4454-a603-aa92ffe2148e status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\40b61315-8104-4454-a603-aa92ffe2148e_2373c073-f1d2-45c2-ad5d-de9713bbb9e5.mp4
+2025-05-09 10:01:10,007 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 40b61315-8104-4454-a603-aa92ffe2148e
+2025-05-09 10:01:10,014 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 40b61315-8104-4454-a603-aa92ffe2148e: Calling analyze_practice_video
+2025-05-09 10:01:16,241 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: 'NoneType' object has no attribute 'y'
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 833, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+AttributeError: 'NoneType' object has no attribute 'y'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: 'NoneType' object has no attribute 'y'
+2025-05-09 10:03:21,384 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-09 10:03:33,665 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID d4cd9648-fbc6-4998-bf3c-41bc83a3dba6 for file 285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:33,670 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:33,671 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job d4cd9648-fbc6-4998-bf3c-41bc83a3dba6 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:33,683 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job d4cd9648-fbc6-4998-bf3c-41bc83a3dba6
+2025-05-09 10:03:33,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job d4cd9648-fbc6-4998-bf3c-41bc83a3dba6: Calling analyze_practice_video
+2025-05-09 10:03:35,277 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job d4cd9648-fbc6-4998-bf3c-41bc83a3dba6: Analysis completed in 1.59 seconds
+2025-05-09 10:03:35,277 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4'
+2025-05-09 10:03:35,277 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_cc78e586-ae54-4386-8328-6195a2462ac9_d4cd9648-fbc6-4998-bf3c-41bc83a3dba6_285fc0f8-fed4-457c-b13a-8f68e09cd511.mp4
+2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1771110 bytes
+2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 413 bytes
+2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client

@@ -1291,3 +1291,34 @@ Exception: Error analyzing practice video: No module named 'yolov5'
 2025-03-12 11:58:25,106 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/output/runs/run/labels/temp_248.txt
 2025-03-12 13:49:26,944 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/output/runs/run/labels/temp_152.txt
 2025-03-12 13:49:32,668 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: /Users/umerabdullah/Documents/Aun/FlaskBackend/FlaskBackend/app/services/shot_analyzer/output/runs/run/labels/temp_248.txt
+2025-05-09 10:01:16,239 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_4.txt
+2025-05-09 10:01:16,240 - app.services.practice_analysis_service - ERROR - [practice_analysis_service.py:121] - Error in getVideoStreams: 'NoneType' object has no attribute 'y'
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 833, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+AttributeError: 'NoneType' object has no attribute 'y'
+2025-05-09 10:01:16,240 - app.services.practice_analysis_service - ERROR - [practice_analysis_service.py:226] - Error in analyze_practice_video: 'NoneType' object has no attribute 'y'
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 833, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+AttributeError: 'NoneType' object has no attribute 'y'
+2025-05-09 10:01:16,241 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: 'NoneType' object has no attribute 'y'
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 833, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+AttributeError: 'NoneType' object has no attribute 'y'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: 'NoneType' object has no attribute 'y'

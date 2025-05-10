@@ -3,8 +3,14 @@ import os
 import time
 import subprocess
 import mediapipe as mp
+import torch
 from app.services.basic_dribble.feature_extractor import extract_features
 from app.services.basic_dribble.evaluator import BasicDribbleEvaluator
+
+def clear_gpu_memory():
+    """Clear GPU memory cache"""
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 def overlay_evaluation(frame, feats, eval_res):
     annotated = frame.copy()
@@ -75,6 +81,9 @@ def compress_video(input_path, output_path):
     subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def process_video_file(video_path, output_folder):
+    # Clear GPU memory before starting
+    clear_gpu_memory()
+    
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         raise Exception("Could not open video file.")
@@ -102,50 +111,57 @@ def process_video_file(video_path, output_folder):
     last_ball_detection_time = time.time()
     no_detection_reason = None
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        frame_index += 1
-        current_time = time.time()
-        if frame_index % processing_interval == 1:
-            feats, ball_xy = extract_features(frame)
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            frame_index += 1
+            current_time = time.time()
+            if frame_index % processing_interval == 1:
+                feats, ball_xy = extract_features(frame)
 
-            # If no player detected for 3 seconds, stop processing.
-            if feats is None:
-                if current_time - last_person_detection_time >= 3:
-                    no_detection_reason = "No player detected for 3 seconds. Stopping processing."
-                    break
-            else:
-                last_person_detection_time = current_time
+                # If no player detected for 3 seconds, stop processing.
+                if feats is None:
+                    if current_time - last_person_detection_time >= 3:
+                        no_detection_reason = "No player detected for 3 seconds. Stopping processing."
+                        break
+                else:
+                    last_person_detection_time = current_time
 
-            # If no ball detected for 3 seconds, stop processing.
-            if ball_xy is None:
-                if current_time - last_ball_detection_time >= 3:
-                    no_detection_reason = "No ball detected for 3 seconds. Stopping processing."
-                    break
-            else:
-                last_ball_detection_time = current_time
+                # If no ball detected for 3 seconds, stop processing.
+                if ball_xy is None:
+                    if current_time - last_ball_detection_time >= 3:
+                        no_detection_reason = "No ball detected for 3 seconds. Stopping processing."
+                        break
+                else:
+                    last_ball_detection_time = current_time
 
-            if feats is not None:
-                eval_res = evaluator.evaluate_frame(feats, ball_xy)
-                last_feats = feats
-                last_eval = eval_res
-            else:
-                if last_feats is not None:
-                    eval_res = evaluator.evaluate_skipped_frame(last_feats)
+                if feats is not None:
+                    eval_res = evaluator.evaluate_frame(feats, ball_xy)
+                    last_feats = feats
                     last_eval = eval_res
                 else:
-                    eval_res = None
-        else:
-            feats = last_feats
-            eval_res = last_eval
+                    if last_feats is not None:
+                        eval_res = evaluator.evaluate_skipped_frame(last_feats)
+                        last_eval = eval_res
+                    else:
+                        eval_res = None
+            else:
+                feats = last_feats
+                eval_res = last_eval
 
-        annotated = overlay_evaluation(frame, feats, eval_res)
-        out_writer.write(annotated)
+            annotated = overlay_evaluation(frame, feats, eval_res)
+            out_writer.write(annotated)
 
-    cap.release()
-    out_writer.release()
+            # Periodically clear GPU memory
+            if frame_index % 100 == 0:
+                clear_gpu_memory()
+
+    finally:
+        cap.release()
+        out_writer.release()
+        clear_gpu_memory()  # Final cleanup
 
     # If timeout occurred, remove the annotated file (if created) and return only textual evaluation.
     if no_detection_reason is not None:
