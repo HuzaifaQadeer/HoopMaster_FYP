@@ -403,13 +403,13 @@ const styles = StyleSheet.create({
   drillTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 8,
     textAlign: 'center',
   },
   videoContainer: {
     width: '100%',
     height: 200,
-    marginBottom: 16,
+    marginBottom: 8,
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -418,14 +418,14 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   instructionsContainer: {
-    padding: 16,
+    padding: 8,
     borderRadius: 8,
     marginBottom: 16,
   },
   instructionsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   instructionsText: {
     fontSize: 16,

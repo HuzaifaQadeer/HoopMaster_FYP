@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const fileUpload = require('express-fileupload');
 
 const connectDB = require('./config/database');
 const { protect } = require('./middleware/authMiddleware');
@@ -37,7 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // Allow Next.js frontend
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://nodeapp.loca.lt'], // Added nodeapp.loca.lt
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -48,6 +49,16 @@ console.log('[Debug Backend] CORS configuration enabled for http://localhost:300
 
 // Connect to MongoDb
 connectDB();
+
+// File upload middleware
+app.use(fileUpload({
+  createParentPath: true,
+  limits: { 
+    fileSize: 100 * 1024 * 1024 // 100MB max file size
+  },
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}));
 
 // Middleware
 app.use(express.json({ limit: '100mb' }));

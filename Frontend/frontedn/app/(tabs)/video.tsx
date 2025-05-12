@@ -431,11 +431,12 @@ export default function VideoScreen() {
   // Modify the submitVideoForAnalysis function
   const submitVideoForAnalysis = async () => {
     if (!videoUri) {
-      Alert.alert("Error", "No video available to submit");
+      Alert.alert("Error", "No video available for analysis");
       return;
     }
 
     setIsSubmitting(true);
+    setVideoError(null);
 
     try {
       // Determine which API endpoint to use based on exact drill titles from the database
@@ -525,6 +526,11 @@ export default function VideoScreen() {
 
       console.log(`Submitting video to ${apiEndpoint}...`);
       console.log('File name:', fileName);
+      console.log('File size:', fileInfo.size);
+      
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
       
       try {
         const response = await fetch(apiEndpoint, {
@@ -533,7 +539,11 @@ export default function VideoScreen() {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          signal: controller.signal
         });
+
+        // Clear timeout since request completed
+        clearTimeout(timeoutId);
 
         // Log response status and headers for debugging
         console.log('Response status:', response.status);
@@ -553,17 +563,11 @@ export default function VideoScreen() {
         // Extract the filename from the video_url and download it
         if (result.video_url) {
           const videoPath = result.video_url;
-          // The video path from server is like '/uploads/processed_videos/filename.mp4'
-          // We need to extract just the filename part
           const filename = videoPath.split('/').pop();
           
           if (filename) {
-            // Construct full URL with the API_ROUTES base and immediately download
-            // No need for additional validation or checks
             const fullVideoUrl = `${API_ROUTES.GET_PROCESSED_VIDEO.replace(':filename', filename)}`;
             console.log('Downloading from URL:', fullVideoUrl);
-            
-            // Download the video immediately
             await downloadAndPlayProcessedVideo(fullVideoUrl);
           } else {
             console.error('Invalid filename in video_url');
@@ -574,16 +578,22 @@ export default function VideoScreen() {
         setShowResults(true);
         setShowTrimmer(false);
 
-      } catch (error) {
-        console.error('Error submitting video:', error);
-        Alert.alert("Submission Error", `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timed out after 5 minutes');
+        }
+        throw error;
       } finally {
-        setIsSubmitting(false);
+        clearTimeout(timeoutId);
       }
 
     } catch (error) {
       console.error('Error submitting video:', error);
-      Alert.alert("Submission Error", `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      Alert.alert(
+        "Submission Error", 
+        `Failed to submit video for analysis: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };

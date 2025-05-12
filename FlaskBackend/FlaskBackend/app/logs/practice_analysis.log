@@ -433,3 +433,563 @@ Exception: Error analyzing practice video: 'NoneType' object has no attribute 'y
 2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1771110 bytes
 2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 413 bytes
 2025-05-09 10:03:35,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-10 11:25:35,056 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 11:26:41,554 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 2760fad0-f32c-4e40-a782-13bfeac557d7 for file 4c129d9f-4979-4950-a443-5ae6b9623364.mp4
+2025-05-10 11:26:41,583 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2760fad0-f32c-4e40-a782-13bfeac557d7_4c129d9f-4979-4950-a443-5ae6b9623364.mp4
+2025-05-10 11:26:41,583 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 2760fad0-f32c-4e40-a782-13bfeac557d7 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\2760fad0-f32c-4e40-a782-13bfeac557d7_4c129d9f-4979-4950-a443-5ae6b9623364.mp4
+2025-05-10 11:26:41,583 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 2760fad0-f32c-4e40-a782-13bfeac557d7
+2025-05-10 11:26:41,588 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 2760fad0-f32c-4e40-a782-13bfeac557d7: Calling analyze_practice_video
+2025-05-10 11:36:41,988 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 11:38:15,009 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 25c0f01c-2827-4fc4-b541-7d388286ea2c for file e76ebd98-bfbd-4621-b3a9-3d79a523b080.mp4
+2025-05-10 11:38:15,024 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\25c0f01c-2827-4fc4-b541-7d388286ea2c_e76ebd98-bfbd-4621-b3a9-3d79a523b080.mp4
+2025-05-10 11:38:15,025 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 25c0f01c-2827-4fc4-b541-7d388286ea2c status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\25c0f01c-2827-4fc4-b541-7d388286ea2c_e76ebd98-bfbd-4621-b3a9-3d79a523b080.mp4
+2025-05-10 11:38:15,025 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 25c0f01c-2827-4fc4-b541-7d388286ea2c
+2025-05-10 11:38:15,031 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 25c0f01c-2827-4fc4-b541-7d388286ea2c: Calling analyze_practice_video
+2025-05-10 11:38:16,486 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: not enough values to unpack (expected 7, got 5)
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+ValueError: not enough values to unpack (expected 7, got 5)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: not enough values to unpack (expected 7, got 5)
+2025-05-10 11:41:25,229 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 11:42:31,204 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 5692824b-d25c-4714-b88a-9a0800c02d2d for file 7af9395f-4807-4b03-8e7f-781440e56d36.mp4
+2025-05-10 11:42:31,222 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\5692824b-d25c-4714-b88a-9a0800c02d2d_7af9395f-4807-4b03-8e7f-781440e56d36.mp4
+2025-05-10 11:42:31,223 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 5692824b-d25c-4714-b88a-9a0800c02d2d status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\5692824b-d25c-4714-b88a-9a0800c02d2d_7af9395f-4807-4b03-8e7f-781440e56d36.mp4
+2025-05-10 11:42:31,223 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 5692824b-d25c-4714-b88a-9a0800c02d2d
+2025-05-10 11:42:31,229 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 5692824b-d25c-4714-b88a-9a0800c02d2d: Calling analyze_practice_video
+2025-05-10 11:42:32,994 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: name 'detect_API' is not defined
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\shot_analyzer.py", line 832, in getVideoStreams
+    img, boxes, scores, classes, height_img, width_img = detect_API(frame, temp_filename, [])
+NameError: name 'detect_API' is not defined. Did you mean: 'detect_path'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: name 'detect_API' is not defined
+2025-05-10 11:47:09,056 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 11:48:14,668 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 0d925ef9-119e-4e0e-93c1-9db8b8b40dfd for file 6fb5f9b1-0233-4cc1-bd71-8c1eafddb183.mp4
+2025-05-10 11:48:14,696 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\0d925ef9-119e-4e0e-93c1-9db8b8b40dfd_6fb5f9b1-0233-4cc1-bd71-8c1eafddb183.mp4
+2025-05-10 11:48:14,697 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 0d925ef9-119e-4e0e-93c1-9db8b8b40dfd status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\0d925ef9-119e-4e0e-93c1-9db8b8b40dfd_6fb5f9b1-0233-4cc1-bd71-8c1eafddb183.mp4
+2025-05-10 11:48:14,697 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 0d925ef9-119e-4e0e-93c1-9db8b8b40dfd
+2025-05-10 11:48:14,703 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 0d925ef9-119e-4e0e-93c1-9db8b8b40dfd: Calling analyze_practice_video
+2025-05-10 23:45:09,208 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:09,219 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:45:11,793 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:11,795 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:45:35,255 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:35,255 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:45:36,004 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:36,005 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:45:36,443 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:36,445 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:45:36,722 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:45:36,724 - app.routes.practice_analysis - WARNING - [practice_analysis.py:148] - No video file in request
+2025-05-10 23:48:27,778 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:48:27,870 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 195c5227-208b-426a-9c11-4a00db6e7106 for file two_score_three_miss.mp4
+2025-05-10 23:48:27,922 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\195c5227-208b-426a-9c11-4a00db6e7106_two_score_three_miss.mp4
+2025-05-10 23:48:27,924 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 195c5227-208b-426a-9c11-4a00db6e7106 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\195c5227-208b-426a-9c11-4a00db6e7106_two_score_three_miss.mp4
+2025-05-10 23:48:27,925 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 195c5227-208b-426a-9c11-4a00db6e7106
+2025-05-10 23:48:27,938 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 195c5227-208b-426a-9c11-4a00db6e7106: Calling analyze_practice_video
+2025-05-10 23:48:40,653 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: index 0 is out of bounds for axis 0 with size 0
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 846, in getVideoStreams
+    if 0 not in classes[0]:
+IndexError: index 0 is out of bounds for axis 0 with size 0
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: index 0 is out of bounds for axis 0 with size 0
+2025-05-10 23:51:54,125 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:51:54,149 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c for file two_score_three_miss.mp4
+2025-05-10 23:51:54,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c_two_score_three_miss.mp4
+2025-05-10 23:51:54,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c_two_score_three_miss.mp4
+2025-05-10 23:51:54,160 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c
+2025-05-10 23:51:54,165 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c: Calling analyze_practice_video
+2025-05-10 23:53:50,908 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-10 23:53:50,933 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 9aa4dedd-b3d8-46bd-8568-e512dbb65026 for file two_score_three_miss.mp4
+2025-05-10 23:53:50,948 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9aa4dedd-b3d8-46bd-8568-e512dbb65026_two_score_three_miss.mp4
+2025-05-10 23:53:50,949 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 9aa4dedd-b3d8-46bd-8568-e512dbb65026 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9aa4dedd-b3d8-46bd-8568-e512dbb65026_two_score_three_miss.mp4
+2025-05-10 23:53:50,949 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 9aa4dedd-b3d8-46bd-8568-e512dbb65026
+2025-05-10 23:53:50,954 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 9aa4dedd-b3d8-46bd-8568-e512dbb65026: Calling analyze_practice_video
+2025-05-11 00:22:11,048 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:22:11,084 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 08001d6e-f29d-49ca-8bfb-81411ff9426f for file two_score_three_miss.mp4
+2025-05-11 00:22:11,095 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\08001d6e-f29d-49ca-8bfb-81411ff9426f_two_score_three_miss.mp4
+2025-05-11 00:22:11,095 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 08001d6e-f29d-49ca-8bfb-81411ff9426f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\08001d6e-f29d-49ca-8bfb-81411ff9426f_two_score_three_miss.mp4
+2025-05-11 00:22:11,095 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 08001d6e-f29d-49ca-8bfb-81411ff9426f
+2025-05-11 00:22:11,106 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 08001d6e-f29d-49ca-8bfb-81411ff9426f: Calling analyze_practice_video
+2025-05-11 00:26:32,870 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:26:32,893 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID b796a139-9ec7-4a17-97c9-4dde8b1b5138 for file two_score_three_miss.mp4
+2025-05-11 00:26:32,903 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b796a139-9ec7-4a17-97c9-4dde8b1b5138_two_score_three_miss.mp4
+2025-05-11 00:26:32,904 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job b796a139-9ec7-4a17-97c9-4dde8b1b5138 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b796a139-9ec7-4a17-97c9-4dde8b1b5138_two_score_three_miss.mp4
+2025-05-11 00:26:32,904 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job b796a139-9ec7-4a17-97c9-4dde8b1b5138
+2025-05-11 00:26:32,909 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job b796a139-9ec7-4a17-97c9-4dde8b1b5138: Calling analyze_practice_video
+2025-05-11 00:26:39,133 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: object of type 'numpy.int32' has no len()
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 852, in getVideoStreams
+    if len(classes) == 0 or len(classes[0]) == 0:
+TypeError: object of type 'numpy.int32' has no len()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: object of type 'numpy.int32' has no len()
+2025-05-11 00:28:15,834 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:28:15,856 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID ff73d848-746b-46cb-a3a4-f26fe13f6592 for file two_score_three_miss.mp4
+2025-05-11 00:28:15,866 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\ff73d848-746b-46cb-a3a4-f26fe13f6592_two_score_three_miss.mp4
+2025-05-11 00:28:15,866 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job ff73d848-746b-46cb-a3a4-f26fe13f6592 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\ff73d848-746b-46cb-a3a4-f26fe13f6592_two_score_three_miss.mp4
+2025-05-11 00:28:15,866 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job ff73d848-746b-46cb-a3a4-f26fe13f6592
+2025-05-11 00:28:15,871 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job ff73d848-746b-46cb-a3a4-f26fe13f6592: Calling analyze_practice_video
+2025-05-11 00:28:20,948 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: object of type 'numpy.int32' has no len()
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 897, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 337, in release_start
+    if boxes is None or len(boxes) == 0 or classes is None or len(classes) == 0 or len(classes[0]) == 0:
+TypeError: object of type 'numpy.int32' has no len()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: object of type 'numpy.int32' has no len()
+2025-05-11 00:28:44,855 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:28:44,889 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID feb304a6-5deb-4312-832b-cc36adaf7225 for file two_score_three_miss.mp4
+2025-05-11 00:28:44,904 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\feb304a6-5deb-4312-832b-cc36adaf7225_two_score_three_miss.mp4
+2025-05-11 00:28:44,904 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job feb304a6-5deb-4312-832b-cc36adaf7225 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\feb304a6-5deb-4312-832b-cc36adaf7225_two_score_three_miss.mp4
+2025-05-11 00:28:44,905 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job feb304a6-5deb-4312-832b-cc36adaf7225
+2025-05-11 00:28:44,916 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job feb304a6-5deb-4312-832b-cc36adaf7225: Calling analyze_practice_video
+2025-05-11 00:28:50,186 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: object of type 'numpy.int32' has no len()
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 897, in getVideoStreams
+    release_started = release_start(boxes, classes, left_shoulder.y * height_img)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 337, in release_start
+    if boxes is None or len(boxes) == 0 or classes is None or len(classes) == 0 or len(classes[0]) == 0:
+TypeError: object of type 'numpy.int32' has no len()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: object of type 'numpy.int32' has no len()
+2025-05-11 00:29:17,770 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:29:17,795 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 284cd758-99a7-4277-b405-de4be2c4a521 for file two_score_three_miss.mp4
+2025-05-11 00:29:17,805 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\284cd758-99a7-4277-b405-de4be2c4a521_two_score_three_miss.mp4
+2025-05-11 00:29:17,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 284cd758-99a7-4277-b405-de4be2c4a521 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\284cd758-99a7-4277-b405-de4be2c4a521_two_score_three_miss.mp4
+2025-05-11 00:29:17,806 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 284cd758-99a7-4277-b405-de4be2c4a521
+2025-05-11 00:29:17,811 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 284cd758-99a7-4277-b405-de4be2c4a521: Calling analyze_practice_video
+2025-05-11 00:29:48,556 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:29:48,611 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 52213e03-9a47-4169-823a-1214968593e0 for file two_score_three_miss.mp4
+2025-05-11 00:29:48,623 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\52213e03-9a47-4169-823a-1214968593e0_two_score_three_miss.mp4
+2025-05-11 00:29:48,623 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 52213e03-9a47-4169-823a-1214968593e0 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\52213e03-9a47-4169-823a-1214968593e0_two_score_three_miss.mp4
+2025-05-11 00:29:48,624 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 52213e03-9a47-4169-823a-1214968593e0
+2025-05-11 00:29:48,633 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 52213e03-9a47-4169-823a-1214968593e0: Calling analyze_practice_video
+2025-05-11 00:32:03,480 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:32:03,503 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 9af54bb4-8565-4c88-b3c3-e74da670e9dd for file two_score_three_miss.mp4
+2025-05-11 00:32:03,513 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9af54bb4-8565-4c88-b3c3-e74da670e9dd_two_score_three_miss.mp4
+2025-05-11 00:32:03,514 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 9af54bb4-8565-4c88-b3c3-e74da670e9dd status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9af54bb4-8565-4c88-b3c3-e74da670e9dd_two_score_three_miss.mp4
+2025-05-11 00:32:03,514 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 9af54bb4-8565-4c88-b3c3-e74da670e9dd
+2025-05-11 00:32:03,519 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 9af54bb4-8565-4c88-b3c3-e74da670e9dd: Calling analyze_practice_video
+2025-05-11 00:33:48,356 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:33:48,378 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2 for file two_score_three_miss.mp4
+2025-05-11 00:33:48,388 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2_two_score_three_miss.mp4
+2025-05-11 00:33:48,388 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2_two_score_three_miss.mp4
+2025-05-11 00:33:48,389 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2
+2025-05-11 00:33:48,394 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job d73ddcdc-2e1b-44c7-aefe-7a5aa96098a2: Calling analyze_practice_video
+2025-05-11 00:33:49,779 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: name 'yolo_model' is not defined
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 689, in getVideoStreams
+    yolo_model, pose_detector = load_or_get_yolo_models()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 824, in load_or_get_yolo_models
+    if yolo_model is None or pose_detector is None:
+NameError: name 'yolo_model' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: name 'yolo_model' is not defined
+2025-05-11 00:34:41,278 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:34:41,301 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 5ddf819d-f3c8-4347-adc6-f25cc16c2963 for file two_score_three_miss.mp4
+2025-05-11 00:34:41,311 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\5ddf819d-f3c8-4347-adc6-f25cc16c2963_two_score_three_miss.mp4
+2025-05-11 00:34:41,311 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 5ddf819d-f3c8-4347-adc6-f25cc16c2963 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\5ddf819d-f3c8-4347-adc6-f25cc16c2963_two_score_three_miss.mp4
+2025-05-11 00:34:41,311 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 5ddf819d-f3c8-4347-adc6-f25cc16c2963
+2025-05-11 00:34:41,317 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 5ddf819d-f3c8-4347-adc6-f25cc16c2963: Calling analyze_practice_video
+2025-05-11 00:37:33,876 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 5ddf819d-f3c8-4347-adc6-f25cc16c2963: Analysis completed in 172.56 seconds
+2025-05-11 00:37:33,877 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\5ddf819d-f3c8-4347-adc6-f25cc16c2963_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\5ddf819d-f3c8-4347-adc6-f25cc16c2963_two_score_three_miss.mp4'
+2025-05-11 00:37:33,878 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_c6aed48f-1b24-4859-a0cf-b21192d97613_5ddf819d-f3c8-4347-adc6-f25cc16c2963_two_score_three_miss.mp4
+2025-05-11 00:37:33,878 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 16838672 bytes
+2025-05-11 00:37:33,879 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 399 bytes
+2025-05-11 00:37:33,880 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 00:47:32,213 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:47:32,237 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 9ea8ff47-4357-419d-b826-90f780aef5c3 for file two_score_three_miss.mp4
+2025-05-11 00:47:32,247 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9ea8ff47-4357-419d-b826-90f780aef5c3_two_score_three_miss.mp4
+2025-05-11 00:47:32,248 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 9ea8ff47-4357-419d-b826-90f780aef5c3 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\9ea8ff47-4357-419d-b826-90f780aef5c3_two_score_three_miss.mp4
+2025-05-11 00:47:32,248 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 9ea8ff47-4357-419d-b826-90f780aef5c3
+2025-05-11 00:47:32,253 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 9ea8ff47-4357-419d-b826-90f780aef5c3: Calling analyze_practice_video
+2025-05-11 00:48:29,239 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: local variable 'valid_knee' referenced before assignment
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 130, in analyze_practice_video
+    analysis_text = PracticeAnalysisService._generate_analysis_text(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 346, in _generate_analysis_text
+    if len(valid_knee) > 0:
+UnboundLocalError: local variable 'valid_knee' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: local variable 'valid_knee' referenced before assignment
+2025-05-11 00:50:02,552 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 00:50:02,573 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 14878ca9-06e6-4b11-9fc2-7fc75e57604b for file two_score_three_miss.mp4
+2025-05-11 00:50:02,583 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\14878ca9-06e6-4b11-9fc2-7fc75e57604b_two_score_three_miss.mp4
+2025-05-11 00:50:02,584 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 14878ca9-06e6-4b11-9fc2-7fc75e57604b status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\14878ca9-06e6-4b11-9fc2-7fc75e57604b_two_score_three_miss.mp4
+2025-05-11 00:50:02,584 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 14878ca9-06e6-4b11-9fc2-7fc75e57604b
+2025-05-11 00:50:02,589 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 14878ca9-06e6-4b11-9fc2-7fc75e57604b: Calling analyze_practice_video
+2025-05-11 00:50:12,164 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: too many values to unpack (expected 10)
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 737, in getVideoStreams
+    frame, head_x, head_y, left_hand, right_hand, elbow_angle, knee_angle, left_elbow_coo, left_knee_coo, left_shoulder = pose_info
+ValueError: too many values to unpack (expected 10)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: too many values to unpack (expected 10)
+2025-05-11 02:05:28,691 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:05:28,720 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 295ae7e7-fb28-4b2e-bdda-479cfda1d7ba for file two_score_three_miss.mp4
+2025-05-11 02:05:28,731 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\295ae7e7-fb28-4b2e-bdda-479cfda1d7ba_two_score_three_miss.mp4
+2025-05-11 02:05:28,731 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 295ae7e7-fb28-4b2e-bdda-479cfda1d7ba status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\295ae7e7-fb28-4b2e-bdda-479cfda1d7ba_two_score_three_miss.mp4
+2025-05-11 02:05:28,731 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 295ae7e7-fb28-4b2e-bdda-479cfda1d7ba
+2025-05-11 02:05:28,739 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 295ae7e7-fb28-4b2e-bdda-479cfda1d7ba: Calling analyze_practice_video
+2025-05-11 02:07:21,539 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 295ae7e7-fb28-4b2e-bdda-479cfda1d7ba: Analysis completed in 112.81 seconds
+2025-05-11 02:07:21,540 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\295ae7e7-fb28-4b2e-bdda-479cfda1d7ba_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\295ae7e7-fb28-4b2e-bdda-479cfda1d7ba_two_score_three_miss.mp4'
+2025-05-11 02:07:21,540 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_8f2aad7d-4605-4f53-982e-69407290e94b_295ae7e7-fb28-4b2e-bdda-479cfda1d7ba_two_score_three_miss.mp4
+2025-05-11 02:07:21,540 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 19978197 bytes
+2025-05-11 02:07:21,540 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 755 bytes
+2025-05-11 02:07:21,540 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:14:45,134 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:14:45,154 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID f46b276b-1f35-4512-a8ee-297211d81e9f for file two_score_three_miss.mp4
+2025-05-11 02:14:45,165 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\f46b276b-1f35-4512-a8ee-297211d81e9f_two_score_three_miss.mp4
+2025-05-11 02:14:45,165 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job f46b276b-1f35-4512-a8ee-297211d81e9f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\f46b276b-1f35-4512-a8ee-297211d81e9f_two_score_three_miss.mp4
+2025-05-11 02:14:45,165 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job f46b276b-1f35-4512-a8ee-297211d81e9f
+2025-05-11 02:14:45,175 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job f46b276b-1f35-4512-a8ee-297211d81e9f: Calling analyze_practice_video
+2025-05-11 02:16:40,630 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job f46b276b-1f35-4512-a8ee-297211d81e9f: Analysis completed in 115.46 seconds
+2025-05-11 02:16:40,630 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\f46b276b-1f35-4512-a8ee-297211d81e9f_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\f46b276b-1f35-4512-a8ee-297211d81e9f_two_score_three_miss.mp4'
+2025-05-11 02:16:40,630 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_73fd1e63-6a6b-4ebb-972c-8871596b79db_f46b276b-1f35-4512-a8ee-297211d81e9f_two_score_three_miss.mp4
+2025-05-11 02:16:40,630 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 18431498 bytes
+2025-05-11 02:16:40,631 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 755 bytes
+2025-05-11 02:16:40,631 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:19:12,204 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:19:12,237 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID b8a0421c-8266-42f3-bcf1-015e2cfb577e for file two_score_three_miss.mp4
+2025-05-11 02:19:12,247 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b8a0421c-8266-42f3-bcf1-015e2cfb577e_two_score_three_miss.mp4
+2025-05-11 02:19:12,248 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job b8a0421c-8266-42f3-bcf1-015e2cfb577e status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b8a0421c-8266-42f3-bcf1-015e2cfb577e_two_score_three_miss.mp4
+2025-05-11 02:19:12,248 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job b8a0421c-8266-42f3-bcf1-015e2cfb577e
+2025-05-11 02:19:12,253 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job b8a0421c-8266-42f3-bcf1-015e2cfb577e: Calling analyze_practice_video
+2025-05-11 02:21:06,293 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job b8a0421c-8266-42f3-bcf1-015e2cfb577e: Analysis completed in 114.04 seconds
+2025-05-11 02:21:06,293 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b8a0421c-8266-42f3-bcf1-015e2cfb577e_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\b8a0421c-8266-42f3-bcf1-015e2cfb577e_two_score_three_miss.mp4'
+2025-05-11 02:21:06,293 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_a0c4c5fe-db94-48d0-86d5-3a04f0ebaf47_b8a0421c-8266-42f3-bcf1-015e2cfb577e_two_score_three_miss.mp4
+2025-05-11 02:21:06,293 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 18442400 bytes
+2025-05-11 02:21:06,294 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 755 bytes
+2025-05-11 02:21:06,294 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:22:47,133 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:22:47,171 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 7dcbc054-d015-4b60-a91d-4806b9f6744c for file two_score_three_miss.mp4
+2025-05-11 02:22:47,181 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\7dcbc054-d015-4b60-a91d-4806b9f6744c_two_score_three_miss.mp4
+2025-05-11 02:22:47,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 7dcbc054-d015-4b60-a91d-4806b9f6744c status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\7dcbc054-d015-4b60-a91d-4806b9f6744c_two_score_three_miss.mp4
+2025-05-11 02:22:47,182 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 7dcbc054-d015-4b60-a91d-4806b9f6744c
+2025-05-11 02:22:47,187 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 7dcbc054-d015-4b60-a91d-4806b9f6744c: Calling analyze_practice_video
+2025-05-11 02:24:54,720 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 7dcbc054-d015-4b60-a91d-4806b9f6744c: Analysis completed in 127.54 seconds
+2025-05-11 02:24:54,721 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\7dcbc054-d015-4b60-a91d-4806b9f6744c_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\7dcbc054-d015-4b60-a91d-4806b9f6744c_two_score_three_miss.mp4'
+2025-05-11 02:24:54,721 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_059dd2f4-1052-4459-9b60-2d48bc2944a8_7dcbc054-d015-4b60-a91d-4806b9f6744c_two_score_three_miss.mp4
+2025-05-11 02:24:54,722 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 18442173 bytes
+2025-05-11 02:24:54,722 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 755 bytes
+2025-05-11 02:24:54,722 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:29:04,464 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:29:04,486 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f for file two_score_three_miss.mp4
+2025-05-11 02:29:04,496 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4
+2025-05-11 02:29:04,497 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4
+2025-05-11 02:29:04,497 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f
+2025-05-11 02:29:04,502 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f: Calling analyze_practice_video
+2025-05-11 02:30:58,843 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f: Analysis completed in 114.35 seconds
+2025-05-11 02:30:58,843 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4'
+2025-05-11 02:30:58,843 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_ca3dc9d3-1722-4c93-bc55-c52f4d80e1ed_8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4
+2025-05-11 02:30:58,844 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 17257495 bytes
+2025-05-11 02:30:58,844 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 772 bytes
+2025-05-11 02:30:58,844 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:41:25,721 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:41:25,745 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 4f87b5ae-eca8-4e44-b7e4-67c073664140 for file two_score_three_miss.mp4
+2025-05-11 02:41:25,755 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4
+2025-05-11 02:41:25,755 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 4f87b5ae-eca8-4e44-b7e4-67c073664140 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4
+2025-05-11 02:41:25,756 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 4f87b5ae-eca8-4e44-b7e4-67c073664140
+2025-05-11 02:41:25,760 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 4f87b5ae-eca8-4e44-b7e4-67c073664140: Calling analyze_practice_video
+2025-05-11 02:43:22,339 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 4f87b5ae-eca8-4e44-b7e4-67c073664140: Analysis completed in 116.58 seconds
+2025-05-11 02:43:22,339 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4'
+2025-05-11 02:43:22,339 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_fc1786ae-0e1d-4869-ae97-dbe1498985c0_4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4
+2025-05-11 02:43:22,339 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 18861523 bytes
+2025-05-11 02:43:22,340 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 772 bytes
+2025-05-11 02:43:22,340 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 02:49:25,493 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 02:49:25,523 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 6f0be48b-7313-46e4-b403-09b72d6134a9 for file two_score_three_miss.mp4
+2025-05-11 02:49:25,534 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4
+2025-05-11 02:49:25,535 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 6f0be48b-7313-46e4-b403-09b72d6134a9 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4
+2025-05-11 02:49:25,535 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 6f0be48b-7313-46e4-b403-09b72d6134a9
+2025-05-11 02:49:25,545 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 6f0be48b-7313-46e4-b403-09b72d6134a9: Calling analyze_practice_video
+2025-05-11 02:54:02,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 6f0be48b-7313-46e4-b403-09b72d6134a9: Analysis completed in 277.16 seconds
+2025-05-11 02:54:02,696 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4'
+2025-05-11 02:54:02,697 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_aab96a85-9b5a-4ab3-83dd-21b9790af50d_6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4
+2025-05-11 02:54:02,698 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 19117146 bytes
+2025-05-11 02:54:02,699 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 771 bytes
+2025-05-11 02:54:02,699 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 03:01:17,065 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:01:17,098 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 1f125cce-73eb-4b3b-859c-aa6b1fb402c9 for file two_score_three_miss.mp4
+2025-05-11 03:01:17,109 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\1f125cce-73eb-4b3b-859c-aa6b1fb402c9_two_score_three_miss.mp4
+2025-05-11 03:01:17,109 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 1f125cce-73eb-4b3b-859c-aa6b1fb402c9 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\1f125cce-73eb-4b3b-859c-aa6b1fb402c9_two_score_three_miss.mp4
+2025-05-11 03:01:17,109 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 1f125cce-73eb-4b3b-859c-aa6b1fb402c9
+2025-05-11 03:01:17,121 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 1f125cce-73eb-4b3b-859c-aa6b1fb402c9: Calling analyze_practice_video
+2025-05-11 03:03:09,887 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: File is not a zip file
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 686, in getVideoStreams
+    yolo_model, pose_detector = load_or_get_yolo_models()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 1002, in load_or_get_yolo_models
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom',
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 638, in load
+    repo_or_dir = _get_cache_or_reload(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 287, in _get_cache_or_reload
+    with zipfile.ZipFile(cached_file) as cached_zipfile:
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1258, in __init__
+    self._RealGetContents()
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: File is not a zip file
+2025-05-11 03:04:42,506 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:04:42,538 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 532b9ae0-822f-4e44-ba42-19bc2d840c74 for file two_score_three_miss.mp4
+2025-05-11 03:04:42,547 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\532b9ae0-822f-4e44-ba42-19bc2d840c74_two_score_three_miss.mp4
+2025-05-11 03:04:42,547 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 532b9ae0-822f-4e44-ba42-19bc2d840c74 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\532b9ae0-822f-4e44-ba42-19bc2d840c74_two_score_three_miss.mp4
+2025-05-11 03:04:42,548 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 532b9ae0-822f-4e44-ba42-19bc2d840c74
+2025-05-11 03:04:42,552 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 532b9ae0-822f-4e44-ba42-19bc2d840c74: Calling analyze_practice_video
+2025-05-11 03:05:51,509 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: File is not a zip file
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 686, in getVideoStreams
+    yolo_model, pose_detector = load_or_get_yolo_models()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 1009, in load_or_get_yolo_models
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom',
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 638, in load
+    repo_or_dir = _get_cache_or_reload(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 287, in _get_cache_or_reload
+    with zipfile.ZipFile(cached_file) as cached_zipfile:
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1258, in __init__
+    self._RealGetContents()
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: File is not a zip file
+2025-05-11 03:07:04,555 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:07:04,580 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID b61c8719-2ea8-40e7-b104-4ec87b6a5978 for file two_score_three_miss.mp4
+2025-05-11 03:07:04,594 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4
+2025-05-11 03:07:04,595 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job b61c8719-2ea8-40e7-b104-4ec87b6a5978 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4
+2025-05-11 03:07:04,595 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job b61c8719-2ea8-40e7-b104-4ec87b6a5978
+2025-05-11 03:07:04,601 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job b61c8719-2ea8-40e7-b104-4ec87b6a5978: Calling analyze_practice_video
+2025-05-11 03:08:05,220 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job b61c8719-2ea8-40e7-b104-4ec87b6a5978: Analysis completed in 60.63 seconds
+2025-05-11 03:08:05,220 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4'
+2025-05-11 03:08:05,220 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_05f4ba7b-2cdb-4496-b1c3-8ebc954a4fcd_b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4
+2025-05-11 03:08:05,220 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 18115751 bytes
+2025-05-11 03:08:05,221 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 776 bytes
+2025-05-11 03:08:05,221 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 03:08:45,120 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:08:45,167 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 08d5a828-9ca9-4fc1-92ba-949540da210c for file two_score_three_miss.mp4
+2025-05-11 03:08:45,183 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\08d5a828-9ca9-4fc1-92ba-949540da210c_two_score_three_miss.mp4
+2025-05-11 03:08:45,184 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 08d5a828-9ca9-4fc1-92ba-949540da210c status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\08d5a828-9ca9-4fc1-92ba-949540da210c_two_score_three_miss.mp4
+2025-05-11 03:08:45,184 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 08d5a828-9ca9-4fc1-92ba-949540da210c
+2025-05-11 03:08:45,189 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 08d5a828-9ca9-4fc1-92ba-949540da210c: Calling analyze_practice_video
+2025-05-11 03:09:49,593 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: File is not a zip file
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 710, in getVideoStreams
+    yolo_model, pose_detector = load_or_get_yolo_models()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 1040, in load_or_get_yolo_models
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom',
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 638, in load
+    repo_or_dir = _get_cache_or_reload(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 287, in _get_cache_or_reload
+    with zipfile.ZipFile(cached_file) as cached_zipfile:
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1258, in __init__
+    self._RealGetContents()
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: File is not a zip file
+2025-05-11 03:10:01,962 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:10:01,987 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID ed19ca48-0916-49f9-8b0f-7c84a6940f25 for file two_score_three_miss.mp4
+2025-05-11 03:10:02,002 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\ed19ca48-0916-49f9-8b0f-7c84a6940f25_two_score_three_miss.mp4
+2025-05-11 03:10:02,003 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job ed19ca48-0916-49f9-8b0f-7c84a6940f25 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\ed19ca48-0916-49f9-8b0f-7c84a6940f25_two_score_three_miss.mp4
+2025-05-11 03:10:02,003 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job ed19ca48-0916-49f9-8b0f-7c84a6940f25
+2025-05-11 03:10:02,009 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job ed19ca48-0916-49f9-8b0f-7c84a6940f25: Calling analyze_practice_video
+2025-05-11 03:11:36,250 - app.routes.practice_analysis - ERROR - [practice_analysis.py:282] - Error processing video: Error analyzing practice video: File is not a zip file
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 118, in analyze_practice_video
+    shooting_time, release_angle, make_or_miss, knee_angles, elbow_angles, fps, analyzer_output_path = getVideoStreams(input_path)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 710, in getVideoStreams
+    yolo_model, pose_detector = load_or_get_yolo_models()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\shot_analyzer.py", line 1040, in load_or_get_yolo_models
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom',
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 638, in load
+    repo_or_dir = _get_cache_or_reload(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\venv\lib\site-packages\torch\hub.py", line 287, in _get_cache_or_reload
+    with zipfile.ZipFile(cached_file) as cached_zipfile:
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1258, in __init__
+    self._RealGetContents()
+  File "C:\Users\afzal\AppData\Local\Programs\Python\Python310\lib\zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\routes\practice_analysis.py", line 208, in analyze_practice
+    output_video_path, analysis_text = PracticeAnalysisService.analyze_practice_video(file_obj)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\practice_analysis_service.py", line 233, in analyze_practice_video
+    raise Exception(f"Error analyzing practice video: {str(e)}")
+Exception: Error analyzing practice video: File is not a zip file
+2025-05-11 03:12:57,733 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:12:57,759 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 55821212-3381-45d6-8cb4-842f78584aeb for file two_score_three_miss.mp4
+2025-05-11 03:12:57,769 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4
+2025-05-11 03:12:57,770 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 55821212-3381-45d6-8cb4-842f78584aeb status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4
+2025-05-11 03:12:57,770 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 55821212-3381-45d6-8cb4-842f78584aeb
+2025-05-11 03:12:57,775 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 55821212-3381-45d6-8cb4-842f78584aeb: Calling analyze_practice_video
+2025-05-11 03:13:35,969 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 55821212-3381-45d6-8cb4-842f78584aeb: Analysis completed in 38.20 seconds
+2025-05-11 03:13:35,969 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\uploads\\original_videos\\55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4'
+2025-05-11 03:13:35,969 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_4f6a70d5-ad33-45d6-a279-28f1654af521_55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4
+2025-05-11 03:13:35,970 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 7319019 bytes
+2025-05-11 03:13:35,970 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 832 bytes
+2025-05-11 03:13:35,970 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-11 03:20:56,439 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 03:27:31,168 - app.routes.practice_analysis - ERROR - [practice_analysis.py:293] - Unexpected error in analyze_practice: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+Traceback (most recent call last):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\routes\practice_analysis.py", line 147, in analyze_practice
+    if 'video' not in request.files:
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\utils.py", line 107, in __get__
+    value = self.fget(obj)  # type: ignore
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\wrappers\request.py", line 497, in files
+    self._load_form_data()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\flask\wrappers.py", line 198, in _load_form_data
+    super()._load_form_data()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\wrappers\request.py", line 271, in _load_form_data
+    data = parser.parse(
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\formparser.py", line 242, in parse
+    return parse_func(stream, mimetype, content_length, options)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\formparser.py", line 267, in _parse_multipart
+    form, files = parser.parse(stream, boundary, content_length)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\formparser.py", line 368, in parse
+    for data in _chunk_iter(stream.read, self.buffer_size):
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\formparser.py", line 423, in _chunk_iter
+    data = read(size)
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\wsgi.py", line 562, in readinto
+    self.on_disconnect()
+  File "D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\venv\lib\site-packages\werkzeug\wsgi.py", line 499, in on_disconnect
+    raise ClientDisconnected()
+werkzeug.exceptions.ClientDisconnected: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2025-05-11 05:53:50,949 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-11 05:54:43,023 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 8bd87db9-a665-412d-9df9-3caebb9cf202 for file e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:54:43,038 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:54:43,039 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 8bd87db9-a665-412d-9df9-3caebb9cf202 status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:54:43,039 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 8bd87db9-a665-412d-9df9-3caebb9cf202
+2025-05-11 05:54:43,045 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 8bd87db9-a665-412d-9df9-3caebb9cf202: Calling analyze_practice_video
+2025-05-11 05:55:27,694 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 8bd87db9-a665-412d-9df9-3caebb9cf202: Analysis completed in 44.65 seconds
+2025-05-11 05:55:27,695 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4'
+2025-05-11 05:55:27,695 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_addec3e5-1106-46ad-81e5-e297bf9e3f8b_8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:55:27,695 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 7319019 bytes
+2025-05-11 05:55:27,696 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
+2025-05-11 05:55:27,696 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client
+2025-05-12 13:25:22,336 - app.routes.practice_analysis - INFO - [practice_analysis.py:144] - Received request to /practice/analyze
+2025-05-12 13:25:37,191 - app.routes.practice_analysis - INFO - [practice_analysis.py:158] - Created job ID 1b0cd6c3-8d36-4ca4-b7e9-0018e657473e for file 894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:25:37,192 - app.routes.practice_analysis - INFO - [practice_analysis.py:177] - Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:25:37,192 - app.routes.practice_analysis - INFO - [practice_analysis.py:391] - Job 1b0cd6c3-8d36-4ca4-b7e9-0018e657473e status updated to 'processing': Video saved to D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:25:37,192 - app.routes.practice_analysis - INFO - [practice_analysis.py:193] - Starting synchronous processing for job 1b0cd6c3-8d36-4ca4-b7e9-0018e657473e
+2025-05-12 13:25:37,198 - app.routes.practice_analysis - INFO - [practice_analysis.py:205] - Job 1b0cd6c3-8d36-4ca4-b7e9-0018e657473e: Calling analyze_practice_video
+2025-05-12 13:26:00,954 - app.routes.practice_analysis - INFO - [practice_analysis.py:211] - Job 1b0cd6c3-8d36-4ca4-b7e9-0018e657473e: Analysis completed in 23.76 seconds
+2025-05-12 13:26:00,955 - app.routes.practice_analysis - WARNING - [practice_analysis.py:219] - Failed to clean up temporary file D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\FlaskBackend\\app\\uploads\\original_videos\\1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4'
+2025-05-12 13:26:00,956 - app.routes.practice_analysis - INFO - [practice_analysis.py:237] - Returning video URL: /uploads/processed_videos/processed_c809c8d6-5ba3-43a5-8dd0-339449f3fdaa_1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:26:00,957 - app.routes.practice_analysis - INFO - [practice_analysis.py:242] - Video file size: 1290662 bytes
+2025-05-12 13:26:00,957 - app.routes.practice_analysis - INFO - [practice_analysis.py:260] - Response size: 848 bytes
+2025-05-12 13:26:00,958 - app.routes.practice_analysis - INFO - [practice_analysis.py:271] - Sending response to client

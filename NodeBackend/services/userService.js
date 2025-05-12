@@ -96,15 +96,18 @@ class UserService {
   }
 
   async updateProfile(userId, updates, profilePicture = null) {
+    console.log('Service received userId:', userId);
+    console.log('Service received updates:', updates);
+    
     const currentUser = await User.findById(userId);
     if (!currentUser) {
       throw new Error('User not found');
     }
-
-    console.log('Received updates:', updates);
+    console.log('Current user before update:', currentUser);
 
     // Create a clean updates object
     const cleanUpdates = { ...updates };
+    console.log('Initial cleanUpdates:', cleanUpdates);
 
     // Remove sensitive and system fields
     const excludedFields = [
@@ -123,87 +126,65 @@ class UserService {
     excludedFields.forEach(field => {
       delete cleanUpdates[field];
     });
+    console.log('CleanUpdates after removing excluded fields:', cleanUpdates);
 
-    // Parse JSON strings back to objects
-    ['socialMedia', 'height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
-      if (cleanUpdates[field] && typeof cleanUpdates[field] === 'string') {
-        try {
-          cleanUpdates[field] = JSON.parse(cleanUpdates[field]);
-        } catch (error) {
-          console.error(`Error parsing ${field}:`, error);
-          cleanUpdates[field] = currentUser[field];
-        }
-      }
-    });
-
-    if (profilePicture) {
-      if (currentUser.profilePicture) {
-        const oldPicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', currentUser.profilePicture);
-        await fs.unlink(oldPicturePath).catch(err => console.error('Error deleting old profile picture:', err));
-      }
-
-      const fileExtension = path.extname(profilePicture.name);
-      const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
-      const uploadPath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', uniqueFilename);
-
-      await profilePicture.mv(uploadPath);
-      cleanUpdates.profilePicture = uniqueFilename;
-    }
-
-    // Safely parse JSON fields
-    ['socialMedia', 'height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
+    // Handle measurement fields
+    ['height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
       if (cleanUpdates[field]) {
-        console.log(`Processing ${field}:`, {
-          value: cleanUpdates[field],
-          type: typeof cleanUpdates[field]
-        });
-
         try {
-          // If it's a string and looks like JSON, try to parse it
-          if (typeof cleanUpdates[field] === 'string' && 
-              (cleanUpdates[field].startsWith('{') || cleanUpdates[field].startsWith('['))) {
+          console.log(`Processing measurement field ${field}:`, cleanUpdates[field]);
+          // If it's a string, try to parse it
+          if (typeof cleanUpdates[field] === 'string') {
             cleanUpdates[field] = JSON.parse(cleanUpdates[field]);
-            console.log(`Successfully parsed ${field}:`, cleanUpdates[field]);
-          } else if (typeof cleanUpdates[field] === 'object') {
-            console.log(`${field} is already an object:`, cleanUpdates[field]);
-          } else {
-            console.log(`${field} is neither JSON string nor object:`, cleanUpdates[field]);
-            // For non-JSON string values, create a default measurement object
-            if (['height', 'weight', 'wingspan', 'verticalJump'].includes(field)) {
-              cleanUpdates[field] = {
-                value: cleanUpdates[field],
-                unit: field === 'weight' ? 'kg' : 'cm'
-              };
-            }
+            console.log(`Parsed ${field}:`, cleanUpdates[field]);
+          }
+          
+          // Ensure the field has the correct structure
+          if (typeof cleanUpdates[field] === 'object') {
+            cleanUpdates[field] = this.convertMeasurement(cleanUpdates[field], field);
+            console.log(`Converted ${field}:`, cleanUpdates[field]);
           }
         } catch (error) {
           console.error(`Error processing ${field}:`, error);
-          // If parsing fails, keep the original value
           cleanUpdates[field] = currentUser[field];
         }
       }
     });
 
-    // Convert measurements with validation
-    ['height', 'weight', 'wingspan', 'verticalJump'].forEach(field => {
-      if (cleanUpdates[field]) {
-        console.log(`Converting measurement for ${field}:`, cleanUpdates[field]);
-        try {
-          if (typeof cleanUpdates[field] === 'object' && cleanUpdates[field].value !== undefined) {
-            cleanUpdates[field] = this.convertMeasurement(cleanUpdates[field], field);
-            console.log(`Converted ${field}:`, cleanUpdates[field]);
-          } else {
-            console.log(`Invalid measurement format for ${field}`);
-          }
-        } catch (error) {
-          console.error(`Error converting ${field}:`, error);
-          // If conversion fails, keep the original value
-          cleanUpdates[field] = currentUser[field];
+    // Handle social media
+    if (cleanUpdates.socialMedia) {
+      try {
+        console.log('Processing social media:', cleanUpdates.socialMedia);
+        if (typeof cleanUpdates.socialMedia === 'string') {
+          cleanUpdates.socialMedia = JSON.parse(cleanUpdates.socialMedia);
+          console.log('Parsed social media:', cleanUpdates.socialMedia);
         }
+      } catch (error) {
+        console.error('Error processing social media:', error);
+        cleanUpdates.socialMedia = currentUser.socialMedia;
       }
-    });
+    }
 
-    console.log('Final cleanUpdates:', cleanUpdates);
+    if (profilePicture) {
+      try {
+        if (currentUser.profilePicture) {
+          const oldPicturePath = path.join(__dirname, '..', 'Server', 'profilePictures', currentUser.profilePicture);
+          await fs.unlink(oldPicturePath).catch(err => console.error('Error deleting old profile picture:', err));
+        }
+
+        const fileExtension = path.extname(profilePicture.name);
+        const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
+        const uploadPath = path.join(__dirname, '..', 'Server', 'profilePictures', uniqueFilename);
+
+        await profilePicture.mv(uploadPath);
+        cleanUpdates.profilePicture = uniqueFilename;
+      } catch (error) {
+        console.error('Error handling profile picture:', error);
+        throw new Error('Failed to update profile picture');
+      }
+    }
+
+    console.log('Final cleanUpdates before database update:', cleanUpdates);
 
     // Update user with clean updates
     const user = await User.findByIdAndUpdate(
@@ -216,6 +197,7 @@ class UserService {
       throw new Error('User not found');
     }
 
+    console.log('Updated user from database:', user);
     return user;
   }
 
@@ -331,14 +313,14 @@ class UserService {
 
     // Delete old profile picture if it exists
     if (currentUser.profilePicture) {
-      const oldPicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', currentUser.profilePicture);
+      const oldPicturePath = path.join(__dirname, '..', 'Server', 'profilePictures', currentUser.profilePicture);
       await fs.unlink(oldPicturePath).catch(err => console.error('Error deleting old profile picture:', err));
     }
 
     // Generate unique filename and save new picture
     const fileExtension = path.extname(profilePicture.name);
     const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
-    const uploadPath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', uniqueFilename);
+    const uploadPath = path.join(__dirname, '..', 'Server', 'profilePictures', uniqueFilename);
 
     await profilePicture.mv(uploadPath);
 
@@ -365,7 +347,15 @@ class UserService {
     // Delete old video if exists
     if (user.highlightVideo) {
       const oldVideoPath = path.join(__dirname, '..', '..', 'Server', 'highlights', user.highlightVideo);
-      await fs.unlink(oldVideoPath).catch(err => console.error('Error deleting old highlight video:', err));
+      try {
+        await fs.access(oldVideoPath);
+        await fs.unlink(oldVideoPath);
+      } catch (error) {
+        // Only log error if it's not a "file not found" error
+        if (error.code !== 'ENOENT') {
+          console.error('Error deleting old highlight video:', error);
+        }
+      }
     }
 
     // Generate unique filename and save new video
@@ -373,13 +363,30 @@ class UserService {
     const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
     const uploadPath = path.join(__dirname, '..', '..', 'Server', 'highlights', uniqueFilename);
 
-    await videoFile.mv(uploadPath);
+    try {
+      // Ensure the highlights directory exists
+      const highlightsDir = path.join(__dirname, '..', '..', 'Server', 'highlights');
+      await fs.mkdir(highlightsDir, { recursive: true });
 
-    // Update database
-    user.highlightVideo = uniqueFilename;
-    await user.save();
+      // Move the file
+      await videoFile.mv(uploadPath);
 
-    return user;
+      // Update only the highlightVideo field
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: { highlightVideo: uniqueFilename } },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        throw new Error('Failed to update user');
+      }
+
+      return updatedUser;
+    } catch (error) {
+      console.error('Error saving highlight video:', error);
+      throw new Error('Failed to save highlight video');
+    }
   }
 
   async addCourse(userId, courseId) {
@@ -454,12 +461,26 @@ class UserService {
     // Delete associated files
     if (user.profilePicture) {
       const profilePicturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', user.profilePicture);
-      await fs.unlink(profilePicturePath).catch(err => console.error('Error deleting profile picture:', err));
+      try {
+        await fs.access(profilePicturePath);
+        await fs.unlink(profilePicturePath);
+      } catch (error) {
+        if (error.code !== 'ENOENT') {
+          console.error('Error deleting profile picture:', error);
+        }
+      }
     }
 
     if (user.highlightVideo) {
       const highlightVideoPath = path.join(__dirname, '..', '..', 'Server', 'highlights', user.highlightVideo);
-      await fs.unlink(highlightVideoPath).catch(err => console.error('Error deleting highlight video:', err));
+      try {
+        await fs.access(highlightVideoPath);
+        await fs.unlink(highlightVideoPath);
+      } catch (error) {
+        if (error.code !== 'ENOENT') {
+          console.error('Error deleting highlight video:', error);
+        }
+      }
     }
 
     // Delete user from database
@@ -478,13 +499,21 @@ class UserService {
     const profilePicturesDir = path.join(__dirname, '..', '..', 'Server', 'profilePictures');
     const highlightsDir = path.join(__dirname, '..', '..', 'Server', 'highlights');
 
-    await fs.readdir(profilePicturesDir)
-      .then(files => Promise.all(files.map(file => fs.unlink(path.join(profilePicturesDir, file)))))
-      .catch(err => console.error('Error deleting profile pictures:', err));
+    try {
+      // Ensure directories exist before trying to read them
+      await fs.mkdir(profilePicturesDir, { recursive: true });
+      await fs.mkdir(highlightsDir, { recursive: true });
 
-    await fs.readdir(highlightsDir)
-      .then(files => Promise.all(files.map(file => fs.unlink(path.join(highlightsDir, file)))))
-      .catch(err => console.error('Error deleting highlight videos:', err));
+      await fs.readdir(profilePicturesDir)
+        .then(files => Promise.all(files.map(file => fs.unlink(path.join(profilePicturesDir, file)))))
+        .catch(err => console.error('Error deleting profile pictures:', err));
+
+      await fs.readdir(highlightsDir)
+        .then(files => Promise.all(files.map(file => fs.unlink(path.join(highlightsDir, file)))))
+        .catch(err => console.error('Error deleting highlight videos:', err));
+    } catch (error) {
+      console.error('Error in deleteAllUsers:', error);
+    }
 
     return result.deletedCount;
   }
@@ -495,7 +524,7 @@ class UserService {
       return null;
     }
 
-    const picturePath = path.join(__dirname, '..', '..', 'Server', 'profilePictures', user.profilePicture);
+    const picturePath = path.join(__dirname, '..', 'Server', 'profilePictures', user.profilePicture);
     
     try {
       await fs.access(picturePath);

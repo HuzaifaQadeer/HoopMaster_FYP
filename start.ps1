@@ -14,16 +14,6 @@ $commands = @(
         Cmd = ".\\venv\\Scripts\\Activate; python run.py"
     },
     @{
-        Name = "Node Tunnel"
-        Dir = "."
-        Cmd = "lt --port 5000 --subdomain nodeapp"
-    },
-    @{
-        Name = "Flask Tunnel"
-        Dir = "."
-        Cmd = "lt --port 8082 --subdomain flaskapp"
-    },
-    @{
         Name = "Admin Panel"
         Dir = "AdminPanel/adminpanel"
         Cmd = "npm run dev"
@@ -32,8 +22,19 @@ $commands = @(
         Name = "Frontend"
         Dir = "Frontend/frontedn"
         Cmd = "npx expo start"
+    },
+    @{
+        Name = "Node Tunnel"
+        Dir = "."
+        Cmd = "lt --port 5500 --subdomain nodeapp"
+        
+    },
+    @{
+        Name = "Flask Tunnel"
+        Dir = "."
+        Cmd = "lt --port 8082 --subdomain flaskapp"
     }
-)
+) 
 
 Write-Host "Starting all services..."
 

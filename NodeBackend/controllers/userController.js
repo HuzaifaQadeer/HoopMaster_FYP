@@ -69,10 +69,33 @@ exports.verifyEmail = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
+    console.log('Raw request body:', req.body);
+    console.log('Raw request files:', req.files);
+    
     const profilePicture = req.files?.profilePicture;
-    const user = await userService.updateProfile(req.user.id, req.body, profilePicture);
+    
+    // Parse FormData fields
+    const updates = {};
+    Object.keys(req.body).forEach(key => {
+      console.log(`Processing field ${key}:`, req.body[key]);
+      try {
+        // Try to parse JSON strings
+        updates[key] = JSON.parse(req.body[key]);
+        console.log(`Parsed ${key}:`, updates[key]);
+      } catch (e) {
+        // If parsing fails, use the value as is
+        updates[key] = req.body[key];
+        console.log(`Using raw value for ${key}:`, updates[key]);
+      }
+    });
+
+    console.log('Final parsed updates:', updates);
+    
+    const user = await userService.updateProfile(req.user.id, updates, profilePicture);
+    console.log('Updated user from service:', user);
     res.json(user);
   } catch (error) {
+    console.error('Profile update error:', error);
     res.status(400).json({ message: error.message });
   }
 };

@@ -134,10 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const getToken = async (): Promise<string | null> => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      console.log('Retrieved token:', token);
-      if (!token) {
-        console.warn('No token found in AsyncStorage');
-      }
       return token;
     } catch (error) {
       console.error('Error getting token:', error);

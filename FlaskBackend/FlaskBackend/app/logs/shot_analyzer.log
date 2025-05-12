@@ -11380,3 +11380,1076 @@
 2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
 2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 1.55 seconds
 2025-05-09 10:03:35,254 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 10.98 frames per second
+2025-05-10 11:26:41,603 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:26] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-10 11:26:41,604 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:36] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 11:26:43,721 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 11:26:43,722 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:81] - Successfully imported mediapipe
+2025-05-10 11:26:43,729 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:100] - MediaPipe pose detector pre-initialized
+2025-05-10 11:26:46,416 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\653019de-fee3-44ed-9a9a-4df5cb21fe71_2760fad0-f32c-4e40-a782-13bfeac557d7_4c129d9f-4979-4950-a443-5ae6b9623364.mp4
+2025-05-10 11:26:46,416 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746901606.mp4
+2025-05-10 11:26:46,416 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-10 11:26:46,417 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\653019de-fee3-44ed-9a9a-4df5cb21fe71_2760fad0-f32c-4e40-a782-13bfeac557d7_4c129d9f-4979-4950-a443-5ae6b9623364.mp4
+2025-05-10 11:26:46,441 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 960x540
+2025-05-10 11:26:46,441 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 30.0
+2025-05-10 11:26:46,441 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 30.0
+2025-05-10 11:26:46,443 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-10 11:26:46,443 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-10 11:26:46,443 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-10 11:26:46,445 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-10 11:26:46,446 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 11:26:46,462 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:704] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 11:26:46,463 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-10 11:26:46,463 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-10 11:27:01,492 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_172.txt
+2025-05-10 11:27:16,098 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_376.txt
+2025-05-10 11:38:15,252 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:17] - Using device: cuda
+2025-05-10 11:38:15,252 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:34] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-10 11:38:15,253 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 11:38:16,442 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:62] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 11:38:16,442 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:89] - Successfully imported mediapipe
+2025-05-10 11:38:16,449 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:112] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 11:42:31,457 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:17] - Using device: cuda
+2025-05-10 11:42:31,458 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:34] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-10 11:42:31,460 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 11:42:32,669 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:62] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 11:42:32,670 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:89] - Successfully imported mediapipe
+2025-05-10 11:42:32,677 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:112] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 11:42:32,678 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:679] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\346a246b-5d6e-48f2-9db1-021cb61e10d9_5692824b-d25c-4714-b88a-9a0800c02d2d_7af9395f-4807-4b03-8e7f-781440e56d36.mp4
+2025-05-10 11:42:32,679 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:691] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746902552.mp4
+2025-05-10 11:42:32,680 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:695] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-10 11:42:32,680 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:698] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\346a246b-5d6e-48f2-9db1-021cb61e10d9_5692824b-d25c-4714-b88a-9a0800c02d2d_7af9395f-4807-4b03-8e7f-781440e56d36.mp4
+2025-05-10 11:42:32,710 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:711] - Video dimensions: 960x540
+2025-05-10 11:42:32,710 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:719] - Video FPS: 30.0
+2025-05-10 11:42:32,710 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Output FPS set to: 30.0
+2025-05-10 11:42:32,711 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:732] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-10 11:42:32,711 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:733] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-10 11:42:32,711 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Cleaning output folders
+2025-05-10 11:42:32,719 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:743] - Setting up video writer
+2025-05-10 11:42:32,720 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 11:42:32,731 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:753] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 11:42:32,732 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:762] - Video writer created
+2025-05-10 11:42:32,732 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:772] - Starting frame processing loop
+2025-05-10 11:48:14,913 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:17] - Using device: cuda
+2025-05-10 11:48:14,914 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:34] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-10 11:48:14,914 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 11:48:16,133 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:62] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 11:48:16,133 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:89] - Successfully imported mediapipe
+2025-05-10 11:48:16,140 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:112] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 11:48:16,141 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:679] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\608ee67a-c756-4838-bd6f-bdef69fe0161_0d925ef9-119e-4e0e-93c1-9db8b8b40dfd_6fb5f9b1-0233-4cc1-bd71-8c1eafddb183.mp4
+2025-05-10 11:48:16,142 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:691] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746902896.mp4
+2025-05-10 11:48:16,142 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:695] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-10 11:48:16,143 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:698] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\608ee67a-c756-4838-bd6f-bdef69fe0161_0d925ef9-119e-4e0e-93c1-9db8b8b40dfd_6fb5f9b1-0233-4cc1-bd71-8c1eafddb183.mp4
+2025-05-10 11:48:16,172 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:711] - Video dimensions: 960x540
+2025-05-10 11:48:16,174 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:719] - Video FPS: 30.0
+2025-05-10 11:48:16,174 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Output FPS set to: 30.0
+2025-05-10 11:48:16,178 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:732] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-10 11:48:16,178 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:733] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-10 11:48:16,178 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Cleaning output folders
+2025-05-10 11:48:16,178 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:743] - Setting up video writer
+2025-05-10 11:48:16,178 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 11:48:16,182 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:753] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 11:48:16,183 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:762] - Video writer created
+2025-05-10 11:48:16,183 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:772] - Starting frame processing loop
+2025-05-10 23:48:32,152 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:17] - Using device: cuda
+2025-05-10 23:48:32,153 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:34] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-10 23:48:32,154 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 23:48:37,604 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:62] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 23:48:37,604 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:89] - Successfully imported mediapipe
+2025-05-10 23:48:37,628 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:112] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 23:48:37,630 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:679] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\96e544fb-d003-4632-9873-f72b160fd4aa_195c5227-208b-426a-9c11-4a00db6e7106_two_score_three_miss.mp4
+2025-05-10 23:48:37,631 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:691] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746946117.mp4
+2025-05-10 23:48:37,632 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:695] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-10 23:48:37,632 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:698] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\96e544fb-d003-4632-9873-f72b160fd4aa_195c5227-208b-426a-9c11-4a00db6e7106_two_score_three_miss.mp4
+2025-05-10 23:48:37,817 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:711] - Video dimensions: 960x540
+2025-05-10 23:48:37,818 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:719] - Video FPS: 30.0
+2025-05-10 23:48:37,818 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Output FPS set to: 30.0
+2025-05-10 23:48:37,819 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:732] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-10 23:48:37,819 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:733] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-10 23:48:37,820 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Cleaning output folders
+2025-05-10 23:48:37,820 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:743] - Setting up video writer
+2025-05-10 23:48:37,821 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 23:48:37,843 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:753] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 23:48:37,852 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:762] - Video writer created
+2025-05-10 23:48:37,853 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:772] - Starting frame processing loop
+2025-05-10 23:48:40,649 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1065] - Error in detect_API: Invalid CUDA '--device cuda' requested, use '--device cpu' or pass valid CUDA device(s). Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-10 23:51:54,373 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-10 23:51:54,373 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-10 23:51:54,374 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 23:51:55,565 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 23:51:55,566 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-10 23:51:55,573 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 23:51:55,574 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\edf39dfe-d621-4e97-a4bc-623c33422517_b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c_two_score_three_miss.mp4
+2025-05-10 23:51:55,574 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746946315.mp4
+2025-05-10 23:51:55,574 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-10 23:51:55,575 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\edf39dfe-d621-4e97-a4bc-623c33422517_b8afeb6e-be5d-4f7c-8cd3-e61da88abf2c_two_score_three_miss.mp4
+2025-05-10 23:51:55,604 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-10 23:51:55,605 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-10 23:51:55,605 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-10 23:51:55,605 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-10 23:51:55,606 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-10 23:51:55,606 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-10 23:51:55,607 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-10 23:51:55,607 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 23:51:55,609 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 23:51:55,620 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-10 23:51:55,620 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-10 23:52:07,171 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1078] - Error in detect_API: Invalid CUDA '--device cuda' requested, use '--device cpu' or pass valid CUDA device(s). Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-10 23:52:22,183 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1078] - Error in detect_API: Invalid CUDA '--device cuda' requested, use '--device cpu' or pass valid CUDA device(s). Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-10 23:52:45,373 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1078] - Error in detect_API: Invalid CUDA '--device cuda' requested, use '--device cpu' or pass valid CUDA device(s). Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-10 23:53:06,924 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1078] - Error in detect_API: Invalid CUDA '--device cuda' requested, use '--device cpu' or pass valid CUDA device(s). Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-10 23:53:51,159 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-10 23:53:51,159 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-10 23:53:51,159 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-10 23:53:52,377 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-10 23:53:52,378 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-10 23:53:52,385 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-10 23:53:52,387 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\193201e8-4038-4c75-8eee-3d01f79d9929_9aa4dedd-b3d8-46bd-8568-e512dbb65026_two_score_three_miss.mp4
+2025-05-10 23:53:52,387 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746946432.mp4
+2025-05-10 23:53:52,387 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-10 23:53:52,388 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\193201e8-4038-4c75-8eee-3d01f79d9929_9aa4dedd-b3d8-46bd-8568-e512dbb65026_two_score_three_miss.mp4
+2025-05-10 23:53:52,416 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-10 23:53:52,417 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-10 23:53:52,417 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-10 23:53:52,418 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-10 23:53:52,418 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-10 23:53:52,419 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-10 23:53:52,419 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-10 23:53:52,420 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-10 23:53:52,423 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-10 23:53:52,425 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-10 23:53:52,425 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-10 23:54:14,138 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1086] - Error in detect_API: [Errno 2] No such file or directory: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\services\\shot_analyzer\\weights\\best.pt'. Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-11 00:22:15,826 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:22:15,826 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:22:15,826 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:22:19,051 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:22:19,052 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:22:19,059 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:22:19,061 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\e5742173-2505-4798-a577-d1e702e0b81b_08001d6e-f29d-49ca-8bfb-81411ff9426f_two_score_three_miss.mp4
+2025-05-11 00:22:19,062 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948139.mp4
+2025-05-11 00:22:19,062 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:22:19,062 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\e5742173-2505-4798-a577-d1e702e0b81b_08001d6e-f29d-49ca-8bfb-81411ff9426f_two_score_three_miss.mp4
+2025-05-11 00:22:19,167 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-11 00:22:19,168 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-11 00:22:19,168 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-11 00:22:19,168 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:22:19,168 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:22:19,170 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-11 00:22:19,170 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-11 00:22:19,170 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:22:19,174 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:22:19,175 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-11 00:22:19,176 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-11 00:22:30,537 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1086] - Error in detect_API: [Errno 2] No such file or directory: 'D:\\uni\\fyp\\HoopMaster\\Code\\part2\\HoopMaster\\HoopMaster\\FlaskBackend\\flaskbackend\\app\\services\\shot_analyzer\\weights\\best.pt'. Cache may be out of date, try `force_reload=True` or see https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading for help.
+2025-05-11 00:26:33,121 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:26:33,121 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:26:33,121 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:26:34,354 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:26:34,354 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:26:34,361 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:26:34,363 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\12101122-f7e4-490f-a86b-5d3010df4d49_b796a139-9ec7-4a17-97c9-4dde8b1b5138_two_score_three_miss.mp4
+2025-05-11 00:26:34,363 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948394.mp4
+2025-05-11 00:26:34,363 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:26:34,364 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\12101122-f7e4-490f-a86b-5d3010df4d49_b796a139-9ec7-4a17-97c9-4dde8b1b5138_two_score_three_miss.mp4
+2025-05-11 00:26:34,389 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-11 00:26:34,389 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-11 00:26:34,390 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-11 00:26:34,390 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:26:34,390 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:26:34,391 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-11 00:26:34,391 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-11 00:26:34,391 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:26:34,394 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:26:34,395 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-11 00:26:34,396 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-11 00:26:38,678 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1059] - Successfully moved model to CUDA
+2025-05-11 00:28:16,076 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:28:16,077 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:28:16,077 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:28:17,309 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:28:17,310 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:28:17,317 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:28:17,318 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\5d085298-2178-4051-bd5c-18a71c7f4727_ff73d848-746b-46cb-a3a4-f26fe13f6592_two_score_three_miss.mp4
+2025-05-11 00:28:17,318 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948497.mp4
+2025-05-11 00:28:17,319 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:28:17,319 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\5d085298-2178-4051-bd5c-18a71c7f4727_ff73d848-746b-46cb-a3a4-f26fe13f6592_two_score_three_miss.mp4
+2025-05-11 00:28:17,345 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-11 00:28:17,346 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-11 00:28:17,346 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-11 00:28:17,346 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:28:17,346 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:28:17,347 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-11 00:28:17,347 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-11 00:28:17,347 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:28:17,350 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:28:17,351 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-11 00:28:17,351 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-11 00:28:20,684 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1069] - Successfully moved model to CUDA
+2025-05-11 00:28:45,130 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:28:45,131 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:28:45,131 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:28:46,317 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:28:46,318 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:28:46,325 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:28:46,327 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:689] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\c379ebb0-baff-4d50-a586-ab9785844882_feb304a6-5deb-4312-832b-cc36adaf7225_two_score_three_miss.mp4
+2025-05-11 00:28:46,327 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948526.mp4
+2025-05-11 00:28:46,327 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:705] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:28:46,328 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:708] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\c379ebb0-baff-4d50-a586-ab9785844882_feb304a6-5deb-4312-832b-cc36adaf7225_two_score_three_miss.mp4
+2025-05-11 00:28:46,353 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:717] - Video dimensions: 960x540
+2025-05-11 00:28:46,353 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Video FPS: 30.0
+2025-05-11 00:28:46,353 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:729] - Output FPS set to: 30.0
+2025-05-11 00:28:46,354 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:738] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:28:46,354 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:739] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:28:46,355 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Cleaning output folders
+2025-05-11 00:28:46,355 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:749] - Setting up video writer
+2025-05-11 00:28:46,355 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:28:46,358 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:759] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:28:46,360 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:768] - Video writer created
+2025-05-11 00:28:46,360 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:778] - Starting frame processing loop
+2025-05-11 00:28:49,999 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1069] - Successfully moved model to CUDA
+2025-05-11 00:29:18,016 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:29:18,016 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:29:18,016 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:29:19,236 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:29:19,237 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:29:19,244 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:29:19,245 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:685] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\346da60e-6ea9-4d2f-8d9f-e7d92eaa26aa_284cd758-99a7-4277-b405-de4be2c4a521_two_score_three_miss.mp4
+2025-05-11 00:29:19,245 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:697] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948559.mp4
+2025-05-11 00:29:19,246 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:29:19,246 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:704] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\346da60e-6ea9-4d2f-8d9f-e7d92eaa26aa_284cd758-99a7-4277-b405-de4be2c4a521_two_score_three_miss.mp4
+2025-05-11 00:29:19,273 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video dimensions: 960x540
+2025-05-11 00:29:19,273 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:721] - Video FPS: 30.0
+2025-05-11 00:29:19,273 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Output FPS set to: 30.0
+2025-05-11 00:29:19,274 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:734] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:29:19,274 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:735] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:29:19,274 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:741] - Cleaning output folders
+2025-05-11 00:29:19,275 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Setting up video writer
+2025-05-11 00:29:19,275 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:747] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:29:19,278 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:755] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:29:19,279 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:764] - Video writer created
+2025-05-11 00:29:19,279 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:774] - Starting frame processing loop
+2025-05-11 00:29:23,130 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1065] - Successfully moved model to CUDA
+2025-05-11 00:29:25,999 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1065] - Successfully moved model to CUDA
+2025-05-11 00:29:48,883 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:29:48,883 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:29:48,884 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:29:50,157 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:29:50,158 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:29:50,166 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:29:50,168 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:685] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\90523c8d-4e27-48e2-8707-1137e26bbbc8_52213e03-9a47-4169-823a-1214968593e0_two_score_three_miss.mp4
+2025-05-11 00:29:50,169 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:697] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948590.mp4
+2025-05-11 00:29:50,170 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:701] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:29:50,170 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:704] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\90523c8d-4e27-48e2-8707-1137e26bbbc8_52213e03-9a47-4169-823a-1214968593e0_two_score_three_miss.mp4
+2025-05-11 00:29:50,197 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video dimensions: 960x540
+2025-05-11 00:29:50,198 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:721] - Video FPS: 30.0
+2025-05-11 00:29:50,198 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:725] - Output FPS set to: 30.0
+2025-05-11 00:29:50,199 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:734] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:29:50,199 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:735] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:29:50,200 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:741] - Cleaning output folders
+2025-05-11 00:29:50,200 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:745] - Setting up video writer
+2025-05-11 00:29:50,200 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:747] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:29:50,203 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:755] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:29:50,204 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:764] - Video writer created
+2025-05-11 00:29:50,204 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:774] - Starting frame processing loop
+2025-05-11 00:29:53,799 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1065] - Successfully moved model to CUDA
+2025-05-11 00:29:56,623 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1065] - Successfully moved model to CUDA
+2025-05-11 00:32:03,729 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:32:03,730 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:32:03,730 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:32:04,897 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:32:04,898 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:32:04,904 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:32:04,906 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:691] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\fdbb1f1c-5b79-4422-bffe-d703f1e867db_9af54bb4-8565-4c88-b3c3-e74da670e9dd_two_score_three_miss.mp4
+2025-05-11 00:32:04,906 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:703] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746948724.mp4
+2025-05-11 00:32:04,906 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:707] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 00:32:04,907 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:710] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\fdbb1f1c-5b79-4422-bffe-d703f1e867db_9af54bb4-8565-4c88-b3c3-e74da670e9dd_two_score_three_miss.mp4
+2025-05-11 00:32:04,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:719] - Video dimensions: 960x540
+2025-05-11 00:32:04,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:727] - Video FPS: 30.0
+2025-05-11 00:32:04,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:731] - Output FPS set to: 30.0
+2025-05-11 00:32:04,937 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:740] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 00:32:04,937 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:741] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 00:32:04,937 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:747] - Cleaning output folders
+2025-05-11 00:32:04,937 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:751] - Setting up video writer
+2025-05-11 00:32:04,938 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:753] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 00:32:04,940 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:761] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 00:32:04,942 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:770] - Video writer created
+2025-05-11 00:32:04,942 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:780] - Starting frame processing loop
+2025-05-11 00:33:48,615 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:33:48,615 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:33:48,616 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:33:49,764 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:33:49,764 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:33:49,771 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:33:49,772 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:753] - Error in getVideoStreams: name 'yolo_model' is not defined
+2025-05-11 00:34:41,519 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:34:41,519 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:34:41,520 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:34:42,706 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:34:42,707 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:34:42,713 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:34:42,715 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:826] - Using device: cpu
+2025-05-11 00:34:47,860 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:847] - YOLO models loaded successfully
+2025-05-11 00:47:32,467 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:47:32,468 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:47:32,468 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:47:33,689 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:47:33,689 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:47:33,698 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:47:33,700 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:907] - Using device: cpu
+2025-05-11 00:47:38,628 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:928] - YOLO models loaded successfully
+2025-05-11 00:50:02,797 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 00:50:02,797 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 00:50:02,797 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 00:50:04,041 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 00:50:04,042 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 00:50:04,048 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 00:50:04,050 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Using device: cpu
+2025-05-11 00:50:11,786 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:959] - YOLO models loaded successfully
+2025-05-11 00:50:12,162 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:869] - Error in getVideoStreams: too many values to unpack (expected 10)
+2025-05-11 02:05:28,990 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:05:28,990 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:05:28,991 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:05:30,239 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:05:30,239 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:05:30,246 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:05:30,248 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:949] - Using device: cpu
+2025-05-11 02:05:34,767 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:970] - YOLO models loaded successfully
+2025-05-11 02:14:45,388 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:14:45,388 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:14:45,389 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:14:46,618 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:14:46,619 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:14:46,626 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:14:46,627 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:936] - Using device: cpu
+2025-05-11 02:14:52,664 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:957] - YOLO models loaded successfully
+2025-05-11 02:19:12,458 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:19:12,459 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:19:12,459 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:19:13,670 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:19:13,671 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:19:13,678 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:19:13,680 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:955] - Using device: cpu
+2025-05-11 02:19:19,266 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:976] - YOLO models loaded successfully
+2025-05-11 02:22:47,408 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:22:47,409 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:22:47,409 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:22:48,608 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:22:48,608 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:22:48,616 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:22:48,617 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:959] - Using device: cpu
+2025-05-11 02:23:07,776 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:980] - YOLO models loaded successfully
+2025-05-11 02:29:04,703 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:29:04,703 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:29:04,704 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:29:05,915 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:29:05,916 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:29:05,922 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:29:05,924 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1022] - Using device: cpu
+2025-05-11 02:29:19,347 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1043] - YOLO models loaded successfully
+2025-05-11 02:29:19,377 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:753] - Processing video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\ca3dc9d3-1722-4c93-bc55-c52f4d80e1ed_8d19c1b7-e5ed-4da0-a6aa-35eae5cee70f_two_score_three_miss.mp4
+2025-05-11 02:29:19,378 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:754] - Maximum shots to detect: 5
+2025-05-11 02:29:36,119 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:845] - Shot 1 started at frame 77
+2025-05-11 02:29:38,460 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:905] - Shot 1 complete at frame 88: Miss
+2025-05-11 02:29:52,652 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:845] - Shot 2 started at frame 156
+2025-05-11 02:30:00,413 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:905] - Shot 2 complete at frame 193: Make
+2025-05-11 02:30:16,475 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:845] - Shot 3 started at frame 268
+2025-05-11 02:30:21,515 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:905] - Shot 3 complete at frame 292: Make
+2025-05-11 02:30:37,818 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:845] - Shot 4 started at frame 369
+2025-05-11 02:30:42,518 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:905] - Shot 4 complete at frame 391: Miss
+2025-05-11 02:30:58,808 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:845] - Shot 5 started at frame 467
+2025-05-11 02:30:58,820 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:949] - Final results: ['Miss', 'Make', 'Make', 'Miss']
+2025-05-11 02:41:25,962 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:41:25,963 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:41:25,963 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:41:27,159 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:41:27,159 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:41:27,166 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:41:27,169 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1032] - Using device: cpu
+2025-05-11 02:41:34,775 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1053] - YOLO models loaded successfully
+2025-05-11 02:41:34,797 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:753] - Processing video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\fc1786ae-0e1d-4869-ae97-dbe1498985c0_4f87b5ae-eca8-4e44-b7e4-67c073664140_two_score_three_miss.mp4
+2025-05-11 02:41:34,798 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:754] - Video has 503 frames at 30.0 FPS
+2025-05-11 02:41:34,798 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:755] - Expected results: ['Miss', 'Make', 'Make', 'Miss', 'Miss']
+2025-05-11 02:41:51,700 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:850] - Shot 1 started at frame 77
+2025-05-11 02:41:54,028 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:909] - Shot 1 complete at frame 88: Miss
+2025-05-11 02:42:08,474 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:850] - Shot 2 started at frame 156
+2025-05-11 02:42:16,631 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:909] - Shot 2 complete at frame 193: Make
+2025-05-11 02:42:32,326 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:850] - Shot 3 started at frame 268
+2025-05-11 02:42:37,377 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:909] - Shot 3 complete at frame 292: Make
+2025-05-11 02:42:53,691 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:850] - Shot 4 started at frame 369
+2025-05-11 02:42:58,346 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:909] - Shot 4 complete at frame 391: Miss
+2025-05-11 02:43:14,458 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:850] - Shot 5 started at frame 467
+2025-05-11 02:43:21,053 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:909] - Shot 5 complete at frame 496: Miss
+2025-05-11 02:43:22,314 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:953] - Final results: ['Miss', 'Make', 'Make', 'Miss', 'Miss'], 2 makes / 5 shots
+2025-05-11 02:49:25,748 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 02:49:25,748 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 02:49:25,748 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 02:49:26,975 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 02:49:26,976 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 02:49:26,983 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 02:49:26,984 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1037] - Using device: cpu
+2025-05-11 02:49:31,274 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1058] - YOLO models loaded successfully
+2025-05-11 02:49:31,304 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:754] - Processing video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\aab96a85-9b5a-4ab3-83dd-21b9790af50d_6f0be48b-7313-46e4-b403-09b72d6134a9_two_score_three_miss.mp4
+2025-05-11 02:49:31,304 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:755] - Video has 503 frames at 30.0 FPS
+2025-05-11 02:50:11,174 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:864] - Shot 1 started at frame 77
+2025-05-11 02:50:17,705 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:906] - Shot 1 missed at frame 89
+2025-05-11 02:50:54,736 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:864] - Shot 2 started at frame 157
+2025-05-11 02:51:15,673 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:906] - Shot 2 missed at frame 195
+2025-05-11 02:51:54,608 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:864] - Shot 3 started at frame 268
+2025-05-11 02:52:08,231 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:906] - Shot 3 missed at frame 293
+2025-05-11 02:52:49,232 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:864] - Shot 4 started at frame 369
+2025-05-11 02:53:00,856 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:906] - Shot 4 missed at frame 391
+2025-05-11 02:53:42,372 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:864] - Shot 5 started at frame 467
+2025-05-11 02:53:59,243 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:906] - Shot 5 missed at frame 496
+2025-05-11 02:54:02,634 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:963] - Final results: ['Miss', 'Miss', 'Miss', 'Miss', 'Miss'], 0 makes / 5 shots
+2025-05-11 03:01:17,342 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 03:01:17,343 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:01:17,343 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:01:18,523 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:01:18,523 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 03:01:18,530 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 03:01:18,532 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:999] - Using device: cpu
+2025-05-11 03:03:09,864 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1023] - Error loading YOLO models: File is not a zip file
+2025-05-11 03:03:09,864 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:930] - Error in getVideoStreams: File is not a zip file
+2025-05-11 03:04:42,756 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 03:04:42,756 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:04:42,756 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:04:43,938 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:04:43,939 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 03:04:43,946 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 03:04:43,948 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:999] - Using device: cpu
+2025-05-11 03:04:43,948 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1006] - Loading YOLO model from: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\weights\basket_rim.pt
+2025-05-11 03:05:51,505 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1035] - Error loading YOLO models: File is not a zip file
+2025-05-11 03:05:51,506 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:930] - Error in getVideoStreams: File is not a zip file
+2025-05-11 03:07:04,814 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 03:07:04,814 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:07:04,814 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:07:05,997 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:07:05,998 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 03:07:06,005 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 03:07:06,008 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1015] - Using device: cpu
+2025-05-11 03:07:06,008 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1022] - Loading YOLO model from: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\weights\basket_rim.pt
+2025-05-11 03:07:06,358 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1039] - YOLO model loaded successfully using local implementation
+2025-05-11 03:07:06,394 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:730] - Processing video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\05f4ba7b-2cdb-4496-b1c3-8ebc954a4fcd_b61c8719-2ea8-40e7-b104-4ec87b6a5978_two_score_three_miss.mp4
+2025-05-11 03:07:06,394 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:731] - Video has 503 frames at 30.0 FPS
+2025-05-11 03:07:06,642 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:06,762 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:06,882 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,001 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,121 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,251 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,370 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,497 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,616 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,734 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,854 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:07,973 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,093 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,213 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,337 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,461 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,583 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,706 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,827 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:08,950 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,073 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,190 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,308 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,426 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,543 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,661 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,777 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,887 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:09,997 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,111 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,227 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,346 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,466 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,577 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,696 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,814 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:10,928 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,043 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,153 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,264 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,377 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,489 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,612 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,740 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,852 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:11,966 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,083 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,198 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,324 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,445 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,557 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,672 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,784 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:12,895 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,007 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,137 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,252 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,364 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,476 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,586 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,699 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,815 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:13,932 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,052 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,161 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,280 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,397 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,511 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,627 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,749 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,864 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:14,980 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,093 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,209 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,332 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,448 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,562 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,681 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,808 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:15,928 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,041 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,151 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,264 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,375 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,490 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,603 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,732 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,848 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:16,972 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,089 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,203 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,321 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,441 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,556 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,670 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,781 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:17,897 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,025 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,143 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,259 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,373 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,485 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,601 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,732 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,844 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:18,955 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,069 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,180 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,293 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,408 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,523 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,644 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,761 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,877 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:19,990 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,103 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,215 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,335 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,452 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,564 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,680 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,798 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:20,912 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,032 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,147 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,258 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,381 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,498 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,836 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:21,960 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,070 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,183 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,299 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,415 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,537 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,652 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,766 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,879 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:22,996 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,109 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,225 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,341 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,459 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,569 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,687 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,800 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:23,928 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,040 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,158 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,276 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,388 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,501 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,615 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,727 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,839 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:24,951 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,072 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,185 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,298 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,409 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,537 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,650 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,766 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,887 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:25,998 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,110 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,223 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,338 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,454 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,568 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,678 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,794 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:26,914 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,039 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,153 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,271 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,383 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,500 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,618 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,730 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,848 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:27,969 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,082 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,198 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,312 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,435 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,556 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,676 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,791 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:28,901 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,012 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,124 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,243 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,357 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,481 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,593 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,713 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,827 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:29,940 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,056 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,165 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,282 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,397 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,510 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,622 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,736 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,853 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:30,965 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,080 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,190 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,302 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,420 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,532 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,649 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,759 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,871 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:31,984 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,103 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,220 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,336 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,453 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,568 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,681 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,794 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:32,907 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,031 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,150 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,270 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,388 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,501 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,629 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,749 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,864 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:33,990 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,101 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,212 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,333 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,445 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,562 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,675 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,795 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:34,907 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,033 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,147 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,260 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,370 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,486 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,607 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,735 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,850 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:35,961 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,075 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,187 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,299 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,427 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,543 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,656 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,765 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,883 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:36,996 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,109 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,232 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,343 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,457 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,575 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,690 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,805 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:37,921 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,037 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,162 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,273 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,387 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,506 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,632 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,745 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,856 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:38,965 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,088 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,208 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,322 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,436 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,550 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,663 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,775 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,888 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:39,998 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,109 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,228 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,350 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,466 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,584 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,697 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,808 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:40,922 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,039 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,151 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,264 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,379 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,497 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,611 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,723 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,838 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:41,950 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,059 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,171 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,285 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,402 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,518 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,639 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,753 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,870 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:42,987 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,104 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,218 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,335 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,449 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,562 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,674 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,787 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:43,900 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,015 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,128 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,244 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,359 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,474 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,589 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,702 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,821 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:44,931 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,046 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,160 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,276 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,387 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,499 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,623 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,735 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,848 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:45,967 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,077 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,205 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,331 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,447 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,564 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,676 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,789 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:46,904 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,016 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,132 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,245 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,357 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,481 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,597 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,726 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,844 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:47,955 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,074 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,189 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,303 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,431 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,548 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,662 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,781 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:48,899 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,024 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,138 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,257 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,373 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,486 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,605 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,731 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,845 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:49,961 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,074 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,186 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,304 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,418 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,538 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,651 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,760 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,874 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:50,987 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,101 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,217 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,332 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,445 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,561 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,678 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,790 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:51,903 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,029 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,145 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,265 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,394 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,519 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,642 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,760 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,876 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:52,995 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,110 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,237 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,350 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,470 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,591 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,702 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,820 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:53,936 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,049 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,164 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,279 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,395 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,516 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,635 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,748 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,863 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:54,977 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,089 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,201 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,324 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,437 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,550 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,669 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,786 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:55,906 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,019 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,133 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,249 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,367 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,480 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,599 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,715 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,839 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:56,951 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,064 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,183 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,298 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,412 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,527 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,647 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,761 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,871 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:57,989 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,106 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,218 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,339 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,452 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,566 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,681 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,805 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:58,918 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,037 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,151 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,267 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,384 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,500 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,628 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,739 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,853 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:07:59,970 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,083 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,201 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,314 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,428 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,547 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,668 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,782 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:00,893 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,008 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,135 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,249 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,361 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,473 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,594 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,712 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,833 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:01,951 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,063 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,174 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,294 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,408 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,520 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,641 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,756 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,868 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:02,988 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,107 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,219 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,330 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,448 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,561 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,672 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,788 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:03,898 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,010 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,123 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,250 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,362 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,474 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,592 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,703 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,829 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:04,948 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:05,074 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:05,186 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:985] - Error during YOLO inference: not enough values to unpack (expected 4, got 3)
+2025-05-11 03:08:05,197 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:915] - No shots detected, using default values
+2025-05-11 03:08:05,197 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:925] - Final results: ['Miss'], 0 makes / 1 shots
+2025-05-11 03:08:45,394 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 03:08:45,395 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:08:45,395 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:08:46,568 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:08:46,569 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 03:08:46,576 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 03:08:46,578 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1037] - Using device: cpu
+2025-05-11 03:09:49,588 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1061] - Error loading YOLO models: File is not a zip file
+2025-05-11 03:09:49,589 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:968] - Error in getVideoStreams: File is not a zip file
+2025-05-11 03:10:02,212 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:21] - Using CUDA device: NVIDIA GeForce RTX 4070 Laptop GPU
+2025-05-11 03:10:02,213 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:44] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:10:02,213 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:10:03,384 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:72] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:10:03,385 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:99] - Successfully imported mediapipe
+2025-05-11 03:10:03,391 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:122] - MediaPipe pose detector pre-initialized with GPU settings
+2025-05-11 03:10:03,394 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:1037] - Using device: cpu
+2025-05-11 03:11:36,245 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:1061] - Error loading YOLO models: File is not a zip file
+2025-05-11 03:11:36,245 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:968] - Error in getVideoStreams: File is not a zip file
+2025-05-11 03:12:57,793 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:26] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5
+2025-05-11 03:12:57,793 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:36] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 03:12:58,986 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 03:12:58,987 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:81] - Successfully imported mediapipe
+2025-05-11 03:12:58,994 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:100] - MediaPipe pose detector pre-initialized
+2025-05-11 03:12:59,151 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\4f6a70d5-ad33-45d6-a279-28f1654af521_55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4
+2025-05-11 03:12:59,151 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746958379.mp4
+2025-05-11 03:12:59,152 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output
+2025-05-11 03:12:59,152 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\uploads\original_videos\4f6a70d5-ad33-45d6-a279-28f1654af521_55821212-3381-45d6-8cb4-842f78584aeb_two_score_three_miss.mp4
+2025-05-11 03:12:59,180 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 960x540
+2025-05-11 03:12:59,180 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 30.0
+2025-05-11 03:12:59,181 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 30.0
+2025-05-11 03:12:59,181 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs
+2025-05-11 03:12:59,181 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\traces
+2025-05-11 03:12:59,182 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-11 03:12:59,182 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-11 03:12:59,182 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 03:12:59,185 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:704] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 03:12:59,187 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-11 03:12:59,187 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-11 03:13:12,394 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs\run\labels\temp_172.txt
+2025-05-11 03:13:27,059 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs\run\labels\temp_376.txt
+2025-05-11 03:13:33,893 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\runs\run\labels\temp_472.txt
+2025-05-11 03:13:35,909 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:728] - End of video reached
+2025-05-11 03:13:35,910 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:919] - Generating trajectory traces
+2025-05-11 03:13:35,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:922] - Trajectory traces generated successfully
+2025-05-11 03:13:35,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:927] - Finalizing video output
+2025-05-11 03:13:35,943 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:933] - Output video successfully created: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\flaskbackend\app\services\shot_analyzer\output\output_video_1746958379.mp4 (7319019 bytes)
+2025-05-11 03:13:35,943 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
+2025-05-11 03:13:35,944 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 36.79 seconds
+2025-05-11 03:13:35,944 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 13.67 frames per second
+2025-05-11 05:54:43,081 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:26] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-11 05:54:43,081 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:36] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-11 05:54:44,622 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-11 05:54:44,623 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:81] - Successfully imported mediapipe
+2025-05-11 05:54:44,631 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:100] - MediaPipe pose detector pre-initialized
+2025-05-11 05:54:44,886 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\addec3e5-1106-46ad-81e5-e297bf9e3f8b_8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:54:44,887 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746968084.mp4
+2025-05-11 05:54:44,887 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-11 05:54:44,887 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\addec3e5-1106-46ad-81e5-e297bf9e3f8b_8bd87db9-a665-412d-9df9-3caebb9cf202_e1fe06e6-c5f4-4da0-9143-f4741a3b9c27.mp4
+2025-05-11 05:54:44,914 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 960x540
+2025-05-11 05:54:44,915 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 30.0
+2025-05-11 05:54:44,918 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 30.0
+2025-05-11 05:54:44,920 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-11 05:54:44,920 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-11 05:54:44,920 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-11 05:54:44,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-11 05:54:44,936 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 960x540 at 30.0 fps
+2025-05-11 05:54:44,944 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:704] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-11 05:54:44,945 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-11 05:54:44,946 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-11 05:55:00,367 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_172.txt
+2025-05-11 05:55:17,482 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_376.txt
+2025-05-11 05:55:25,296 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_472.txt
+2025-05-11 05:55:27,632 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:728] - End of video reached
+2025-05-11 05:55:27,633 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:919] - Generating trajectory traces
+2025-05-11 05:55:27,647 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:922] - Trajectory traces generated successfully
+2025-05-11 05:55:27,648 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:927] - Finalizing video output
+2025-05-11 05:55:27,659 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:933] - Output video successfully created: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1746968084.mp4 (7319019 bytes)
+2025-05-11 05:55:27,659 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
+2025-05-11 05:55:27,660 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 42.77 seconds
+2025-05-11 05:55:27,660 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 11.76 frames per second
+2025-05-12 13:25:37,214 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:26] - Found YOLOv5 directory at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5
+2025-05-12 13:25:37,215 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:36] - Found detect.py at: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\yolov5\detect.py
+2025-05-12 13:25:39,335 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:54] - Successfully imported YOLOv5 detect.run using importlib
+2025-05-12 13:25:39,336 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:81] - Successfully imported mediapipe
+2025-05-12 13:25:39,343 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:100] - MediaPipe pose detector pre-initialized
+2025-05-12 13:25:44,078 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:635] - Starting getVideoStreams for video: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\c809c8d6-5ba3-43a5-8dd0-339449f3fdaa_1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:25:44,078 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:647] - Output file will be: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1747081544.mp4
+2025-05-12 13:25:44,078 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:651] - Ensured output directory exists: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output
+2025-05-12 13:25:44,078 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:654] - Opening video file: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\uploads\original_videos\c809c8d6-5ba3-43a5-8dd0-339449f3fdaa_1b0cd6c3-8d36-4ca4-b7e9-0018e657473e_894bcc89-67ce-4223-a066-11b8da523e66.mp4
+2025-05-12 13:25:44,098 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:662] - Video dimensions: 848x478
+2025-05-12 13:25:44,099 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:670] - Video FPS: 29.95999754517711
+2025-05-12 13:25:44,099 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:674] - Output FPS set to: 29.95999754517711
+2025-05-12 13:25:44,099 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:683] - Runs folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs
+2025-05-12 13:25:44,099 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:684] - Traces folder: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\traces
+2025-05-12 13:25:44,100 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:690] - Cleaning output folders
+2025-05-12 13:25:44,122 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:694] - Setting up video writer
+2025-05-12 13:25:44,123 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:696] - Creating video writer with dimensions 848x478 at 29.95999754517711 fps
+2025-05-12 13:25:44,135 - app.services.shot_analyzer.shot_analyzer - WARNING - [shot_analyzer.py:704] - Failed to create video writer with avc1 codec, trying mp4v
+2025-05-12 13:25:44,136 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:713] - Video writer created
+2025-05-12 13:25:44,137 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:723] - Starting frame processing loop
+2025-05-12 13:25:46,537 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_4.txt
+2025-05-12 13:25:46,852 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_8.txt
+2025-05-12 13:25:49,639 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_44.txt
+2025-05-12 13:25:49,912 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_48.txt
+2025-05-12 13:25:54,369 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_100.txt
+2025-05-12 13:25:54,695 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_104.txt
+2025-05-12 13:25:58,455 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_148.txt
+2025-05-12 13:25:58,743 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_152.txt
+2025-05-12 13:26:00,529 - app.services.shot_analyzer.shot_analyzer - ERROR - [shot_analyzer.py:606] - Label file not found: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\runs\run\labels\temp_172.txt
+2025-05-12 13:26:00,910 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:728] - End of video reached
+2025-05-12 13:26:00,911 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:919] - Generating trajectory traces
+2025-05-12 13:26:00,918 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:922] - Trajectory traces generated successfully
+2025-05-12 13:26:00,919 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:927] - Finalizing video output
+2025-05-12 13:26:00,926 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:933] - Output video successfully created: D:\uni\fyp\HoopMaster\Code\part2\HoopMaster\HoopMaster\FlaskBackend\FlaskBackend\app\services\shot_analyzer\output\output_video_1747081544.mp4 (1290662 bytes)
+2025-05-12 13:26:00,928 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:938] - Computing final metrics
+2025-05-12 13:26:00,928 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:961] - Total processing time: 16.85 seconds
+2025-05-12 13:26:00,928 - app.services.shot_analyzer.shot_analyzer - INFO - [shot_analyzer.py:962] - Processing speed: 10.62 frames per second

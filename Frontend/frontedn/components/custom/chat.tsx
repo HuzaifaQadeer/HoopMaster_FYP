@@ -58,12 +58,14 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { text: 'Hey, how can I help you today?', isUser: false },
   ]);
 
   const handleSend = async () => {
-    if (inputText.trim()) {
+    if (inputText.trim() && !isLoading) {
+      setIsLoading(true);
       setMessages(prev => [...prev, { text: inputText, isUser: true }]);
       
       try {
@@ -98,7 +100,6 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
         const data = await response.json();
 
         setMessages(prev => prev.filter(msg => msg.text !== "Thinking..."));
-        
         setMessages(prev => [...prev, { text: data.response, isUser: false }]);
       } catch (error) {
         setMessages(prev => prev.filter(msg => msg.text !== "Thinking..."));
@@ -107,9 +108,10 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
           isUser: false 
         }]);
         console.error('Chat API Error:', error);
+      } finally {
+        setIsLoading(false);
+        setInputText('');
       }
-
-      setInputText('');
     }
   };
 
@@ -145,8 +147,9 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
         onRequestClose={() => setModalVisible(false)}
       >
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={[styles.modalContainer, { backgroundColor: colors.background }]}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
           <View style={[styles.header, { borderBottomColor: colors.border }]}>
             <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -155,7 +158,10 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
             <Text style={[styles.headerTitle, { color: colors.text }]}>Chat</Text>
           </View>
 
-          <ScrollView style={styles.messagesContainer}>
+          <ScrollView 
+            style={styles.messagesContainer}
+            contentContainerStyle={styles.messagesContentContainer}
+          >
             {messages.map((message, index) => (
               <View
                 key={index}
@@ -194,9 +200,21 @@ const Chat: React.FC<ChatProps> = ({ size = 65 }) => {
               onChangeText={setInputText}
               placeholder="Type a message..."
               placeholderTextColor={colorScheme === 'dark' ? '#8E8E93' : '#999999'}
+              editable={!isLoading}
             />
-            <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
-              <Ionicons name="send" size={24} color={colors.primary} />
+            <TouchableOpacity 
+              onPress={handleSend} 
+              style={[
+                styles.sendButton,
+                isLoading && styles.sendButtonDisabled
+              ]}
+              disabled={isLoading}
+            >
+              <Ionicons 
+                name="send" 
+                size={24} 
+                color={isLoading ? colors.border : colors.primary} 
+              />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -285,6 +303,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
+  },
+  messagesContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  sendButtonDisabled: {
+    opacity: 0.5,
   },
 });
 
