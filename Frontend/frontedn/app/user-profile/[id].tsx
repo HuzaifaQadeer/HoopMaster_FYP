@@ -100,25 +100,67 @@ export default function UserProfileScreen() {
           highlightVideo: undefined,
         };
 
-        // Cache core user data
-        await AsyncStorage.setItem(
-          `user_profile_${userData._id}_data`,
-          JSON.stringify({
-            user: userDataOnly,
-            timestamp: Date.now()
-          })
-        );
+        // Check if data is too large before caching
+        const userDataString = JSON.stringify({
+          user: userDataOnly,
+          timestamp: Date.now()
+        });
 
-        // Cache image separately if exists
-        if (userImage) {
+        // If user data is too large, only cache essential information
+        if (userDataString.length > 1000000) { // 1MB limit
+          const essentialData = {
+            _id: userData._id,
+            username: userData.username,
+            displayName: userData.displayName,
+            isPremium: userData.isPremium,
+            isPrivate: userData.isPrivate,
+            stats: userData.stats,
+            timestamp: Date.now()
+          };
           await AsyncStorage.setItem(
-            `user_profile_${userData._id}_image`,
-            userImage
+            `user_profile_${userData._id}_data`,
+            JSON.stringify(essentialData)
+          );
+        } else {
+          await AsyncStorage.setItem(
+            `user_profile_${userData._id}_data`,
+            userDataString
           );
         }
 
-        // Cache video separately if exists
-        if (userVideo) {
+        // Handle image caching with size check and compression
+        if (userImage) {
+          try {
+            // Check if the image is a data URL
+            if (userImage.startsWith('data:image')) {
+              // Extract the base64 part of the data URL
+              const base64Data = userImage.split(',')[1];
+              
+              // Check if the base64 data is too large (roughly 500KB limit)
+              if (base64Data.length > 500000) {
+                console.log('Image too large to cache, skipping...');
+                return;
+              }
+              
+              // Store only the base64 data without the data URL prefix
+              await AsyncStorage.setItem(
+                `user_profile_${userData._id}_image`,
+                base64Data
+              );
+            } else if (userImage.startsWith('http')) {
+              // For HTTP URLs, store the URL directly
+              await AsyncStorage.setItem(
+                `user_profile_${userData._id}_image_url`,
+                userImage
+              );
+            }
+          } catch (error) {
+            console.warn('Failed to cache image:', error);
+          }
+        }
+
+        // Cache video separately if exists and not too large
+        if (userVideo && userVideo.length < 5000000) { // 5MB limit for videos
           await AsyncStorage.setItem(
             `user_profile_${userData._id}_video`,
             userVideo
@@ -129,6 +171,17 @@ export default function UserProfileScreen() {
       }
     } catch (error) {
       console.error('Error caching user profile:', error);
+      // Clean up any partial cache data
+      try {
+        await AsyncStorage.multiRemove([
+          `user_profile_${userData._id}_data`,
+          `user_profile_${userData._id}_image`,
+          `user_profile_${userData._id}_image_url`,
+          `user_profile_${userData._id}_video`
+        ]);
+      } catch (cleanupError) {
+        console.error('Error cleaning up cache:', cleanupError);
+      }
     }
   };
 
@@ -153,8 +206,31 @@ export default function UserProfileScreen() {
         
         if (cacheAge < cacheValidityPeriod) {
           // Get cached image and video separately
-          const cachedImage = await AsyncStorage.getItem(`user_profile_${id}_image`);
-          const cachedVideo = await AsyncStorage.getItem(`user_profile_${id}_video`);
+          let cachedImage = null;
+          let cachedVideo = null;
+          
+          try {
+            // Try to get cached image data
+            const imageData = await AsyncStorage.getItem(`user_profile_${id}_image`);
+            if (imageData) {
+              // If we have base64 data, reconstruct the data URL
+              cachedImage = `data:image/jpeg;base64,${imageData}`;
+            } else {
+              // Try to get cached image URL
+              const imageUrl = await AsyncStorage.getItem(`user_profile_${id}_image_url`);
+              if (imageUrl) {
+                cachedImage = imageUrl;
+              }
+            }
+          } catch (error) {
+            console.warn('Error retrieving cached image:', error);
+          }
+          
+          try {
+            cachedVideo = await AsyncStorage.getItem(`user_profile_${id}_video`);
+          } catch (error) {
+            console.warn('Error retrieving cached video:', error);
+          }
           
           console.log('Using cached user profile data');
           return {
@@ -168,6 +244,7 @@ export default function UserProfileScreen() {
           await AsyncStorage.multiRemove([
             `user_profile_${id}_data`,
             `user_profile_${id}_image`,
+            `user_profile_${id}_image_url`,
             `user_profile_${id}_video`
           ]);
         }
@@ -179,6 +256,7 @@ export default function UserProfileScreen() {
         await AsyncStorage.multiRemove([
           `user_profile_${id}_data`,
           `user_profile_${id}_image`,
+          `user_profile_${id}_image_url`,
           `user_profile_${id}_video`
         ]);
       } catch (cleanupError) {
