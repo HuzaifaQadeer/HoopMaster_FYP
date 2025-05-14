@@ -1,7 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 const userController = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
+
+// Configure multer storage
+const storage = multer.memoryStorage();
+
+// Configure multer upload
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB max file size
+  }
+});
+
 // Define user routes here
 router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
@@ -11,8 +25,8 @@ router.get('/profile', protect, userController.getProfile);
 router.put('/profile', protect, userController.updateProfile);
 router.put('/toggle-privacy', protect, userController.togglePrivacy);
 router.post('/upgrade-premium', protect, userController.upgradeToPremium);
-router.put('/profile-picture', protect, userController.addProfilePicture);
-router.put('/highlight-video', protect, userController.updateHighlightVideo);
+router.post('/profile-picture', protect, upload.single('profilePicture'), userController.updateProfilePicture);
+router.post('/highlight-video', protect, upload.single('highlightVideo'), userController.updateHighlightVideo);
 //router.post('/courses', protect, userController.addCourse);
 //router.post('/achievements', protect, userController.addAchievement);
 router.post('/send-verification-email', userController.sendVerificationEmail);

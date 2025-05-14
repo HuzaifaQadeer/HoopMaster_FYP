@@ -318,11 +318,12 @@ class UserService {
     }
 
     // Generate unique filename and save new picture
-    const fileExtension = path.extname(profilePicture.name);
+    const fileExtension = path.extname(profilePicture.originalname);
     const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
     const uploadPath = path.join(__dirname, '..', 'Server', 'profilePictures', uniqueFilename);
 
-    await profilePicture.mv(uploadPath);
+    // Move the file using fs.promises
+    await fs.writeFile(uploadPath, profilePicture.buffer);
 
     // Update database with new filename
     const user = await User.findByIdAndUpdate(
@@ -359,7 +360,7 @@ class UserService {
     }
 
     // Generate unique filename and save new video
-    const fileExtension = path.extname(videoFile.name);
+    const fileExtension = path.extname(videoFile.originalname);
     const uniqueFilename = `${crypto.randomBytes(16).toString('hex')}${fileExtension}`;
     const uploadPath = path.join(__dirname, '..', '..', 'Server', 'highlights', uniqueFilename);
 
@@ -368,8 +369,8 @@ class UserService {
       const highlightsDir = path.join(__dirname, '..', '..', 'Server', 'highlights');
       await fs.mkdir(highlightsDir, { recursive: true });
 
-      // Move the file
-      await videoFile.mv(uploadPath);
+      // Write the file using fs.promises
+      await fs.writeFile(uploadPath, videoFile.buffer);
 
       // Update only the highlightVideo field
       const updatedUser = await User.findByIdAndUpdate(

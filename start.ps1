@@ -26,13 +26,13 @@ $commands = @(
     @{
         Name = "Node Tunnel"
         Dir = "."
-        Cmd = "lt --port 5500 --subdomain nodeapp"
+        Cmd = "lt --port 5500 --subdomain nodeeapp"
         
     },
     @{
         Name = "Flask Tunnel"
         Dir = "."
-        Cmd = "lt --port 8082 --subdomain flaskapp"
+        Cmd = "lt --port 8082 --subdomain flaskkapp"
     }
 ) 
 

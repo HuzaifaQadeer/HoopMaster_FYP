@@ -120,36 +120,29 @@ exports.upgradeToPremium = async (req, res) => {
 
 exports.updateProfilePicture = async (req, res) => {
   try {
-    const imageUrl = 'path/to/uploaded/image.jpg';
-    const user = await userService.updateProfilePicture(req.user.id, imageUrl);
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const user = await userService.updateProfilePicture(req.user.id, req.file);
     res.json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 exports.updateHighlightVideo = async (req, res) => {
   try {
-    if (!req.files || !req.files.highlightVideo) {
-      return res.status(400).json({ message: 'No video file uploaded' });
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const video = req.files.highlightVideo;
-    
-    // Check file size (100MB = 100 * 1024 * 1024 bytes)
-    if (video.size > 100 * 1024 * 1024) {
-      return res.status(400).json({ message: 'Video file must be smaller than 100MB' });
-    }
-
-    // Check if it's a video file
-    if (!video.mimetype.startsWith('video/')) {
-      return res.status(400).json({ message: 'File must be a video' });
-    }
-
-    const user = await userService.updateHighlightVideo(req.user.id, video);
+    const user = await userService.updateHighlightVideo(req.user.id, req.file);
     res.json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error updating highlight video:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 

@@ -1,6 +1,6 @@
-const API_BASE_URL = 'https://nodeapp.loca.lt';
-const AI_API_URL = 'https://flaskapp.loca.lt';
- 
+const API_BASE_URL = 'https://nodeeapp.loca.lt';
+const AI_API_URL = 'https://flaskkapp.loca.lt';
+
 export const API_ROUTES = {
   REGISTER: `${API_BASE_URL}/users/register`,
   LOGIN: `${API_BASE_URL}/users/login`,
