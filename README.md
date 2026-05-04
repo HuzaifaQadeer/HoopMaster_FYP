@@ -214,30 +214,6 @@ S3_SECRET_KEY=
 
 ---
 
-## Testing
-
-All 36 use cases were covered across four testing layers:
-
-```bash
-# JavaScript unit tests (API Gateway + Mobile)
-cd api-gateway && npm test
-
-# Python unit tests (AI Service)
-cd ai-service && pytest
-
-# Integration tests
-cd api-gateway && npm run test:integration
-```
-
-| Layer | Coverage |
-|---|---|
-| Unit Testing | All 36 use cases — 100% pass rate |
-| Functional Testing | End-to-end user journeys across all modules |
-| Business Rules Testing | Subscription enforcement, moderation policies |
-| Integration Testing | Cross-service contracts and video pipeline |
-
----
-
 ## Team
 
 | Name | Role |
