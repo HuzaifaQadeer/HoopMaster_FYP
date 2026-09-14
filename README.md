@@ -126,8 +126,8 @@ Free tier with ads. Premium tier with full access. Secure in-app payment process
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/AunAfzal/HoopMaster.git
-cd hoopmaster
+git clone https://github.com/HuzaifaQadeer/HoopMaster_FYP.git
+cd HoopMaster_FYP
 ```
 
 ### 2. Set up the API Gateway
